@@ -1,0 +1,42 @@
+classDiagram
+direction RL   
+
+class Calendario {
+  +int Anio
+  +int Mes
+  +int Dia
+  +string Hora
+}
+
+class Cliente {
+  +string Nombre
+  +string Cedula
+  +string Celular
+  +string Correo
+}
+
+class Vehiculo {
+  +string Placa
+  +string Tipo
+  +string Marca
+  +string Modelo
+  +int Anio
+  +string Color
+}
+
+class Precio {
+  +string Tipo
+  +string Placa
+}
+
+class Factura {
+  +int Anio
+  +int Mes
+  +int Dia
+  +string Hora
+}
+
+Cliente "1" --> "0..*" Factura : Genera
+Vehiculo "1" --> "0..*" Factura : Registra
+Calendario "1" --> "1" Factura : Define
+Precio "1" --> "1" Vehiculo : Asigna
