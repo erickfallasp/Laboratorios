@@ -63,3 +63,25 @@ body{
       color: rgb(14, 15, 20);
       text-decoration: none;
     }
+
+    #video-section {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    #video-section iframe {
+      max-width: 100%;
+      width: 600px;
+      height: auto;
+      border-radius: 10px;
+      border: 5px solid #929292;
+    }
+
+    footer, header{
+      text-align: center;
+      padding: 20px;
+      background-color: #f1f1f1;
+      color: #333;
+      margin-top: 20px;
+    }
