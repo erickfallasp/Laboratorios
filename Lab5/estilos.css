@@ -1,0 +1,20 @@
+/* Estilos colores de cuadros */
+.box-blue {
+    background-color: #9ec5fe; /* Color azul claro */
+    border: 1px solid #000;    /* Borde negro fino */
+    padding: 10px;
+    margin-bottom: 5px;        /* Pequeño espacio entre filas */
+}
+
+.header-gray {
+    background-color: #999;    /* Color gris para la cabecera */
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Ajuste para la primera tabla simple de arriba */
+.simple-grid div {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: center;
+}
