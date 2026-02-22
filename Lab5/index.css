@@ -1,0 +1,54 @@
+#ctn-1 {
+  background-color: #f8f9fa;
+}
+
+#ctn-2 {
+  background-color: #a5a5a5;
+}
+
+.pintar>.row>div {
+  background-color: #98cbff;
+  border: 1px solid #000;
+  padding: 10px;
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+/* No media query for `xs` since this is the default in Bootstrap */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  p {
+    color: red !important;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  p {
+    color: blue !important;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  p {
+    color: green !important;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  p {
+    color: purple !important;
+  }
+}
+
+#title:hover {
+  color: orange;
+  animation: bounce 2s infinite;
+}
+
+:root {
+  --animate-duration: 800ms;
+  --animate-delay: 0.9s;
+}
