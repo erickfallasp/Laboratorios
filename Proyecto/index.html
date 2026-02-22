@@ -10,190 +10,43 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>🚗 Revisión Vehicular</h1>
-            <h2>Sistema de Citas - Costa Rica</h2>
+            <h1>🚗 Revisión Vehicular 🚗</h1>    <!-- Titulo 1r -->
+            <h2>Sistema de Citas</h2>             <!-- Titulo 2do -->
             
-            <!-- Navigation Menu -->
+            <!-- Menu  Inicio, Tarifas, Citas, Contacto-->
             <nav class="nav-menu">
-                <button>Inicio</button>
-                <button>Servicios</button>
-                <button>Precios</button>
-                <button>Contacto</button>
+                <ul class="nav-list">   <!-- Enlaces a los difetentes archivos .html -->
+                    <li class="menu-item"><a href="index.html">Inicio</a></li>
+                    <li class="menu-item"><a href="precios.html">Tarifas</a></li>
+                    <li class="menu-item"><a href="citas.html">Citas</a></li>
+                    <li class="menu-item"><a href="contactos.html">Contacto</a></li>
+                </ul>    
             </nav>
         </div>
 
-        <!-- Registration Form -->
-        <div class="form-container">
-            <legend class="form-legend">Registro de Cita</legend>
-            
-            <form id="citaForm">
-                <!-- Nombre del Propietario -->
-                <div class="form-group">
-                    <label for="nombre">Nombre del Propietario:</label>
-                    <input type="text" id="nombre" name="nombre" required placeholder="Ingrese su nombre completo">
-                </div>
-
-                <!-- Correo Electrónico -->
-                <div class="form-group">
-                    <label for="email">Correo Electrónico:</label>
-                    <input type="email" id="email" name="email" required placeholder="correo@ejemplo.com">
-                </div>
-
-                <!-- Teléfono -->
-                <div class="form-group">
-                    <label for="telefono">Teléfono / Celular:</label>
-                    <input type="tel" id="telefono" name="telefono" required placeholder="8888-8888">
-                </div>
-
-                <!-- Tipo de Vehículo -->
+        <!-- Cuadro de Contenido Principal Contenido/ Recuadro 1 -->
                 <fieldset>
-                    <legend>Tipo de Vehículo</legend>
-                    <div class="radio-group">
-                        <div class="radio-item">
-                            <input type="radio" id="automovil" name="tipoVehiculo" value="automovil">
-                            <label for="automovil">Automóvil</label>
-                        </div>
-                        <div class="radio-item">
-                            <input type="radio" id="camioneta" name="tipoVehiculo" value="camioneta">
-                            <label for="camioneta">Camioneta</label>
-                        </div>
-                        <div class="radio-item">
-                            <input type="radio" id="motocicleta" name="tipoVehiculo" value="motocicleta">
-                            <label for="motocicleta">Motocicleta</label>
-                        </div>
-                        <div class="radio-item">
-                            <input type="radio" id="bus" name="tipoVehiculo" value="bus">
-                            <label for="bus">Bus / Microbús</label>
-                        </div>
-                        <div class="radio-item">
-                            <input type="radio" id="camion" name="tipoVehiculo" value="camion">
-                            <label for="camion">Camión</label>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <!-- Datos del Vehículo -->
-                <fieldset>
-                    <legend>Datos del Vehículo</legend>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="placa" style="font-size: 0.95em;">Placa del Vehículo:</label>
-                        <input type="text" id="placa" name="placa" required placeholder="ABC123" style="text-transform: uppercase;">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="marca" style="font-size: 0.95em;">Marca:</label>
-                        <input type="text" id="marca" name="marca" required placeholder="Toyota, Honda, etc.">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="modelo" style="font-size: 0.95em;">Modelo:</label>
-                        <input type="text" id="modelo" name="modelo" placeholder="Corolla, Civic, etc.">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="anio" style="font-size: 0.95em;">Año:</label>
-                        <input type="text" id="anio" name="anio" placeholder="2020">
-                    </div>
-                </fieldset>
-
-                <!-- Fecha y Hora de la Cita -->
-                <fieldset>
-                    <legend>Seleccione Fecha y Hora de la Cita</legend>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="fechaCita" style="font-size: 0.95em;">Fecha Preferida:</label>
-                        <input type="date" id="fechaCita" name="fechaCita" required>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="horaCita" style="font-size: 0.95em;">Hora Preferida:</label>
-                        <select id="horaCita" name="horaCita" required>
-                            <option value="">Seleccione una hora...</option>
-                            <option value="08:00">08:00 AM</option>
-                            <option value="09:00">09:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="13:00">01:00 PM</option>
-                            <option value="14:00">02:00 PM</option>
-                            <option value="15:00">03:00 PM</option>
-                            <option value="16:00">04:00 PM</option>
-                        </select>
-                    </div>
-                </fieldset>
-
-                <!-- Tipo de Servicio -->
-                <fieldset>
-                    <legend>Tipo de Servicio Requerido</legend>
+                    <legend>Universidad Central.</legend>
                     <div class="checkbox-group">
                         <div class="checkbox-item">
-                            <input type="checkbox" id="revisionTecnica" name="servicios" value="revisionTecnica">
-                            <label for="revisionTecnica">Revisión Técnica Vehicular (RTV)</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="revisionEmisiones" name="servicios" value="revisionEmisiones">
-                            <label for="revisionEmisiones">Revisión de Emisiones Contaminantes</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="mantenimiento" name="servicios" value="mantenimiento">
-                            <label for="mantenimiento">Mantenimiento Preventivo</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="diagnostico" name="servicios" value="diagnostico">
-                            <label for="diagnostico">Diagnóstico Computarizado</label>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn-registrar">Agendar Cita</button>
-            </form>
-        </div>
+                           <h1>🏠II-51 Pragramación Internet</h1>
+     <!-- Información del Cuadro de Contenido Principal Contenido/ Recuadro 1 -->
+    <p>Estudiante: Erick Eduardo Fallas Pérez.</p>
+    <p>Profesor: Fabian Chinchilla Mayorga.</p>
+    <p>Periodo: 2026-IQ.</p>
+    <p>Fecha: 22/02/2026.</p>
+    <p>Tema: Sistema de Citas para Revisión Vehicular.</p>
+    <p>En este proyecto, se desarrollará un sistema de citas para la revisión vehicular, permitiendo a los usuarios agendar sus citas de manera eficiente y sencilla.</p>
+    <p>Este es el primer Avance del Proyecto Final, donde se aplicarán los conceptos aprendidos en las Primeras clases 5 de programación web.</p>
+    </p>
+    <!-- lista ordenada: -->
+    <ol type="A">
+      <li>Formularios.</li>
+      <li>Tablas.</li>
+      <li>Estilos CSS.</li>
+    </ol>        
     </div>
-
-    <script>
-        // Establecer fecha mínima (hoy)
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('fechaCita').setAttribute('min', today);
-
-        // Form submission handler
-        document.getElementById('citaForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = {
-                nombre: document.getElementById('nombre').value,
-                email: document.getElementById('email').value,
-                telefono: document.getElementById('telefono').value,
-                tipoVehiculo: document.querySelector('input[name="tipoVehiculo"]:checked')?.value || 'No especificado',
-                placa: document.getElementById('placa').value.toUpperCase(),
-                marca: document.getElementById('marca').value,
-                modelo: document.getElementById('modelo').value,
-                anio: document.getElementById('anio').value,
-                fechaCita: document.getElementById('fechaCita').value,
-                horaCita: document.getElementById('horaCita').value,
-                servicios: Array.from(document.querySelectorAll('input[name="servicios"]:checked')).map(cb => cb.value)
-            };
-
-            // Show confirmation
-            alert('✅ Cita Agendada Exitosamente!\n\n' +
-                  'Propietario: ' + formData.nombre + '\n' +
-                  'Vehículo: ' + formData.marca + ' ' + formData.modelo + '\n' +
-                  'Placa: ' + formData.placa + '\n' +
-                  'Fecha: ' + formData.fechaCita + '\n' +
-                  'Hora: ' + formData.horaCita + '\n\n' +
-                  'Le enviaremos un correo de confirmación.');
-            
-            // Reset form
-            this.reset();
-        });
-
-        // Navigation button handlers
-        document.querySelectorAll('.nav-menu button').forEach(button => {
-            button.addEventListener('click', function() {
-                alert('Sección: ' + this.textContent);
-            });
-        });
-
-        // Convertir placa a mayúsculas automáticamente
-        document.getElementById('placa').addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-        });
-    </script>
+                </fieldset>  <!-- Cierre del cuadro de contenido principal -->
 </head>
 </body>
 </html>
