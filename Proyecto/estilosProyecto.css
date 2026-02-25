@@ -1,57 +1,79 @@
-body{
+/* ============================================
+   ESTILOS GENERALES
+   ============================================ */
+   /* Se usa en TODAS las páginas (index, precios, citas, contactos)
+   Función: Define el color de fondo de toda la página */
+    body{
        background-color: rgba(179, 218, 224, 0.323); */
     } 
 
+
+/* ============================================
+   ESTILOS PARA FORMULARIOS
+   ============================================ */
+
+/* Se usa en citas.html o contactos.html
+   Función: Agrega espacio debajo de cada grupo del formulario */
     .form-group{
       padding-bottom: 10px;
 
     }
 
+/* Se usa en los labels de los formularios
+   Función: Hace que cada label aparezca en una línea nueva, en negrita */
     .form-group label {
       display: block;
       margin-left: 5px;
       font-weight: bold;
     }
-
+/*Se usa en los inputs (campos de texto) del formulario
+   Función: Define el ancho, padding y borde de los campos de entrada */
     .form-input {
       width: 100%;
       padding: 10px 0;
       border: 1px solid #cccccced;
       border-radius: 4px;
     }
-
+/* Se usa en el botón de enviar del formulario
+   Función: Define el tamaño, bordes redondeados y animación al pasar el mouse */
     .submit-button {
       padding: 10px 50px;
       border-radius: 15px;
       transition: background-color 0.3s ease;
     }
-
+/*Efecto hover para el botón de enviar
+   Función: Cambia el color a azul más oscuro cuando pasas el mouse */
     .submit-button:hover {
-      background-color: #2563eb;
-      /* Un azul más oscuro al pasar el mouse */
+        background-color: #2563eb;
     }
-
+/*Por el momento no se Utiliza */  
     .title {
       text-align: center;
       color:#333;
       font-family: Arial, sans-serif;
       margin: 0;
     }
-
+/*Por el momento no se Utiliza */   
     #main-title {
       font-size: 2.5em;
       margin-top: 1em;
       margin-bottom: 0.2em;
       text-align: center;
     }
+/* ============================================
+   ESTILOS PARA EL MENÚ DE NAVEGACIÓN
+   ============================================ */
 
+/*Se usa en TODAS las páginas (nav-menu)
+   Función: Elimina los puntos de la lista y alinea los items horizontalmente */
     .nav-list {
       list-style-type: none;
       padding: 0;   
       display: flex; /* Para alinear los elementos horizontalmente */
       justify-content: center;
     }
-
+/*Se usa en cada botón del menú (Inicio, Tarifas, Citas, Contacto)
+   Función: Define el color de fondo, padding y bordes redondeados de cada botón */
     .menu-item {
       margin: 0 15px;
       background-color: #a5b9e3;
@@ -59,17 +81,19 @@ body{
         padding: 10px 20px;
         border-radius: 5px;
     }
-    .menu-item a {
+/*Se usa en los enlaces dentro de los botones del menú
+   Función: Quita el subrayado y define el color del texto de los enlaces */    
+   .menu-item a {
       color: rgb(14, 15, 20);
       text-decoration: none;
     }
-
+/*Por el momento no se Utiliza */  
     #video-section {
       display: flex;
       justify-content: center;
       margin: 20px;
     }
-
+/*Por el momento no se Utiliza */  
     #video-section iframe {
       max-width: 100%;
       width: 600px;
@@ -77,7 +101,7 @@ body{
       border-radius: 10px;
       border: 5px solid #929292;
     }
-
+/*Por el momento no se Utiliza */  
     footer, header{
       text-align: center;
       padding: 20px;
@@ -85,19 +109,35 @@ body{
       color: #333;
       margin-top: 20px;
     }
+/* ============================================
+   ESTILOS PARA TABLAS
+   ============================================ */
+
+/*Se usa en precios.html (tabla de tarifas)
+Función: Agrega espacio entre el texto y los bordes de las celdas del encabezado */    
     th {
     padding: 20px; /* Esto separa el texto de los bordes */
     text-align: left; /* Opcional: para alinear el texto */
     }
+/* ============================================
+   ESTILOS PARA LISTAS
+   ============================================ */
+
+/*Se usa en contactos.html (lista de contacto sin viñetas)
+   Función: Elimina los puntos/números de las listas */    
     .lista-sin-puntos {
     list-style: none; /* Elimina los puntos */
     padding-left: 0;  /* Elimina el espacio a la izquierda */
     }
+/* ============================================
+   ESTILOS PARA EL ENCABEZADO PRINCIPAL
+   ============================================ */
 
+/*Se usa en TODAS las páginas (div class="header")
+   Función: Define el fondo, padding y CENTRA los títulos (h1, h2) */
     .header {
       background-color: #f1f1f1;
       padding: 20px;
       text-align: center;
     }
-
-
+/*Se usa en los títulos dentro del encabezado (h1, h2)
