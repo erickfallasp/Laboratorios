@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estudiantes</title>
+    <link rel="stylesheet" href="./estilos.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- header -->
+      <div class="header">
+        <div class="header-title">Laboratorio 6 - Estudiantes</div>
+        <div class="header-subtitle">Consulta de estudiantes</div>
+      </div>
+      <!-- controles -->
+      <div class="card">
+        <div class="field">
+          <input type="text" id="txtSearch" placeholder="Buscar estudiante por nombre" />
+          <button id="btnLoad" class="btn btn-primary" type="button">Consultar</button>
+
+          <button id="btnClear" class="btn btn-secondary" type="button">Limpiar</button>
+        </div>
+      </div>
+      <!-- tabla -->
+      <div class="card">
+        <table id="tblEstudiantes">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Correo</th>
+              <th>Carrera</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyStudents"></tbody>
+        </table>
+      </div>
+    </div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
+ 
+ 
