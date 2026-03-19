@@ -185,3 +185,71 @@ tbody tr:nth-child(even) {
   font-weight: 800;
   font-size: 12px;
 }
+.btnEliminar {
+  background: var(--accent2);
+  color: #fff;
+  border: 1px solid transparent;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 3px;
+}
+.btnActualizar {
+  background: var(--accent2);
+  color: #fff;
+  border: 1px solid transparent;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 3px;
+}
+/*
+DRY (Don't Repeat Yourself) - Evitar la repetición de código es una buena práctica en programación. En este caso, las clases `.btnEliminar` y `.btnActualizar` comparten muchas propiedades CSS similares. Para evitar la repetición, podríamos crear una clase base para los botones y luego extenderla para cada tipo específico. Aquí hay un ejemplo de cómo podríamos hacerlo:
+*/
+ 
+.field.buttons{
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 10px;
+}
+.btnEliminar, .btnActualizar {
+  background: var(--accent2);
+  color: #fff;
+  border: 1px solid transparent;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 3px;
+}
+
+.input-with-action {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-action input {
+  width: 100%;
+  padding-right: 88px;
+  box-sizing: border-box;
+}
+
+.btn-inline {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-inline:active {
+  transform: translateY(-50%);
+}
