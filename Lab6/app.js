@@ -1,33 +1,28 @@
-// importamos el cliente de Supabase para interactuar con la base de datos
-// este cliente ya está configurado con la URL y la clave de acceso a nuestra instancia de Supabase
 import { supabase } from "./supabase.js";
 
 //****************************************
 // Referencias a elementos del DOM
 //****************************************
-// Botones
 const btnClear = document.getElementById("btnClear");
 const btnAdd = document.getElementById("btnAdd");
 const btnCancel = document.getElementById("btnCancel");
 const btnLoad = document.getElementById("btnLoad");
-// Campo de búsqueda
 const txtSearch = document.getElementById("txtSearch");
-//Formulario
 const txtId = document.getElementById("txtId");
 const txtNombre = document.getElementById("txtNombre");
 const txtApellido = document.getElementById("txtApellido");
 const txtCorreo = document.getElementById("txtCorreo");
 const txtCarrera = document.getElementById("txtCarrera");
-// Tabla
+const txtFechaNac = document.getElementById("txtFechaNac");
 const tbody = document.getElementById("tbodyStudents");
 const tituloForm = document.getElementById("tituloForm");
 
-//Consultar estudiantes al cargar la página
 window.onload = () => {
   consultarEstudiantes();
 };
+
 //****************************************
-//Eventos
+// Eventos
 //****************************************
 btnLoad.addEventListener("click", async () => consultarEstudiantes());
 btnAdd.addEventListener("click", async () => guardarEstudiante());
@@ -40,96 +35,115 @@ btnCancel.addEventListener("click", async () => limpiarFormulario());
 tbody.addEventListener("click", async (event) => {
   const target = event.target;
   if (!target.classList.contains("btnEliminar")) return;
-
   const id = target.getAttribute("data-id");
-
   await eliminarEstudiante(id);
 });
 
-// Editar - consulto por el id -
-// lleno el formulario con los datos del estudiante -
-// cambio el botón de agregar a actualizar -
-// al hacer click en actualizar, actualizo el estudiante en la base de datos
 tbody.addEventListener("click", async (event) => {
   const target = event.target;
   if (!target.classList.contains("btnEditar")) return;
-
   const id = target.getAttribute("data-id");
 
-  // 1. Consultar el estudiante por su id
-  const { data, error } = await supabase.from("estudiantes").select("id,nombre,apellido,correo,carrera").eq("id", id).single();
+  const { data, error } = await supabase
+    .from("estudiantes")
+    .select("id,nombre,apellido,correo,carrera,FechaNacimiento")
+    .eq("id", id)
+    .single();
 
   if (error) {
     console.error(error);
-    alert("Error al cargar estudiante");
+    // ❌ Error al cargar estudiante
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo cargar la información del estudiante',
+      confirmButtonText: 'Aceptar'
+    });
     return;
   }
-  // 2. Llenar el formulario con los datos del estudiante
+  
   txtId.value = data.id;
   txtNombre.value = data.nombre;
   txtApellido.value = data.apellido;
   txtCorreo.value = data.correo;
   txtCarrera.value = data.carrera;
-  // 3. Cambiar el botón de agregar a actualizar
+  txtFechaNac.value = data.FechaNacimiento || "";
+  
   btnAdd.textContent = "Actualizar";
   tituloForm.textContent = "Editar Estudiante";
 });
 
-/*
-// funcion de flecha
-// const consultarEstudiantes = async () => {};
-// funcion tradicional
-// function consultarEstudiantes() {}
-
-// let y const
-// let x = 10;
-// x = 20;
-// const y = 30;
-// y = 40; // error, no se puede reasignar una constante
-// var z = 50;
-// var z = 60; // no error, var permite redeclarar la misma variable
-*/
+//****************************************
+// Funciones auxiliares
+//****************************************
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+  const adjustedDate = new Date(date.getTime() + userTimezoneOffset);
+  return adjustedDate.toLocaleDateString('es-ES');
+};
 
 //****************************************
-//Funciones
+// Funciones principales
 //****************************************
 const consultarEstudiantes = async () => {
-  // usamos el cliente de Supabase para hacer una consulta a la tabla "estudiantes"
-  // json: { "data": [], "error": null }
-  const search = txtSearch.value.trim() || ""; // si el valor es vacío, se asigna una cadena vacía
-  const query = supabase.from("estudiantes").select("id,nombre,apellido,correo,carrera");
+  const search = txtSearch.value.trim() || "";
+  
+  const query = supabase
+    .from("estudiantes")
+    .select("id,nombre,apellido,correo,carrera,FechaNacimiento");
 
-  // filtros
   if (search.length > 0) {
-    // query.ilike("nombre", `%${search}%`);
     query.or(`nombre.ilike.%${search}%,apellido.ilike.%${search}%`);
   }
+  
   const { data, error } = await query;
 
   if (error) {
     console.error(error);
-    alert("Error cargando estudiantes");
+    // ❌ Error al cargar estudiantes
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo cargar la lista de estudiantes',
+      confirmButtonText: 'Aceptar'
+    });
     return;
   }
 
-  // Limpiando y llenando la tabla con los datos obtenidos
   tbody.innerHTML = "";
 
-  // data es un arreglo de objetos, cada objeto representa un estudiante
+  if (data.length === 0) {
+    // ℹ️ Sin resultados
+    Swal.fire({
+      icon: 'info',
+      title: 'Sin resultados',
+      text: 'No se encontraron estudiantes',
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+  }
+
   data.forEach((r) => {
-    const tr = document.createElement("tr"); //<tr></tr>
+    const tr = document.createElement("tr");
     tr.setAttribute("data-id", r.id);
-    //<td>${r.id ?? ""}</td>
+    
+    const fechaNac = formatDate(r.FechaNacimiento);
+    
     tr.innerHTML = `
-        <td>${r.nombre ?? ""}</td>
-        <td>${r.apellido ?? ""}</td>
-        <td>${r.correo ?? ""}</td>
-        <td>${r.carrera ?? ""}</td>
-        <td>
-          <button class="btnEditar" data-id="${r.id}">Editar</button>
-          <button class="btnEliminar" data-id="${r.id}">Eliminar</button>
-        </td>
-      `;
+      <td>${r.nombre ?? ""}</td>
+      <td>${r.apellido ?? ""}</td>
+      <td>${r.correo ?? ""}</td>
+      <td>${r.carrera ?? ""}</td>
+      <td>${fechaNac}</td>
+      <td>
+        <button class="btnEditar" data-id="${r.id}">Editar</button>
+        <button class="btnEliminar" data-id="${r.id}">Eliminar</button>
+      </td>
+    `;
 
     tbody.appendChild(tr);
   });
@@ -141,46 +155,100 @@ const guardarEstudiante = async () => {
     apellido: txtApellido.value.trim(),
     correo: txtCorreo.value.trim(),
     carrera: txtCarrera.value.trim(),
+    FechaNacimiento: txtFechaNac.value.trim() || null,
   };
 
-  if (!estudiante.nombre || !estudiante.apellido || !estudiante.correo || !estudiante.carrera) {
-    alert("Por favor, complete todos los campos");
+  if (!estudiante.nombre || !estudiante.apellido) {
+    // ⚠️ Validación de campos
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Por favor, complete al menos nombre y apellido',
+      confirmButtonText: 'Aceptar'
+    });
     return;
   }
 
+  let error;
+  
   if (txtId.value) {
-    // Actualizar estudiante existente
-    const { error } = await supabase.from("estudiantes").update([estudiante]).eq("id", txtId.value);
-
-    if (error) {
-      console.error(error);
-      alert("Error actualizando estudiante");
-      return;
-    }
+    // 🔄 Actualizar estudiante existente
+    const result = await supabase
+      .from("estudiantes")
+      .update(estudiante)
+      .eq("id", txtId.value);
+    error = result.error;
   } else {
-    // Agregar nuevo estudiante
-    const { error } = await supabase.from("estudiantes").insert([estudiante]);
-
-    if (error) {
-      console.error(error);
-      alert("Error guardando estudiante");
-      return;
-    }
+    // ➕ Agregar nuevo estudiante
+    const result = await supabase
+      .from("estudiantes")
+      .insert([estudiante]);
+    error = result.error;
   }
 
-  alert("Estudiante guardado exitosamente");
+  if (error) {
+    console.error(error);
+    // ❌ Error al guardar
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo guardar el estudiante. Intente nuevamente.',
+      confirmButtonText: 'Aceptar'
+    });
+    return;
+  }
+
+  // ✅ Éxito al guardar
+  Swal.fire({
+    icon: 'success',
+    title: '¡Guardado!',
+    text: 'El estudiante ha sido guardado exitosamente',
+    timer: 2000,
+    showConfirmButton: false
+  });
+  
   limpiarFormulario();
   consultarEstudiantes();
 };
 
 const eliminarEstudiante = async (id) => {
-  if (!confirm("¿Está seguro de eliminar este estudiante?")) return;
-  const { error } = await supabase.from("estudiantes").delete().eq("id", id);
+  // ❓ Confirmación de eliminación con SweetAlert2
+  const result = await Swal.fire({
+    title: '¿Está seguro?',
+    text: "No podrá revertir esta acción",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#EB6763',
+    cancelButtonColor: '#10CFC8',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!result.isConfirmed) return;
+  
+  const { error } = await supabase
+    .from("estudiantes")
+    .delete()
+    .eq("id", id);
 
   if (error) {
     console.error(error);
-    alert("Error al eliminar");
+    // ❌ Error al eliminar
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo eliminar el estudiante',
+      confirmButtonText: 'Aceptar'
+    });
   } else {
+    // ✅ Éxito al eliminar
+    Swal.fire({
+      icon: 'success',
+      title: '¡Eliminado!',
+      text: 'El estudiante ha sido eliminado',
+      timer: 2000,
+      showConfirmButton: false
+    });
     consultarEstudiantes();
   }
 };
@@ -191,7 +259,7 @@ const limpiarFormulario = () => {
   txtApellido.value = "";
   txtCorreo.value = "";
   txtCarrera.value = "";
+  txtFechaNac.value = "";
   btnAdd.textContent = "Agregar";
   tituloForm.textContent = "Agregar Estudiantes";
 };
- 
