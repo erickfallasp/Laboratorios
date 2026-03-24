@@ -3,78 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revisión Vehicular - Sistema de Citas</title>  <!-- Titulos -->
-    <link rel="stylesheet" href="estilosProyecto.css">     <!-- Enlace al archivo CSS para estilos -->
+    <title>Tarifas - Revisión Vehicular</title>
+    <link rel="stylesheet" href="estilosProyecto.css">
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>🚗 Revisión Vehicular 🚗</h1>   <!-- Titulo 1r -->
-            <h2>Sistema de Citas</h2>            <!-- Titulo 2do -->
+            <h1>🚗 Revisión Vehicular 🚗</h1>
+            <h2>Sistema de Citas</h2>
             
-           <!-- Menu  Inicio, Tarifas, Citas, Contacto-->
             <nav class="nav-menu">
-                <ul class="nav-list">       <!-- Enlaces a los difetentes archivos .html -->
+                <ul class="nav-list">
                     <li class="menu-item"><a href="index.html">Inicio</a></li>
-                    <li class="menu-item"><a href="precios.html">Tarifas</a></li>
+                    <li class="menu-item"><a href="precios.html" class="active">Tarifas</a></li>
                     <li class="menu-item"><a href="citas.html">Citas</a></li>
+                    <li class="menu-item"><a href="citas-agendadas.html">Citas Agendadas</a></li>
                     <li class="menu-item"><a href="contactos.html">Contacto</a></li>
                 </ul>    
             </nav>
         </div>
 
-         <!-- Cuadro de Contenido Principal Contenido/ Recuadro 1 -->
-                <fieldset>
-                    <legend>Tarifas</legend>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                           <h1>💲Tarifas Inspección Técnica Vehicular</h1>
-                          
-    <h2></h2>   
-    <table>
-      <thead>
-        <tr>   <!-- FILA DEL ENCABEZADO -->
-          <!-- ColumnaS de encabezado -->
-          <th>Categoria del vehículo</th>                            <!-- Columna 1 del encabezado -->       
-          <th style="padding: 20px; text-align: left;">Inpección</th> <!-- Columna 2 del encabezado -->
-          <th style="padding: 20px; text-align: left;">Reinspección</th> <!-- Columna 3 del encabezado -->
-        </tr>
-
-      </thead>
-      <tbody>
-        <tr>
-          <!-- Información Columnas -->
-           
-          <td>Vehículos Menor a 3.5 Toneladas.</td>                     <!-- Columna 1 del encabezado -->  
-          <td style="padding: 20px; text-align: left;">₡6,000</td>      <!-- Columna 2 del encabezado -->
-          <td style="padding: 20px; text-align: left;">₡4,500</td>      <!-- Columna 3 del encabezado -->   
-        </tr>
-        <tr>
-          <td>Vehículos Mayor a 3.5 Toneladas.</td>
-          <td style="padding: 20px; text-align: left;">₡7,500</td>
-          <td style="padding: 20px; text-align: left;">₡5,000</td>
-        </tr>
-        <tr>
-          <td>Motocicletas.</td>
-          <td style="padding: 20px; text-align: left;">₡7,000</td>
-          <td style="padding: 20px; text-align: left;">₡4,500</td>
-        </tr>
-        <tr>
-          <td>Servicio Público.</td>
-          <td style="padding: 20px; text-align: left;">₡9,000</td>
-          <td style="padding: 20px; text-align: left;">₡6,500</td>
-          <tr>
-          <td>Equipo Especial.</td>
-          <td style="padding: 20px; text-align: left;">₡5,000</td>
-          <td style="padding: 20px; text-align: left;">₡3,500</td>
-          <tr>
-          <td>Autobús, Busetas-Microbús.</td>
-          <td style="padding: 20px; text-align: left;">₡7,000</td>
-          <td style="padding: 20px; text-align: left;">₡4,500</td>
-      </tbody>
-    </table>
-
-</head>
+        <!-- Contenido Principal -->
+        <div class="card">
+            <h1>💲 Tarifas Inspección Técnica Vehicular</h1>
+            
+            <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Categoría del vehículo</th>
+                      <th>Inspección</th>
+                      <th>Reinspección</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Vehículos Menor a 3.5 Toneladas</td>
+                      <td>₡6,000</td>
+                      <td>₡4,500</td>
+                    </tr>
+                    <tr>
+                      <td>Vehículos Mayor a 3.5 Toneladas</td>
+                      <td>₡7,500</td>
+                      <td>₡5,000</td>
+                    </tr>
+                    <tr>
+                      <td>Motocicletas</td>
+                      <td>₡7,000</td>
+                      <td>₡4,500</td>
+                    </tr>
+                    <tr>
+                      <td>Servicio Público</td>
+                      <td>₡9,000</td>
+                      <td>₡6,500</td>
+                    </tr>
+                    <tr>
+                      <td>Equipo Especial</td>
+                      <td>₡5,000</td>
+                      <td>₡3,500</td>
+                    </tr>
+                    <tr>
+                      <td>Autobús, Busetas-Microbús</td>
+                      <td>₡7,000</td>
+                      <td>₡4,500</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
