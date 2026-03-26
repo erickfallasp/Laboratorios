@@ -4,14 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Citas - Revisión Vehicular</title>
-    <link rel="stylesheet" href="estilosProyecto.css">
+    
+    <!-- SweetAlert2: Librería para alertas bonitas y profesionales -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="estilosProyecto.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
+        
+        <!-- HEADER - Mismo diseño consistente en todas las páginas -->
         <div class="header">
-            <h1>🚗 Revisión Vehicular 🚗</h1>
+            <div class="header-top">
+                <span class="car-icon">🚗</span>
+                <h1 class="main-title">Revisión Técnica Vehicular</h1>
+                <span class="car-icon">🚗</span>
+            </div>
             <h2>Sistema de Citas</h2>
             
             <nav class="nav-menu">
@@ -25,12 +32,16 @@
             </nav>
         </div>
 
-        <!-- Formulario de Citas -->
-        <div class="card">
+        <!-- ==========================================
+             FORMULARIO DE REGISTRO DE CITAS
+             id="citaForm" - Identificador único para JavaScript
+             ========================================== -->
+        <div class="card centered-card">
             <h1>📅 Registro de Cita</h1>
             
             <form id="citaForm">
-                <!-- Cliente -->
+                
+                <!-- SECCIÓN 1: Datos personales del cliente -->
                 <fieldset>
                     <legend>👤 Datos del Cliente</legend>
                     
@@ -50,7 +61,7 @@
                     </div>
                 </fieldset>
 
-                <!-- Tipo de Vehículo -->
+                <!-- SECCIÓN 2: Tipo de vehículo (radio buttons) -->
                 <fieldset>
                     <legend>🚙 Tipo de Vehículo</legend>
                     <div class="radio-group">
@@ -81,7 +92,7 @@
                     </div>
                 </fieldset>
 
-                <!-- Datos del Vehículo -->
+                <!-- SECCIÓN 3: Información del vehículo -->
                 <fieldset>
                     <legend>🔧 Datos del Vehículo</legend>
                     
@@ -106,7 +117,7 @@
                     </div>
                 </fieldset>
 
-                <!-- Fecha y Hora -->
+                <!-- SECCIÓN 4: Selección de fecha y hora -->
                 <fieldset>
                     <legend>📆 Seleccione Fecha y Hora</legend>
                     
@@ -132,18 +143,19 @@
                     </div>
                 </fieldset>
 
-                <!-- Botón -->
+                <!-- Botón de envío del formulario -->
                 <button type="submit" class="btn btn-primary" style="margin-top: 16px; width: 100%;">
                     ✅ Agendar Cita
                 </button>
             </form>
         </div>
+        
     </div>
 
-    <!-- SweetAlert2 -->
+    <!-- SweetAlert2 para alertas -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- Script con type="module" ✅ -->
+    <!-- Script principal con type="module" para usar import/export -->
     <script type="module" src="app-citas.js"></script>
 </body>
 </html>

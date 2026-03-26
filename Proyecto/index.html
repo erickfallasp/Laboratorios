@@ -1,18 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Configuración de codificación UTF-8 para soportar caracteres especiales -->
     <meta charset="UTF-8">
+    
+    <!-- Viewport para diseño responsive en dispositivos móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Título que aparece en la pestaña del navegador -->
     <title>Revisión Vehicular - Sistema de Citas</title>
+    
+    <!-- Vinculación con la hoja de estilos CSS principal -->
     <link rel="stylesheet" href="estilosProyecto.css">
 </head>
 <body>
+    <!-- Contenedor principal que envuelve todo el contenido de la página -->
     <div class="container">
-        <!-- Header -->
+        
+        <!-- ==========================================
+             HEADER - Encabezado principal del sitio
+             Incluye logo, título y menú de navegación
+             ========================================== -->
         <div class="header">
-            <h1>🚗 Revisión Vehicular 🚗</h1>
+            <!-- Sección superior con iconos de autos y título central -->
+            <div class="header-top">
+                <!-- Icono de auto izquierdo con animación CSS -->
+                <span class="car-icon">🚗</span>
+                
+                <!-- Título principal del sistema (color turquesa, animado) -->
+                <h1 class="main-title">Revisión Técnica Vehicular</h1>
+                
+                <!-- Icono de auto derecho con animación CSS -->
+                <span class="car-icon">🚗</span>
+            </div>
+
+            <!-- Subtítulo descriptivo del sistema -->
             <h2>Sistema de Citas</h2>
             
+            <!-- Menú de navegación principal con 5 opciones -->
             <nav class="nav-menu">
                 <ul class="nav-list">
                     <li class="menu-item"><a href="index.html" class="active">Inicio</a></li>
@@ -24,24 +49,57 @@
             </nav>
         </div>
 
-        <!-- Contenido Principal -->
-        <div class="card">
+        <!-- ==========================================
+             CONTENIDO PRINCIPAL - Información del proyecto
+             Tarjeta centrada con datos del estudiante
+             ========================================== -->
+        <div class="card centered-card">
             <h1>🏠 II-51 Programación Internet</h1>
+            
+            <!-- Información académica del proyecto -->
             <p><strong>Estudiante:</strong> Erick Eduardo Fallas Pérez.</p>
             <p><strong>Profesor:</strong> Fabian Chinchilla Mayorga.</p>
             <p><strong>Periodo:</strong> 2026-IQ.</p>
-            <p><strong>Fecha de Presentación:</strong> 25/02/2026.</p>
+            <p><strong>Fecha de Presentación:</strong> 01/04/2026.</p>
             <p><strong>Tema:</strong> Sistema de Citas para Revisión Vehicular.</p>
+            <p><strong>Avance:</strong> Segundo.</p>
+            <!-- Descripción general del proyecto -->
             <p>En este proyecto, se desarrollará un sistema de citas para la revisión vehicular, permitiendo a los usuarios agendar sus citas de manera eficiente y sencilla.</p>
-            <p>Este es el primer Avance del Proyecto Final, donde se aplicarán los conceptos aprendidos en las Primeras clases de programación web.</p>
             
+            <!-- Lista de contenidos técnicos implementados -->
             <h3>Contenidos:</h3>
-            <ol type="A">
+            <ol>
               <li>Formularios.</li>
               <li>Tablas.</li>
               <li>Estilos CSS.</li>
+              <li>Conexión a SupaBase.</li>
+               <li>Implemtencacion de CRUD.</li>
             </ol>
         </div>
+
+        <!-- ==========================================
+             VIDEO DE YOUTUBE - Video informativo embebido
+             Diseño responsivo con aspect ratio 16:9
+             ========================================== -->
+        <div class="card video-card">
+            <h2>🎥 Video Informativo</h2>
+            
+            <!-- Contenedor responsivo para el iframe de YouTube -->
+            <div class="video-container">
+                <!-- iframe incrustado de YouTube -->
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/psZc1x1TQNI" 
+                    title="Video de YouTube" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

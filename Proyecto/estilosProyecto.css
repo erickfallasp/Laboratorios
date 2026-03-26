@@ -1,116 +1,199 @@
+/**
+ * ==========================================
+ * ESTILOS PROYECTO - SISTEMA DE CITAS
+ * ==========================================
+ * Hoja de estilos principal con:
+ * - Variables CSS
+ * - Reset básico
+ * - Header y navegación
+ * - Formularios
+ * - Tablas
+ * - Responsive design
+ */
+
+/* ============================================
+   VARIABLES CSS (Custom Properties)
+   ============================================
+   Colores y valores reutilizables en todo el proyecto
+   */
 :root {
-  --bg: #0B2D39;
-  --accent: #10CFC8;
-  --accent2: #EB6763;
-  --card: #ffffff;
-  --muted: #64748b;
-  --border: #e5e7eb;
-  --shadow: 0 8px 18px rgba(2, 6, 23, .06);
+  --bg: #0B2D39;              /* Azul oscuro - Header */
+  --accent: #10CFC8;          /* Turquesa - Color principal */
+  --accent2: #EB6763;         /* Rojo/Coral - Color secundario */
+  --card: #ffffff;            /* Blanco - Fondos de tarjetas */
+  --muted: #64748b;           /* Gris azulado - Texto atenuado */
+  --border: #e5e7eb;          /* Gris claro - Bordes */
+  --shadow: 0 8px 18px rgba(2, 6, 23, .06);  /* Sombra suave */
 }
 
+/* ============================================
+   RESET BÁSICO
+   ============================================
+   Elimina márgenes y padding por defecto
+   */
 * {
-  box-sizing: border-box;
+  box-sizing: border-box;  /* Incluir padding/border en el tamaño total */
   margin: 0;
   padding: 0;
 }
 
+/* ============================================
+   CUERPO DE LA PÁGINA
+   ============================================ */
 body {
   margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f6f7fb;
-  color: #0f172a;
-  line-height: 1.6;
-}
-
-.container {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 16px;
+  font-family: 'Segoe UI', Arial, sans-serif;  /* Fuente moderna y legible */
+  background: #f6f7fb;       /* Fondo gris muy claro */
+  color: #0f172a;            /* Texto oscuro */
+  line-height: 1.6;          /* Espaciado entre líneas para mejor lectura */
 }
 
 /* ============================================
-   HEADER
-   ============================================ */
-.header {
-  border-radius: 16px;
-  padding: 18px;
-  background: var(--bg);
-  color: #fff;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .16);
-  border: 2px solid var(--accent);
-  text-align: center;
+   CONTENEDOR PRINCIPAL
+   ============================================
+   Centra el contenido y limita el ancho máximo
+   */
+.container {
+  max-width: 980px;   /* Ancho máximo de 980px */
+  margin: 0 auto;     /* Centrar horizontalmente (auto en left/right) */
+  padding: 16px;      /* Espacio interno de 16px */
 }
 
+/* ============================================
+   HEADER - Encabezado Principal
+   ============================================ */
+.header {
+  border-radius: 16px;              /* Bordes redondeados de 16px */
+  padding: 18px;                    /* Espacio interno */
+  background: var(--bg);            /* Fondo azul oscuro */
+  color: #fff;                      /* Texto blanco */
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .16);  /* Sombra pronunciada */
+  border: 2px solid var(--accent);  /* Borde turquesa de 2px */
+  text-align: center;               /* Centrar texto */
+}
+
+/* ============================================
+   HEADER TOP - Autos y Título Central
+   ============================================
+   Usa Flexbox para alinear autos y título
+   */
+.header-top {
+  display: flex;           /* Activar Flexbox */
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center;     /* Alinear verticalmente al centro */
+  gap: 20px;               /* Espacio de 20px entre elementos */
+  margin-bottom: 10px;     /* Margen inferior */
+}
+
+/* Íconos de autos animados */
+.car-icon {
+  font-size: 32px;                    /* Tamaño grande (32px) */
+  animation: bounce 2s infinite;      /* Animación de rebote cada 2s */
+}
+
+/* ============================================
+   ANIMACIÓN DE REBOTE
+   ============================================
+   Los autos se mueven hacia arriba y abajo
+   */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);         /* Posición normal */
+  }
+  50% {
+    transform: translateY(-10px);     /* Mover 10px hacia arriba */
+  }
+}
+
+/* Título principal llamativo */
+.main-title {
+  font-size: 28px;                    /* Tamaño grande */
+  font-weight: 900;                   /* Peso muy grueso (black) */
+  color: var(--accent);               /* Color turquesa */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);  /* Sombra de texto */
+  margin: 0;                          /* Sin márgenes */
+}
+
+/* Títulos h1 del header */
 .header h1 {
   font-size: 24px;
   font-weight: 800;
   margin: 6px 0;
 }
 
+/* Subtítulo h2 */
 .header h2 {
   font-size: 16px;
-  opacity: .92;
-  margin: 4px 0 12px;
-  font-weight: 400;
+  opacity: .92;           /* 92% de opacidad (ligeramente transparente) */
+  margin: 4px 0 12px;     /* Márgenes: arriba 4px, lados 0, abajo 12px */
+  font-weight: 400;       /* Peso normal */
 }
 
 /* ============================================
    MENÚ DE NAVEGACIÓN
    ============================================ */
 .nav-menu {
-  margin-top: 10px;
+  margin-top: 10px;  /* Espacio superior de 10px */
 }
 
+/* Lista de navegación */
 .nav-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  list-style: none;           /* Sin viñetas (bullets) */
+  padding: 0;                 /* Sin padding */
+  display: flex;              /* Elementos en fila (flexbox) */
+  justify-content: center;    /* Centrar horizontalmente */
+  flex-wrap: wrap;            /* Permitir saltos de línea si no caben */
+  gap: 8px;                   /* Espacio de 8px entre botones */
 }
 
+/* Elementos individuales del menú */
 .menu-item {
-  margin: 0;
+  margin: 0;  /* Sin márgenes */
 }
 
+/* Enlaces del menú (botones) */
 .menu-item a {
-  display: block;
-  padding: 10px 16px;
-  border-radius: 12px;
-  background: rgba(16, 207, 200, .15);
-  color: #fff;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 14px;
-  transition: all .2s ease;
-  border: 1px solid transparent;
+  display: block;                    /* Ocupar todo el espacio del <li> */
+  padding: 10px 16px;                /* Espacio interno: arriba/abajo 10px, lados 16px */
+  border-radius: 12px;               /* Bordes redondeados de 12px */
+  background: rgba(16, 207, 200, .15);  /* Fondo turquesa con 15% de opacidad */
+  color: #fff;                       /* Texto blanco */
+  text-decoration: none;             /* Sin subrayado */
+  font-weight: 700;                  /* Texto grueso (bold) */
+  font-size: 14px;                   /* Tamaño de fuente */
+  transition: all .2s ease;          /* Transición suave de 0.2s */
+  border: 1px solid transparent;     /* Borde transparente (para evitar saltos) */
 }
 
+/* Efecto hover (cuando el mouse pasa por encima) */
 .menu-item a:hover {
-  background: var(--accent);
-  color: #05323A;
-  transform: translateY(-2px);
+  background: var(--accent);         /* Fondo turquesa sólido */
+  color: #05323A;                    /* Texto oscuro */
+  transform: translateY(-2px);       /* Elevar 2px hacia arriba */
 }
 
+/* Botón activo (página actual) */
 .menu-item a.active {
-  background: var(--accent);
-  color: #05323A;
-  border-color: #fff;
+  background: var(--accent);         /* Fondo turquesa */
+  color: #05323A;                    /* Texto oscuro */
+  border-color: #fff;                /* Borde blanco */
 }
 
 /* ============================================
    TARJETAS (CARDS)
-   ============================================ */
+   ============================================
+   Contenedores blancos con sombra
+   */
 .card {
-  margin-top: 14px;
-  border-radius: 14px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  padding: 16px;
+  margin-top: 14px;                  /* Espacio superior */
+  border-radius: 14px;               /* Bordes redondeados */
+  background: var(--card);           /* Fondo blanco */
+  border: 1px solid var(--border);   /* Borde gris claro */
+  box-shadow: var(--shadow);         /* Sombra */
+  padding: 16px;                     /* Espacio interno */
 }
 
+/* Fieldset (grupos de formulario) */
 fieldset {
   margin-top: 14px;
   border-radius: 14px;
@@ -120,307 +203,392 @@ fieldset {
   padding: 16px;
 }
 
+/* Leyenda de fieldset */
 legend {
-  font-weight: 800;
-  color: var(--bg);
-  padding: 0 10px;
-  font-size: 16px;
+  font-weight: 800;           /* Texto muy grueso */
+  color: var(--bg);           /* Color azul oscuro */
+  padding: 0 10px;            /* Espacio horizontal */
+  font-size: 16px;            /* Tamaño de fuente */
+}
+
+/* ============================================
+   CONTENIDO CENTRADO
+   ============================================ */
+.centered-card {
+  max-width: 800px;     /* Ancho máximo de 800px */
+  margin: 20px auto;    /* Centrar horizontalmente */
+  text-align: center;   /* Centrar texto */
+}
+
+/* Títulos dentro de tarjeta centrada */
+.centered-card h1,
+.centered-card h3 {
+  text-align: center;   /* Centrar */
+}
+
+/* Lista ordenada en tarjeta centrada */
+.centered-card ol {
+  text-align: left;              /* Alinear izquierda (más legible) */
+  display: inline-block;         /* Mostrar como bloque en línea */
+  margin: 0 auto;                /* Centrar el bloque */
+}
+
+/* ============================================
+   VIDEO DE YOUTUBE
+   ============================================ */
+.video-card {
+  max-width: 800px;     /* Ancho máximo */
+  margin: 20px auto;    /* Centrar */
+  text-align: center;   /* Centrar texto */
+}
+
+/* Título del video */
+.video-card h2 {
+  margin-bottom: 20px;   /* Espacio inferior */
+  text-align: center;    /* Centrar */
+}
+
+/* ============================================
+   CONTENEDOR RESPONSIVO DE VIDEO
+   ============================================
+   Mantiene proporción 16:9 (aspect ratio)
+   */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;  /* 16:9 = 9/16 = 0.5625 = 56.25% */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);  /* Sombra pronunciada */
+}
+
+/* iframe del video */
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
 }
 
 /* ============================================
    FORMULARIOS
    ============================================ */
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
+  display: flex;              /* Usar Flexbox */
+  flex-direction: column;     /* Dirección vertical (label arriba, input abajo) */
+  gap: 6px;                   /* Espacio de 6px entre label e input */
+  margin-bottom: 12px;        /* Espacio inferior entre grupos */
 }
 
+/* Labels de formularios */
 .form-group label {
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 700;
+  font-size: 13px;            /* Tamaño pequeño */
+  color: var(--muted);        /* Color gris azulado */
+  font-weight: 700;           /* Texto grueso */
 }
 
+/* Inputs y selects */
 .form-input,
 input[type="text"],
 input[type="email"],
 input[type="tel"],
 input[type="date"],
 select {
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  outline: none;
-  font-size: 14px;
-  background: #fff;
-  transition: border-color .2s;
+  padding: 10px 12px;         /* Espacio interno */
+  border-radius: 12px;        /* Bordes redondeados */
+  border: 1px solid var(--border);  /* Borde gris */
+  outline: none;              /* Sin contorno azul al enfocar */
+  font-size: 14px;            /* Tamaño de fuente */
+  background: #fff;           /* Fondo blanco */
+  transition: border-color .2s;  /* Transición de color de borde */
 }
 
+/* Estado focus (cuando el input está seleccionado) */
 .form-input:focus,
 input:focus,
 select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(16, 207, 200, .2);
+  border-color: var(--accent);  /* Borde turquesa */
+  box-shadow: 0 0 0 3px rgba(16, 207, 200, .2);  /* Sombra turquesa */
 }
 
-/* Radio y Checkbox */
+/* Grupos de radio y checkbox */
 .radio-group,
 .checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: flex;              /* Flexbox */
+  flex-direction: column;     /* Vertical */
+  gap: 8px;                   /* Espacio entre items */
 }
 
+/* Items individuales */
 .radio-item,
 .checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: flex;              /* Flexbox */
+  align-items: center;        /* Alinear verticalmente al centro */
+  gap: 8px;                   /* Espacio */
 }
 
+/* Inputs de radio y checkbox */
 .radio-item input,
 .checkbox-item input {
-  width: auto;
-  margin: 0;
+  width: auto;                /* Ancho automático (no 100%) */
+  margin: 0;                  /* Sin márgenes */
 }
 
+/* Labels de radio y checkbox */
 .radio-item label,
 .checkbox-item label {
-  font-size: 14px;
-  color: #0f172a;
-  font-weight: 400;
-  margin: 0;
-  cursor: pointer;
+  font-size: 14px;            /* Tamaño */
+  color: #0f172a;             /* Color oscuro */
+  font-weight: 400;           /* Peso normal */
+  margin: 0;                  /* Sin márgenes */
+  cursor: pointer;            /* Cursor de mano (indica que es clickable) */
 }
 
-/* Botones */
+/* ============================================
+   BOTONES
+   ============================================ */
 .btn,
 button,
 .submit-button,
 .btn-registrar {
-  padding: 10px 20px;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-weight: 800;
-  font-size: 14px;
-  transition: all .2s ease;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  padding: 10px 20px;              /* Espacio interno */
+  border-radius: 12px;             /* Bordes redondeados */
+  border: 1px solid transparent;   /* Borde transparente */
+  cursor: pointer;                 /* Cursor de mano */
+  font-weight: 800;                /* Texto muy grueso */
+  font-size: 14px;                 /* Tamaño */
+  transition: all .2s ease;        /* Transición suave */
+  white-space: nowrap;             /* Sin saltos de línea */
+  display: inline-flex;            /* Flexbox en línea */
+  align-items: center;             /* Centrar verticalmente */
+  justify-content: center;         /* Centrar horizontalmente */
+  gap: 6px;                        /* Espacio entre icono y texto */
 }
 
+/* Botones primarios */
 .btn-primary,
 .submit-button,
 .btn-registrar {
-  background: var(--accent);
-  color: #05323A;
+  background: var(--accent);       /* Fondo turquesa */
+  color: #05323A;                  /* Texto oscuro */
 }
 
+/* Hover en botones primarios */
 .btn-primary:hover,
 .submit-button:hover,
 .btn-registrar:hover {
-  background: #0dd3cd;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 207, 200, .4);
+  background: #0dd3cd;             /* Turquesa más claro */
+  transform: translateY(-2px);     /* Elevar */
+  box-shadow: 0 4px 12px rgba(16, 207, 200, .4);  /* Sombra turquesa */
 }
 
+/* Botones de peligro (eliminar) */
 .btn-danger {
-  background: var(--accent2);
-  color: #fff;
+  background: var(--accent2);      /* Fondo rojo */
+  color: #fff;                     /* Texto blanco */
 }
 
+/* Hover en botones de peligro */
 .btn-danger:hover {
-  background: #ec7a76;
-  transform: translateY(-2px);
+  background: #ec7a76;             /* Rojo más claro */
+  transform: translateY(-2px);     /* Elevar */
 }
 
+/* Botones secundarios */
 .btn-secondary {
-  background: #fff;
-  color: #0f172a;
-  border-color: var(--border);
+  background: #fff;                /* Fondo blanco */
+  color: #0f172a;                  /* Texto oscuro */
+  border-color: var(--border);     /* Borde gris */
 }
 
+/* Hover en botones secundarios */
 .btn-secondary:hover {
-  background: #f8fafc;
+  background: #f8fafc;             /* Gris muy claro */
 }
 
 /* Botones pequeños */
 .btn-sm {
-  padding: 6px 10px;
-  font-size: 12px;
-  margin: 0 2px;
-}
-
-.btn-sm.btn-secondary {
-  background: #f1f5f9;
-  color: #0f172a;
-}
-
-.btn-sm.btn-secondary:hover {
-  background: #e2e8f0;
+  padding: 6px 10px;      /* Menos padding */
+  font-size: 12px;        /* Texto más pequeño */
+  margin: 0 2px;          /* Margen horizontal */
 }
 
 /* ============================================
    TABLAS
    ============================================ */
 .table-wrap {
-  overflow: auto;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  margin-top: 12px;
+  overflow: auto;              /* Scroll si el contenido excede */
+  border-radius: 12px;         /* Bordes redondeados */
+  border: 1px solid var(--border);  /* Borde */
+  margin-top: 12px;            /* Espacio superior */
 }
 
+/* Tablas */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  min-width: 100%;
+  width: 100%;                 /* Ancho completo del contenedor */
+  border-collapse: collapse;   /* Sin espacio entre celdas */
+  font-size: 14px;             /* Tamaño */
+  min-width: 100%;             /* Ancho mínimo */
 }
 
+/* Encabezados de tabla */
 thead th {
-  background: var(--bg);
-  color: #fff;
-  text-align: left;
-  padding: 12px 14px;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  font-weight: 800;
+  background: var(--bg);       /* Fondo azul oscuro */
+  color: #fff;                 /* Texto blanco */
+  text-align: left;            /* Alinear izquierda */
+  padding: 12px 14px;          /* Espacio interno */
+  position: sticky;            /* Fijo al hacer scroll vertical */
+  top: 0;                      /* Posición superior */
+  z-index: 1;                  /* Por encima del contenido */
+  font-weight: 800;            /* Texto grueso */
 }
 
+/* Celdas de tabla */
 tbody td {
-  padding: 12px 14px;
-  border-top: 1px solid var(--border);
+  padding: 12px 14px;          /* Espacio interno */
+  border-top: 1px solid var(--border);  /* Borde superior */
 }
 
+/* Filas pares (zebra striping) */
 tbody tr:nth-child(even) {
-  background: #f8fafc;
+  background: #f8fafc;         /* Fondo gris claro */
 }
 
+/* Hover en filas */
 tbody tr:hover {
-  background: rgba(16, 207, 200, .08);
+  background: rgba(16, 207, 200, .08);  /* Fondo turquesa transparente */
 }
 
 /* ============================================
    LISTAS Y TEXTO
    ============================================ */
 .lista-sin-puntos {
-  list-style: none;
-  padding-left: 0;
+  list-style: none;     /* Sin viñetas */
+  padding-left: 0;      /* Sin padding izquierdo */
 }
 
-/* Corrección para alinear listas ordenadas (a, b, c) y no ordenadas */
+/* Listas dentro de cards y fieldsets */
 .card ol,
 .card ul,
 fieldset ol,
 fieldset ul {
-  padding-left: 24px;
-  margin: 12px 0;
-  text-align: left;
+  padding-left: 24px;   /* Padding izquierdo */
+  margin: 12px 0;       /* Márgenes vertical */
+  text-align: left;     /* Alinear izquierda */
 }
 
+/* Items de lista */
 .card ol li,
 .card ul li,
 fieldset ol li,
 fieldset ul li {
-  margin: 8px 0;
-  padding-left: 4px;
-  text-align: left;
+  margin: 8px 0;        /* Margen vertical */
+  padding-left: 4px;    /* Padding izquierdo */
+  text-align: left;     /* Alinear izquierda */
 }
 
-/* Alineación de párrafos y títulos */
+/* Párrafos */
 p {
-  margin: 8px 0;
-  color: #0f172a;
-  text-align: left;
+  margin: 8px 0;        /* Margen vertical */
+  color: #0f172a;       /* Color oscuro */
+  text-align: left;     /* Alinear izquierda */
 }
 
+/* Títulos */
 h1, h2, h3 {
-  color: var(--bg);
-  margin: 12px 0 8px;
-  text-align: left;
+  color: var(--bg);     /* Color azul oscuro */
+  margin: 12px 0 8px;   /* Márgenes: arriba 12px, lados 0, abajo 8px */
+  text-align: left;     /* Alinear izquierda */
 }
 
-h1 { font-size: 20px; }
-h2 { font-size: 16px; color: var(--muted); }
+h1 { font-size: 20px; }   /* Tamaño h1 */
+h2 { font-size: 16px; color: var(--muted); }  /* Tamaño h2 y color atenuado */
 
 /* ============================================
-   UTILIDADES
+   UTILIDADES (Clases de ayuda)
    ============================================ */
-.text-center { text-align: center; }
-.text-muted { color: var(--muted); }
-.mt-2 { margin-top: 12px; }
-.mb-2 { margin-bottom: 12px; }
+.text-center { text-align: center; }     /* Centrar texto */
+.text-muted { color: var(--muted); }     /* Texto atenuado (gris) */
+.mt-2 { margin-top: 12px; }              /* Margen superior */
+.mb-2 { margin-bottom: 12px; }           /* Margen inferior */
 
-/* Badge */
+/* Badges (etiquetas) */
 .badge {
   display: inline-block;
   padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(16, 207, 200, .18);
-  color: #05323A;
-  border: 1px solid rgba(16, 207, 200, .45);
-  font-weight: 800;
-  font-size: 12px;
+  border-radius: 999px;              /* Forma de píldora (muy redondeado) */
+  background: rgba(16, 207, 200, .18);  /* Fondo turquesa transparente */
+  color: #05323A;                    /* Texto oscuro */
+  border: 1px solid rgba(16, 207, 200, .45);  /* Borde turquesa */
+  font-weight: 800;                  /* Texto grueso */
+  font-size: 12px;                   /* Tamaño pequeño */
 }
 
-/* Responsive */
+/* ============================================
+   ESTILOS PARA SELECT DE HORAS
+   ============================================ */
+/* Opciones ocupadas (deshabilitadas) */
+select option.hora-ocupada {
+  background-color: #fee2e2 !important;  /* Fondo rojo claro */
+  color: #991b1b !important;             /* Texto rojo oscuro */
+  font-weight: bold;                     /* Texto grueso */
+}
+
+/* Select deshabilitado */
+select:disabled {
+  background-color: #f3f4f6;   /* Fondo gris */
+  cursor: not-allowed;         /* Cursor de "prohibido" */
+  opacity: 0.7;                /* 70% de opacidad (transparente) */
+}
+
+/* ============================================
+   DISEÑO RESPONSIVE - Media Queries
+   ============================================
+   Adaptaciones para pantallas pequeñas (móviles)
+   */
 @media (max-width: 768px) {
+  /* Header en móviles */
+  .header-top {
+    flex-direction: column;   /* Apilar verticalmente (autos arriba y abajo del título) */
+    gap: 10px;                /* Menos espacio */
+  }
+  
+  .car-icon {
+    font-size: 24px;          /* Iconos más pequeños */
+  }
+  
+  .main-title {
+    font-size: 22px;          /* Título más pequeño */
+  }
+  
+  /* Tarjetas en móviles */
+  .centered-card,
+  .video-card {
+    max-width: 100%;          /* Ancho completo */
+    margin: 10px;             /* Menos margen */
+  }
+  
+  /* Menú en móviles */
   .nav-list {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column;   /* Apilar verticalmente */
+    align-items: center;      /* Centrar */
   }
   
   .menu-item a {
-    width: 100%;
-    text-align: center;
+    width: 100%;              /* Ancho completo */
+    text-align: center;       /* Centrar texto */
   }
   
+  /* Tablas en móviles */
   table {
-    font-size: 13px;
+    font-size: 13px;          /* Texto más pequeño */
   }
   
   thead th,
   tbody td {
-    padding: 10px;
+    padding: 10px;            /* Menos padding */
   }
-  /* ============================================
-   ESTILOS PARA HORAS EN SELECT
-   ============================================ */
-
-/* Opciones disponibles */
-select option.hora-disponible {
-  background-color: #ffffff;
-  color: #0f172a;
-}
-
-/* Opciones ocupadas - NO se pueden seleccionar en todos los navegadores */
-select option.hora-ocupada {
-  background-color: #fee2e2 !important;
-  color: #991b1b !important;
-  font-weight: bold;
-}
-
-/* Select en general */
-select {
-  cursor: pointer;
-}
-
-select:disabled {
-  background-color: #f3f4f6;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-/* Mensaje informativo */
-.hora-info {
-  font-size: 0.85em;
-  color: #64748b;
-  margin-top: 4px;
-}
 }

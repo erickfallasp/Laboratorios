@@ -4,14 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Citas Agendadas - Revisión Vehicular</title>
-    <link rel="stylesheet" href="estilosProyecto.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="estilosProyecto.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
+        
+        <!-- HEADER - Diseño consistente -->
         <div class="header">
-            <h1>🚗 Revisión Vehicular 🚗</h1>
+            <div class="header-top">
+                <span class="car-icon">🚗</span>
+                <h1 class="main-title">Revisión Técnica Vehicular</h1>
+                <span class="car-icon">🚗</span>
+            </div>
             <h2>Sistema de Citas</h2>
             
             <nav class="nav-menu">
@@ -25,12 +30,15 @@
             </nav>
         </div>
 
-        <!-- Contenido Principal -->
-        <div class="card">
+        <!-- ==========================================
+             TABLA DE CITAS AGENDADAS
+             Se carga dinámicamente desde Supabase
+             ========================================== -->
+        <div class="card centered-card">
             <h1>📋 Mis Citas Agendadas</h1>
             <p class="text-muted">Aquí puedes ver todas tus citas programadas</p>
             
-            <!-- Tabla de citas -->
+            <!-- Contenedor de tabla responsiva -->
             <div class="table-wrap">
                 <table id="tablaCitas">
                     <thead>
@@ -44,13 +52,14 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
+                    <!-- tbody se llena dinámicamente con JavaScript -->
                     <tbody id="tbodyCitas">
-                        <!-- Las citas se cargarán dinámicamente -->
+                        <!-- Las citas se insertan aquí -->
                     </tbody>
                 </table>
             </div>
             
-            <!-- Mensaje cuando no hay citas -->
+            <!-- Mensaje cuando no hay citas (se muestra/oculta con JS) -->
             <div id="sinCitas" style="text-align: center; padding: 40px; display: none;">
                 <p style="font-size: 48px; margin: 0;">📭</p>
                 <h3>No tienes citas agendadas</h3>
@@ -60,12 +69,11 @@
                 </a>
             </div>
         </div>
+        
     </div>
 
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Script con type="module" ✅ -->
+    <!-- Script que carga las citas desde Supabase -->
     <script type="module" src="app-citas-agendadas.js"></script>
 </body>
 </html>
