@@ -39,18 +39,18 @@ const cargarCitas = async () => {
     console.log('🔍 Iniciando carga de citas...');
     
     // Obtenemos referencias a elementos del DOM
-    const tbody = document.getElementById('tbodyCitas');
-    const sinCitas = document.getElementById('sinCitas');
+    const cuerpoTabla = document.getElementById('tbodyCitas');
+    const mensajeSinCitas = document.getElementById('sinCitas');
     const tabla = document.getElementById('tablaCitas');
     
-    // Verificamos que el tbody exista
-    if (!tbody) {
+    // Verificamos que el cuerpo de tabla exista
+    if (!cuerpoTabla) {
         console.error('❌ No se encontró tbodyCitas');
         return;
     }
     
     // Mostramos "Cargando..." mientras consultamos
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Cargando...</td></tr>';
+    cuerpoTabla.innerHTML = '<tr><td colspan="7" style="text-align: center;">Cargando...</td></tr>';
     
     try {
         console.log('📡 Consultando Supabase...');
@@ -60,13 +60,13 @@ const cargarCitas = async () => {
          * Traemos TODAS las columnas (*) de la tabla 'citas'
          * Ordenadas por fecha (ascendente) y hora (ascendente)
          */
-        const { data, error } = await supabase
+        const { data: citas, error } = await supabase
             .from('citas')                          // Tabla
             .select('*')                            // Todas las columnas
             .order('fecha_cita', { ascending: true })  // Orden por fecha
             .order('hora_cita', { ascending: true });  // Orden por hora
         
-        console.log('📊 Respuesta:', { data, error });
+        console.log('📊 Respuesta:', { citas, error });
         
         // Si hay error, lo lanzamos
         if (error) {
@@ -78,31 +78,31 @@ const cargarCitas = async () => {
          * VERIFICAR SI HAY CITAS
          * Si no hay datos, mostramos el mensaje "No hay citas"
          */
-        if (!data || data.length === 0) {
+        if (!citas || citas.length === 0) {
             console.log('ℹ️ No hay citas registradas');
             tabla.style.display = 'none';    // Ocultar tabla
-            sinCitas.style.display = 'block'; // Mostrar mensaje
+            mensajeSinCitas.style.display = 'block'; // Mostrar mensaje
             return;
         }
         
-        console.log('✅ Citas encontradas:', data.length);
+        console.log('✅ Citas encontradas:', citas.length);
         
         // Mostramos la tabla y ocultamos el mensaje de "sin citas"
         tabla.style.display = 'table';
-        sinCitas.style.display = 'none';
+        mensajeSinCitas.style.display = 'none';
         
-        // Limpiamos el tbody
-        tbody.innerHTML = '';
+        // Limpiamos el cuerpo de tabla
+        cuerpoTabla.innerHTML = '';
         
         /**
          * GENERAR FILAS DE LA TABLA
          * Por cada cita, creamos una fila <tr>
          */
-        data.forEach((cita, index) => {
-            console.log(`📝 Procesando cita ${index + 1}:`, cita);
+        citas.forEach((cita, indice) => {
+            console.log(`📝 Procesando cita ${indice + 1}:`, cita);
             
             // Creamos elemento <tr>
-            const tr = document.createElement('tr');
+            const fila = document.createElement('tr');
             
             /**
              * FORMATEAR FECHA
@@ -114,7 +114,7 @@ const cargarCitas = async () => {
              * GENERAR HTML DE LA FILA
              * Usamos template literals (backticks) para insertar variables
              */
-            tr.innerHTML = `
+            fila.innerHTML = `
                 <td>${fechaFormateada}</td>
                 <td>${cita.hora_cita}</td>
                 <td>${cita.nombre}</td>
@@ -128,11 +128,11 @@ const cargarCitas = async () => {
                 </td>
             `;
             
-            // Agregamos la fila al tbody
-            tbody.appendChild(tr);
+            // Agregamos la fila al cuerpo de tabla
+            cuerpoTabla.appendChild(fila);
         });
         
-        console.log('✅ Tabla actualizada con', data.length, 'citas');
+        console.log('✅ Tabla actualizada con', citas.length, 'citas');
         
     } catch (error) {
         /**
@@ -140,7 +140,7 @@ const cargarCitas = async () => {
          * Si algo falla, mostramos el error en la tabla
          */
         console.error('❌ Error al cargar citas:', error);
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">Error: ${error.message}</td></tr>`;
+        cuerpoTabla.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">Error: ${error.message}</td></tr>`;
         
         Swal.fire({
             icon: 'error',
@@ -158,8 +158,8 @@ const cargarCitas = async () => {
  * Convierte fecha ISO (2026-03-24) a formato
  * legible en español (24 de marzo de 2026)
  */
-const formatearFecha = (fechaString) => {
-    if (!fechaString) return '';
+const formatearFecha = (cadenaFecha) => {
+    if (!cadenaFecha) return '';
     
     // Opciones de formato en español
     const opciones = { 
@@ -169,7 +169,7 @@ const formatearFecha = (fechaString) => {
     };
     
     // Convertimos y formateamos
-    return new Date(fechaString).toLocaleDateString('es-ES', opciones);
+    return new Date(cadenaFecha).toLocaleDateString('es-ES', opciones);
 };
 
 /**
@@ -179,12 +179,12 @@ const formatearFecha = (fechaString) => {
  * Función global (window.eliminarCita) que se
  * llama desde el botón de eliminar en la tabla
  */
-window.eliminarCita = async (id) => {
+window.eliminarCita = async (identificador) => {
     /**
      * CONFIRMAR ELIMINACIÓN
      * SweetAlert2 con confirmación
      */
-    const result = await Swal.fire({
+    const resultado = await Swal.fire({
         title: '¿Eliminar cita?',
         text: "No podrás revertir esta acción",
         icon: 'warning',
@@ -195,9 +195,9 @@ window.eliminarCita = async (id) => {
     });
     
     // Si el usuario confirma
-    if (result.isConfirmed) {
+    if (resultado.isConfirmed) {
         try {
-            console.log('🗑️ Eliminando cita ID:', id);
+            console.log('🗑️ Eliminando cita ID:', identificador);
             
             /**
              * ELIMINAR DE SUPABASE
@@ -206,7 +206,7 @@ window.eliminarCita = async (id) => {
             const { error } = await supabase
                 .from('citas')
                 .delete()
-                .eq('id', id);  // WHERE id = id
+                .eq('id', identificador);  // WHERE id = identificador
             
             if (error) throw error;
             
@@ -214,7 +214,7 @@ window.eliminarCita = async (id) => {
             
             Swal.fire({
                 icon: 'success',
-                title: '¡Eliminadas!',
+                title: '¡Eliminada!',
                 timer: 2000,           // Auto-cerrar en 2 segundos
                 showConfirmButton: false
             });

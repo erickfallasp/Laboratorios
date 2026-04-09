@@ -27,19 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('📄 DOMContentLoaded disparado');
     
     // Obtenemos referencias a los elementos del formulario
-    const form = document.getElementById('citaForm');
-    const fechaInput = document.getElementById('fechaCita');
-    const horaSelect = document.getElementById('horaCita');
+    const formulario = document.getElementById('citaForm');
+    const entradaFecha = document.getElementById('fechaCita');
+    const selectorHora = document.getElementById('horaCita');
     
     // Verificamos que los elementos existan
     console.log('📝 Elementos:', {
-        form: !!form,
-        fechaInput: !!fechaInput,
-        horaSelect: !!horaSelect
+        formulario: !!formulario,
+        entradaFecha: !!entradaFecha,
+        selectorHora: !!selectorHora
     });
     
     // Si no existe el formulario, mostramos error
-    if (!form) {
+    if (!formulario) {
         console.error('❌ ERROR: No se encontró el formulario #citaForm');
         return;
     }
@@ -51,20 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
      * Cuando el usuario cambia la fecha, consultamos
      * a Supabase qué horas ya están ocupadas
      */
-    if (fechaInput && horaSelect) {
+    if (entradaFecha && selectorHora) {
         console.log('✅ Agregando listener para cambio de fecha');
         
         // Evento que se dispara al cambiar la fecha
-        fechaInput.addEventListener('change', async () => {
-            const fecha = fechaInput.value;
+        entradaFecha.addEventListener('change', async () => {
+            const fecha = entradaFecha.value;
             console.log('📅 Fecha seleccionada:', fecha);
             
             // Si no hay fecha, salimos
             if (!fecha) return;
             
-            // Deshabilitamos el select mientras cargamos
-            horaSelect.disabled = true;
-            horaSelect.innerHTML = '<option>⏳ Cargando...</option>';
+            // Deshabilitamos el selector mientras cargamos
+            selectorHora.disabled = true;
+            selectorHora.innerHTML = '<option>⏳ Cargando...</option>';
             
             try {
                 console.log('🔍 Consultando Supabase...');
@@ -94,46 +94,46 @@ document.addEventListener('DOMContentLoaded', () => {
                  * Ej: [{hora_cita: "08:00"}, {hora_cita: "10:00"}]
                  *     => ["08:00", "10:00"]
                  */
-                const ocupadas = citas?.map(c => c.hora_cita) || [];
-                console.log('🚫 Horas ocupadas:', ocupadas);
+                const horasOcupadas = citas?.map(c => c.hora_cita) || [];
+                console.log('🚫 Horas ocupadas:', horasOcupadas);
                 
                 // Lista completa de horas disponibles (8 AM - 4 PM)
-                const horas = ['08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00'];
+                const horasDisponibles = ['08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00'];
                 
-                // Limpiamos el select
-                horaSelect.innerHTML = '<option value="">-- Seleccione --</option>';
+                // Limpiamos el selector
+                selectorHora.innerHTML = '<option value="">-- Seleccione --</option>';
                 
                 /**
-                 * GENERAR OPCIONES DEL SELECT
+                 * GENERAR OPCIONES DEL SELECTOR
                  * Por cada hora, creamos una opción que puede ser:
                  * - Disponible (habilitada)
                  * - Ocupada (deshabilitada y con texto "OCUPADA")
                  */
-                horas.forEach(hora => {
-                    const option = document.createElement('option');
-                    option.value = hora;
+                horasDisponibles.forEach(hora => {
+                    const opcion = document.createElement('option');
+                    opcion.value = hora;
                     
-                    if (ocupadas.includes(hora)) {
+                    if (horasOcupadas.includes(hora)) {
                         // Hora ocupada: deshabilitar y marcar
-                        option.disabled = true;
-                        option.textContent = `❌ ${hora} - OCUPADA`;
+                        opcion.disabled = true;
+                        opcion.textContent = `❌ ${hora} - OCUPADA`;
                     } else {
                         // Hora disponible: habilitada
-                        option.textContent = `${hora} - DISPONIBLE`;
+                        opcion.textContent = `${hora} - DISPONIBLE`;
                     }
                     
-                    horaSelect.appendChild(option);
+                    selectorHora.appendChild(opcion);
                 });
                 
-                // Habilitamos el select nuevamente
-                horaSelect.disabled = false;
-                console.log('✅ Select de horas actualizado');
+                // Habilitamos el selector nuevamente
+                selectorHora.disabled = false;
+                console.log('✅ Selector de horas actualizado');
                 
-            } catch (err) {
+            } catch (error) {
                 // Manejo de errores en la consulta
-                console.error('❌ Error en change:', err);
-                horaSelect.innerHTML = '<option>Error</option>';
-                horaSelect.disabled = false;
+                console.error('❌ Error en cambio:', error);
+                selectorHora.innerHTML = '<option>Error</option>';
+                selectorHora.disabled = false;
             }
         });
     }
@@ -145,11 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
      * Cuando el usuario hace clic en "Agendar Cita",
      * validamos y guardamos en Supabase
      */
-    console.log('✅ Agregando listener para submit');
+    console.log('✅ Agregando listener para enviar formulario');
     
-    form.addEventListener('submit', async (e) => {
+    formulario.addEventListener('submit', async (evento) => {
         // Prevenir comportamiento por defecto (recarga de página)
-        e.preventDefault();
+        evento.preventDefault();
         console.log('📝 Formulario enviado');
         
         /**
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
          * RECOPILAR DATOS DEL FORMULARIO
          * Obtenemos todos los valores de los inputs
          */
-        const datos = {
+        const datosCita = {
             nombre: document.getElementById('nombre').value.trim(),
             email: document.getElementById('email').value.trim(),
             telefono: document.getElementById('telefono').value.trim(),
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             hora_cita: document.getElementById('horaCita').value
         };
         
-        console.log('📋 Datos:', datos);
+        console.log('📋 Datos:', datosCita);
         
         try {
             console.log('⏳ Mostrando loading...');
@@ -195,8 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
              * SweetAlert2 con animación de carga
              */
             Swal.fire({
-                title: '⏳ Agendando...',
-                text: 'Espere...',
+                titulo: '⏳ Agendando...',
+                texto: 'Espere...',
                 allowOutsideClick: false, // No se puede cerrar haciendo clic fuera
                 didOpen: () => {
                     console.log('🔄 Loading mostrado');
@@ -210,20 +210,20 @@ document.addEventListener('DOMContentLoaded', () => {
              * INSERTAR EN SUPABASE
              * Guardamos los datos en la tabla 'citas'
              */
-            const result = await supabase
+            const resultado = await supabase
                 .from('citas')      // Tabla
-                .insert([datos]);   // Datos a insertar (array de objetos)
+                .insert([datosCita]);   // Datos a insertar (array de objetos)
             
-            console.log('📥 Respuesta de Supabase:', result);
+            console.log('📥 Respuesta de Supabase:', resultado);
             
-            // Extraemos data y error de la respuesta
-            const { data, error } = result;
+            // Extraemos datos y error de la respuesta
+            const { data, error } = resultado;
             
             // Si hay error, lo lanzamos para que lo capture el catch
             if (error) {
                 console.error('❌ Error de Supabase:', error);
                 console.error('❌ Detalles:', error.details);
-                console.error('❌ Hint:', error.hint);
+                console.error('❌ Pista:', error.hint);
                 throw error;
             }
             
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await Swal.fire({
                 icon: 'success',
                 title: '✅ ¡Cita Agendada!',
-                text: `${datos.nombre} - ${datos.placa}`,
+                text: `${datosCita.nombre} - ${datosCita.placa}`,
                 confirmButtonText: 'Ver citas'
             });
             
@@ -247,9 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
              * LIMPIAR FORMULARIO
              * Reseteamos todos los campos
              */
-            form.reset();
-            horaSelect.innerHTML = '<option value="">-- Seleccione --</option>';
-            fechaInput.value = '';
+            formulario.reset();
+            selectorHora.innerHTML = '<option value="">-- Seleccione --</option>';
+            entradaFecha.value = '';
             
             /**
              * REDIRECCIONAR
@@ -260,13 +260,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'citas-agendadas.html';
             }, 1000);
             
-        } catch (err) {
+        } catch (error) {
             /**
              * MANEJO DE ERRORES
              * Si algo falla, mostramos el error al usuario
              */
-            console.error('❌ ERROR EN SUBMIT:', err);
-            console.error('❌ Mensaje:', err.message);
+            console.error('❌ ERROR EN ENVÍO:', error);
+            console.error('❌ Mensaje:', error.message);
             
             // Cerramos loading si está abierto
             Swal.close();
@@ -274,11 +274,11 @@ document.addEventListener('DOMContentLoaded', () => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message,
+                text: error.message,
                 confirmButtonText: 'Aceptar'
             });
         }
     });
     
-    console.log('✅ Setup completado');
+    console.log('✅ Configuración completada');
 });
