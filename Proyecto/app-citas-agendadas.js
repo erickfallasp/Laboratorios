@@ -19,7 +19,6 @@ console.log('✅ Cargando app-citas-agendadas.js');
  * AL CARGAR EL DOM
  * ==========================================
  * Ejecutamos la función cargarCitas() cuando
- * la página esté lista
  */
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📋 DOM cargado, cargando citas...');
@@ -112,7 +111,7 @@ const cargarCitas = async () => {
             
             /**
              * GENERAR HTML DE LA FILA
-             * Usamos template literals (backticks) para insertar variables
+             * Mostramos fecha, hora, nombre, teléfono, marca/modelo, placa y botón de eliminar
              */
             fila.innerHTML = `
                 <td>${fechaFormateada}</td>
@@ -176,8 +175,8 @@ const formatearFecha = (cadenaFecha) => {
  * ==========================================
  * ELIMINAR CITA
  * ==========================================
- * Función global (window.eliminarCita) que se
- * llama desde el botón de eliminar en la tabla
+ * Función que se llama al hacer clic en el botón de eliminar
+ * Muestra una confirmación y, si se confirma, borra la cita de Supabase
  */
 window.eliminarCita = async (identificador) => {
     /**
@@ -206,7 +205,7 @@ window.eliminarCita = async (identificador) => {
             const { error } = await supabase
                 .from('citas')
                 .delete()
-                .eq('id', identificador);  // WHERE id = identificador
+                .eq('id', identificador);  // donde  id = identificador
             
             if (error) throw error;
             
