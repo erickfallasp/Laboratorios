@@ -1,303 +1,94 @@
 <!--
-  ==========================================
   PANEL DE CLIENTE - DASHBOARD PERSONAL
-  Archivo: dashboard-cliente.html
-  ==========================================
-  
-  🎯 PROPÓSITO DE ESTA PÁGINA:
-  Esta es la interfaz exclusiva para cada CLIENTE registrado.
-  Desde aquí puede gestionar SU información personal de forma privada:
-  - Ver su nombre y datos de perfil personalizados
-  - Agendar nuevas citas para su vehículo
-  - Consultar SOLO sus propias citas agendadas
-  - Visualizar SOLO sus propias facturas generadas
-  - Editar sus datos de contacto cuando lo necesite
-  
-  🔐 SEGURIDAD POR DISEÑO (PRIVACIDAD DEL CLIENTE):
-  Esta página NO muestra datos de otros usuarios. Cada consulta
-  a la base de datos incluye un filtro obligatorio por id_usuario,
-  garantizado tanto en JavaScript como en las políticas RLS de Supabase.
-  
-  🔧 FUNCIONALIDADES PRINCIPALES:
-  1. 👤 Header personalizado con nombre y email del cliente
-  2. 🎯 Tarjetas de acción con íconos para navegación intuitiva
-  3. 📋 Sección dinámica de "Mis Citas" (se carga bajo demanda)
-  4. 💰 Sección dinámica de "Mis Facturas" (con JOIN a datos de cita)
-  5. 🚪 Cierre de sesión accesible desde cualquier punto
-  
-  🔗 CONEXIONES CON OTROS ARCHIVOS:
-  - estilosProyecto.css → Estilos base del sistema (colores, tarjetas, botones)
-  - SweetAlert2 (CDN) → Alertas y modales profesionales
-  - app-auth.js → Verifica sesión activa y expone cerrarSesion()
-  - app-dashboard-cliente.js → Lógica para cargar citas, facturas y perfil
-  - supabase.js (importado) → Conexión segura con base de datos en la nube
-  
-  📊 FLUJO DE DATOS Y PRIVACIDAD:
-  1. Cliente entra a dashboard-cliente.html
-  2. app-auth.js verifica: ¿está logueado? → Si no, redirige a login
-  3. Si está logueado, app-dashboard-cliente.js obtiene su usuarioActual
-  4. Al hacer clic en "Mis Citas": consulta Supabase con filtro id_usuario
-  5. Supabase aplica RLS: solo retorna citas donde id_usuario = auth.uid()
-  6. JavaScript genera filas HTML con LOS DATOS DEL CLIENTE ACTUAL
-  7. El cliente ve SOLO su información, nunca la de otros usuarios
+  Proposito: Interfaz exclusiva para que cada cliente gestione su informacion personal
 -->
 
 <!DOCTYPE html>
-<!-- 
-  ==========================================
-  DECLARACIÓN HTML5 CON IDIOMA ESPAÑOL
-  ==========================================
-  - `<!DOCTYPE html>` → Estándar HTML5 moderno
-  - `lang="es"` → Idioma español para:
-    • SEO: Posicionamiento en búsquedas en español
-    • Accesibilidad: Lectores de pantalla con pronunciación correcta
-    • Navegador: Corrector ortográfico en español activado
--->
-<html lang="es">
+<html lang="es"> <!-- Define idioma español para SEO y accesibilidad -->
+
 <head>
-    <!-- 
-      ==========================================
-      CODIFICACIÓN UTF-8 (PRIMERA META ETIQUETA)
-      ==========================================
-      - `charset="UTF-8"` → Soporta caracteres especiales:
-        • Tildes y ñ: á, é, í, ó, ú, ñ
-        • Símbolos monetarios: ₡ (colón costarricense)
-        • Emojis para refuerzo visual: 👤, 📋, 💰, ✏️
-      
-      ⚠️ IMPORTANTE: Debe ir PRIMERO para interpretación correcta
-      de todo el documento desde el primer byte.
-    -->
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> <!-- Soporta caracteres especiales: tildes, emojis, simbolos -->
     
-    <!-- 
-      ==========================================
-      VIEWPORT PARA DISEÑO RESPONSIVE
-      ==========================================
-      - `width=device-width` → Ancho de página = ancho de pantalla del dispositivo
-      - `initial-scale=1.0` → Zoom inicial al 100%
-      
-      📱 BENEFICIO: Sin esto, en móviles la página se vería como en desktop
-      (muy pequeña). Con esto, se adapta automáticamente a cualquier dispositivo.
-      
-      💡 DATO: Esta meta etiqueta es OBLIGATORIA para diseño responsive moderno.
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace el diseño responsive para moviles -->
     
-    <!-- 
-      ==========================================
-      TÍTULO DE LA PÁGINA (SEO + PESTAÑA)
-      ==========================================
-      - Se muestra en la pestaña del navegador
-      - Aparece en resultados de búsqueda
-      - Identifica claramente que es un panel PERSONAL del cliente
-    -->
-    <title>Mi Cuenta - Revisión Vehicular</title>
+    <title>Mi Cuenta - Revision Vehicular</title> <!-- Titulo de la pestaña y SEO -->
     
-    <!-- 
-      ==========================================
-      HOJA DE ESTILOS BASE DEL PROYECTO
-      ==========================================
-      - `href="estilosProyecto.css"` → Archivo CSS principal con:
-        • Variables de colores de marca (--color-principal: #10CFC8)
-        • Estilos para tarjetas (.card), botones (.boton), tablas
-        • Diseño responsive con @media queries
-        • Clases utilitarias para espaciado y tipografía
-    -->
-    <link rel="stylesheet" href="estilosProyecto.css">
+    <link rel="stylesheet" href="estilosProyecto.css"> <!-- Hoja de estilos principal del proyecto -->
     
-    <!-- 
-      ==========================================
-      LIBRERÍA EXTERNA: SweetAlert2 (CDN)
-      ==========================================
-      - Carga desde jsdelivr (CDN público y rápido)
-      - Versión @11 → Versión estable y probada
-      
-      🎨 ¿POR QUÉ SWEETALERT2?
-      Reemplaza alert() nativo por modales profesionales:
-      • Animaciones suaves para mejor experiencia
-      • Íconos visuales (✅❌⚠️) para feedback inmediato
-      • Formularios dentro de modales (para editar perfil)
-      • Confirmaciones con botones personalizados
-      
-      🔗 SE USA EN app-dashboard-cliente.js para:
-      - Ver detalle de cita/factura en modal
-      - Confirmar eliminación de cita
-      - Mostrar formulario de edición de perfil
-      - Alertas de éxito/error en operaciones
-    -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Libreria para alertas y modales -->
     
-    <!-- 
-      ==========================================
-      ESTILOS ESPECÍFICOS PARA ESTE DASHBOARD
-      ==========================================
-      - `<style>` interno para estilos únicos de esta página
-      - Se podrían mover a estilosProyecto.css, pero se dejan
-        aquí para modularidad: cambios en dashboard cliente no afectan admin
-      
-      🎨 COMPONENTES DEFINIDOS:
-      1. .dashboard-header → Encabezado con gradiente y datos de usuario
-      2. .user-info / .user-avatar → Perfil visual del cliente
-      3. .action-buttons / .action-card → Tarjetas de navegación interactivas
-      4. .action-icon / .action-title / .action-desc → Jerarquía visual de acciones
-      
-      💡 DISEÑO DE INTERACCIÓN:
-      Las action-card tienen hover effects (transform, shadow, border)
-      que dan feedback visual al usuario: "esto es clickable".
-    -->
+    <!-- Estilos especificos para este dashboard (header con gradiente, tarjetas de accion) -->
     <style>
-        /* ==========================================
-           ENCABEZADO DEL DASHBOARD (GRADIENTE DE MARCA)
-           ==========================================
-           - Flexbox para alinear avatar+nombre a la izquierda, logout a la derecha
-           - Gradiente linear (135deg) con colores de marca para identidad visual
-           - Texto oscuro (#05323A) sobre fondo claro para contraste accesible
-           - Bordes redondeados para consistencia con el diseño de tarjetas
-        */
         .dashboard-header {
             display: flex;
-            justify-content: space-between;  /* Contenido a los extremos */
-            align-items: center;              /* Centrado vertical */
-            margin-bottom: 30px;               /* Espacio debajo del header */
-            padding: 20px;                     /* Espaciado interno cómodo */
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
             background: linear-gradient(135deg, var(--color-principal), #0dd3cd);
-            color: #05323A;                    /* Texto oscuro para contraste */
-            border-radius: 12px;               /* Bordes redondeados */
+            color: #05323A;
+            border-radius: 12px;
         }
         
-        /* ==========================================
-           INFORMACIÓN DEL USUARIO (AVATAR + TEXTO)
-           ==========================================
-           - Flex con gap:15px → Espaciado uniforme entre avatar y texto
-           - Alineación vertical centrada para diseño limpio
-        */
         .user-info {
             display: flex;
             align-items: center;
-            gap: 15px;  /* Espacio entre avatar y nombre/email */
+            gap: 15px;
         }
         
-        /* ==========================================
-           AVATAR CIRCULAR DEL USUARIO
-           ==========================================
-           - 60x60px → Tamaño visible pero no dominante
-           - border-radius: 50% → Círculo perfecto (estándar para avatares)
-           - Fondo blanco + sombra sutil → Efecto de profundidad
-           - Emoji 👤 centrado → Placeholder visual mientras carga nombre real
-           
-           💡 MEJORA FUTURA: Podría mostrar inicial del nombre o foto real
-           si el sistema permite subir avatar.
-        */
         .user-avatar {
             width: 60px;
             height: 60px;
-            border-radius: 50%;  /* Círculo perfecto */
+            border-radius: 50%;
             background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;     /* Emoji grande y legible */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);  /* Sombra sutil */
+            font-size: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        /* ==========================================
-           TEXTO DE BIENVENIDA (NOMBRE + EMAIL)
-           ==========================================
-           - h2 con margin:0 → Sin espacio extra por defecto de navegador
-           - font-size:24px → Tamaño destacado pero no abrumador
-           - p con opacity:0.8 → Color atenuado para jerarquía visual
-           
-           🎯 UX: El nombre en grande crea conexión personal;
-           el email en pequeño confirma identidad sin distraer.
-        */
         .welcome-text h2 {
             margin: 0;
             font-size: 24px;
         }
         
         .welcome-text p {
-            margin: 5px 0 0;  /* Pequeño espacio sobre el párrafo */
-            opacity: 0.8;     /* Color atenuado para jerarquía */
+            margin: 5px 0 0;
+            opacity: 0.8;
         }
         
-        /* ==========================================
-           GRID DE BOTONES DE ACCIÓN
-           ==========================================
-           - Flex con gap:15px → Espaciado uniforme entre tarjetas
-           - flex-wrap:wrap → En móviles, las tarjetas se apilan verticalmente
-           - margin-bottom:30px → Espacio antes de las secciones de contenido
-        */
         .action-buttons {
             display: flex;
             gap: 15px;
             margin-bottom: 30px;
-            flex-wrap: wrap;  /* Responsive: se apilan en pantallas pequeñas */
+            flex-wrap: wrap;
         }
         
-        /* ==========================================
-           TARJETA DE ACCIÓN INTERACTIVA
-           ==========================================
-           - flex:1 → Todas las tarjetas ocupan espacio equitativo
-           - min-width:200px → En móviles, no se hacen demasiado estrechas
-           - padding:25px → Espaciado interno cómodo para toque en móvil
-           - background:white + box-shadow → Efecto de tarjeta flotante
-           - cursor:pointer + transition → Feedback visual de interactividad
-           - border:2px solid transparent → Base para efecto hover con color
-           
-           🎨 PRINCIPIO DE DISEÑO: "Affordance"
-           La tarjeta parece clickable por su sombra, borde y cursor,
-           guiando al usuario sin necesidad de instrucciones.
-        */
         .action-card {
             flex: 1;
             min-width: 200px;
             padding: 25px;
             background: white;
             border-radius: 12px;
-            box-shadow: var(--sombra);  /* Variable CSS definida en estilos base */
+            box-shadow: var(--sombra);
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;  /* Animación suave para hover */
-            border: 2px solid transparent;  /* Base para efecto hover */
+            transition: all 0.3s;
+            border: 2px solid transparent;
         }
         
-        /* ==========================================
-           EFECTO HOVER EN TARJETA DE ACCIÓN
-           ==========================================
-           - transform:translateY(-5px) → "Levanta" la tarjeta visualmente
-           - border-color:var(--color-principal) → Borde con color de marca
-           - box-shadow más grande → Mayor profundidad para feedback
-           
-           🎯 PSICOLOGÍA UX: El movimiento sutil confirma "esto responde",
-           aumentando la confianza del usuario en la interfaz.
-        */
         .action-card:hover {
-            transform: translateY(-5px);  /* Efecto de elevación */
-            border-color: var(--color-principal);  /* Color de marca al hover */
-            box-shadow: 0 8px 24px rgba(16, 207, 200, 0.2);  /* Sombra ampliada */
+            transform: translateY(-5px);
+            border-color: var(--color-principal);
+            box-shadow: 0 8px 24px rgba(16, 207, 200, 0.2);
         }
         
-        /* ==========================================
-           ÍCONO DE ACCIÓN (GRANDE Y DESTACADO)
-           ==========================================
-           - font-size:48px → Tamaño grande para impacto visual inmediato
-           - margin-bottom:10px → Espacio antes del título de la acción
-           
-           💡 DISEÑO: Los emojis funcionan como íconos universales:
-           📅 = calendario/cita, 📋 = lista, 💰 = dinero/factura, ✏️ = editar
-        */
         .action-icon {
             font-size: 48px;
             margin-bottom: 10px;
         }
         
-        /* ==========================================
-           TÍTULO DE LA ACCIÓN (TEXTO PRINCIPAL)
-           ==========================================
-           - font-size:18px + font-weight:700 → Legible y destacado
-           - color:var(--fondo-oscuro) → Contraste alto para lectura
-           - margin-bottom:5px → Espacio antes de la descripción
-        */
         .action-title {
             font-size: 18px;
             font-weight: 700;
@@ -305,15 +96,6 @@
             margin-bottom: 5px;
         }
         
-        /* ==========================================
-           DESCRIPCIÓN DE LA ACCIÓN (TEXTO SECUNDARIO)
-           ==========================================
-           - color:var(--texto-atenuado) → Gris suave para jerarquía
-           - font-size:14px → Tamaño menor que el título
-           
-           🎯 UX WRITING: Texto breve que explica el beneficio:
-           "Programa una nueva cita" → Qué hace + para qué sirve
-        */
         .action-desc {
             color: var(--texto-atenuado);
             font-size: 14px;
@@ -322,51 +104,16 @@
 </head>
 
 <body>
-    <!-- 
-      ==========================================
-      CONTENEDOR PRINCIPAL (LAYOUT CENTRALIZADO)
-      ==========================================
-      - `class="container"` → Clase CSS que:
-        • Centra el contenido horizontalmente (margin: 0 auto)
-        • Establece ancho máximo (~1200px) para legibilidad
-        • Agrega padding lateral en móviles para evitar bordes pegados
-      
-      📐 BENEFICIO UX: En desktop, el contenido no se estira
-      de extremo a extremo (difícil de leer). En móvil, ocupa
-      el 100% disponible con márgenes cómodos.
-    -->
-    <div class="container">
+    <div class="container"> <!-- Contenedor principal que centra el contenido -->
         
-        <!-- 
-          ==========================================
-          HEADER GLOBAL: CONSISTENTE EN TODAS LAS PÁGINAS
-          ==========================================
-          Este header se REPITE idéntico en todas las páginas del sistema
-          para mantener consistencia visual y navegación predecible.
-          
-          🎨 DISEÑO: Flexbox (en CSS base) para alinear elementos
-          horizontalmente en desktop y verticalmente en móviles.
-        -->
-        <div class="header">
-            <!-- Parte superior con íconos decorativos y título principal -->
+        <div class="header"> <!-- Encabezado comun con logo y titulo -->
             <div class="header-top">
                 <span class="car-icon">🚗</span>
-                <h1 class="main-title">Revisión Técnica Vehicular</h1>
+                <h1 class="main-title">Revision Tecnica Vehicular</h1>
                 <span class="car-icon">🚗</span>
             </div>
             
-            <!-- 
-              ==========================================
-              MENÚ DE NAVEGACIÓN PÚBLICO
-              ==========================================
-              - `nav` → Etiqueta semántica HTML5 para navegación
-              - Incluye enlaces a páginas públicas (inicio, precios, contacto)
-              - El enlace a login está destacado con clase especial
-              
-              🎯 NOTA DE DISEÑO: 
-              Aunque el cliente ya está logueado, mantener este menú
-              permite navegar a información pública sin cerrar sesión.
-            -->
+            <!-- Menu de navegacion publico (acceso a info sin cerrar sesion) -->
             <nav class="nav-menu">
                 <ul class="nav-list">
                     <li class="menu-item"><a href="index.html">🏠 Inicio</a></li>
@@ -379,447 +126,114 @@
             </nav>
         </div>
 
-        <!-- 
-          ==========================================
-          ENCABEZADO PERSONALIZADO DEL DASHBOARD CLIENTE
-          ==========================================
-          - `class="dashboard-header"` → Estilos con gradiente definidos en <style>
-          - Contiene: avatar + nombre/email del cliente + botón de logout
-          
-          🎯 PROPÓSITO UX:
-          • Personalización: "¡Bienvenido, [Nombre]!" → Conexión emocional
-          • Confirmación de identidad: email visible → "sí, esta es mi cuenta"
-          • Acceso rápido a logout → Control sobre la sesión en todo momento
-        -->
+        <!-- Encabezado personalizado del dashboard cliente -->
         <div class="dashboard-header">
-            <!-- Sección izquierda: Avatar + Información del usuario -->
             <div class="user-info">
-                <!-- 
-                  ==========================================
-                  AVATAR VISUAL DEL CLIENTE
-                  ==========================================
-                  - Emoji 👤 como placeholder mientras carga nombre real
-                  - En producción, podría mostrar inicial o foto de perfil
-                -->
-                <div class="user-avatar">👤</div>
+                <div class="user-avatar">👤</div> <!-- Avatar placeholder -->
                 
-                <!-- 
-                  ==========================================
-                  TEXTO DE BIENVENIDA DINÁMICO
-                  ==========================================
-                  - `id="userName"` → JavaScript actualiza con nombre real del perfil
-                  - `id="userEmail"` → JavaScript actualiza con email de la sesión
-                  
-                  🔗 CONEXIÓN CON JAVASCRIPT (app-dashboard-cliente.js):
-                  async function cargarInfoPerfil() {
-                      const { data: perfil } = await supabase
-                          .from('perfiles')
-                          .select('nombre_completo, email')
-                          .eq('id', usuarioActual.id)
-                          .single();
-                      
-                      document.getElementById('userName').textContent = perfil?.nombre_completo || 'Cliente';
-                      document.getElementById('userEmail').textContent = perfil?.email || usuarioActual.email;
-                  }
-                  
-                  🎨 VALOR INICIAL: 
-                  "Cliente" y "cargando..." son placeholders mientras
-                  JavaScript consulta y actualiza con datos reales.
-                -->
+                <!-- Texto de bienvenida dinamico (JavaScript actualiza userName y userEmail) -->
                 <div class="welcome-text">
                     <h2>¡Bienvenido, <span id="userName">Cliente</span>! 👋</h2>
                     <p id="userEmail">cargando...</p>
                 </div>
             </div>
             
-            <!-- Sección derecha: Botón de cierre de sesión -->
-            <!-- 
-              ==========================================
-              BOTÓN DE CERRAR SESIÓN (LOGOUT)
-              ==========================================
-              - `onclick="cerrarSesion()"` → Llama a función global de app-auth.js
-              - `class="boton boton-peligro"` → Estilos para acción que termina sesión
-              
-              🔗 CONEXIÓN CON JAVASCRIPT (app-auth.js):
-              export async function cerrarSesion() {
-                  await supabase.auth.signOut();  // Cierra sesión en Supabase
-                  Swal.fire(...);  // Mensaje de despedida
-                  window.location.href = 'login.html';  // Redirige al login
-              }
-              window.cerrarSesion = cerrarSesion;  // Expone función globalmente
-              
-              ⚠️ IMPORTANTE: La función debe ser global porque onclick en HTML
-              no puede acceder a funciones dentro de módulos ES6.
-            -->
+            <!-- Boton de cerrar sesion (llama a funcion global de app-Autorizacion.js) -->
             <button onclick="cerrarSesion()" class="boton boton-peligro">
-                🚪 Cerrar Sesión
+                🚪 Cerrar Sesion
             </button>
         </div>
 
-        <!-- 
-          ==========================================
-          GRID DE ACCIONES PRINCIPALES (NAVEGACIÓN INTUITIVA)
-          ==========================================
-          - `class="action-buttons"` → Flex container definido en CSS
-          - Contiene 4 tarjetas de acción con íconos, títulos y descripciones
-          
-          🎯 PRINCIPIO DE DISEÑO: "Reconocimiento sobre recuerdo"
-          Los íconos grandes + texto claro permiten al usuario identificar
-          rápidamente qué hace cada botón sin tener que memorizar.
-        -->
+        <!-- Grid de tarjetas de accion principal (navegacion intuitiva) -->
         <div class="action-buttons">
             
-            <!-- 
-              ==========================================
-              ACCIÓN 1: AGENDAR NUEVA CITA
-              ==========================================
-              - `onclick="window.location.href='citas.html'"` → Navegación directa
-              - Ícono 📅 → Universal para calendario/citas
-              - Texto: "Agendar Nueva Cita" → Acción clara + beneficio
-              
-              💡 UX: Redirección simple porque es un formulario completo
-              que merece su propia página dedicada.
-            -->
+            <!-- Accion 1: Agendar nueva cita (redireccion a formulario) -->
             <div class="action-card" onclick="window.location.href='citas.html'">
                 <div class="action-icon">📅</div>
                 <div class="action-title">Agendar Nueva Cita</div>
-                <div class="action-desc">Programa una nueva cita para tu vehículo</div>
+                <div class="action-desc">Programa una nueva cita para tu vehiculo</div>
             </div>
             
-            <!-- 
-              ==========================================
-              ACCIÓN 2: VER MIS CITAS
-              ==========================================
-              - `onclick="cargarMisCitas()"` → Llama a función de app-dashboard-cliente.js
-              - Ícono 📋 → Universal para lista/documentos
-              - Texto: "Mis Citas" → Posesivo enfatiza privacidad ("solo las mías")
-              
-              🔗 CONEXIÓN CON JAVASCRIPT:
-              window.cargarMisCitas = async () => {
-                  // 1. Oculta sección de facturas si está visible
-                  // 2. Muestra sección de citas + mensaje "Cargando..."
-                  // 3. Consulta Supabase: SELECT * FROM citas WHERE id_usuario = X
-                  // 4. Genera filas HTML con los datos recibidos
-                  // 5. Scroll suave hacia la tabla para feedback visual
-              }
-              
-              🎯 PRIVACIDAD: La consulta incluye .eq('id_usuario', usuarioActual.id)
-              garantizando que el cliente solo ve SUS propias citas.
-            -->
+            <!-- Accion 2: Ver mis citas (carga dinamica via JavaScript) -->
             <div class="action-card" onclick="cargarMisCitas()">
                 <div class="action-icon">📋</div>
                 <div class="action-title">Mis Citas</div>
                 <div class="action-desc">Ver todas tus citas agendadas</div>
             </div>
             
-            <!-- 
-              ==========================================
-              ACCIÓN 3: VER MIS FACTURAS
-              ==========================================
-              - `onclick="cargarMisFacturas()"` → Función de app-dashboard-cliente.js
-              - Ícono 💰 → Universal para dinero/pagos
-              - Texto: "Mis Facturas" → Posesivo + claridad de propósito
-              
-              🔗 CONEXIÓN CON JAVASCRIPT:
-              window.cargarMisFacturas = async () => {
-                  // 1. Oculta sección de citas si está visible (modo "pestañas")
-                  // 2. Consulta con JOIN: facturas + datos de cita asociada
-                  // 3. Genera filas con: número, fecha, servicio, vehículo, monto, estado
-                  // 4. Estado visual: ✅ verde (pagada) o ⏳ naranja (pendiente)
-              }
-              
-              💡 JOIN EN SUPABASE:
-              .select(`*, citas(fecha_cita, hora_cita, marca, modelo, placa)`)
-              → En una consulta obtenemos factura + info del vehículo,
-              evitando múltiples peticiones y mejorando rendimiento.
-            -->
+            <!-- Accion 3: Ver mis facturas (carga dinamica con JOIN) -->
             <div class="action-card" onclick="cargarMisFacturas()">
                 <div class="action-icon">💰</div>
                 <div class="action-title">Mis Facturas</div>
                 <div class="action-desc">Ver facturas y pagos</div>
             </div>
             
-            <!-- 
-              ==========================================
-              ACCIÓN 4: EDITAR PERFIL (PLACEHOLDER)
-              ==========================================
-              - `onclick="editarPerfil()"` → Función de app-dashboard-cliente.js
-              - Ícono ✏️ → Universal para edición/modificación
-              - Texto: "Editar Perfil" → Acción clara de gestión personal
-              
-              🔗 ESTADO ACTUAL:
-              window.editarPerfil = async () => {
-                  Swal.fire('Editar Perfil', 'Función en desarrollo', 'info');
-              }
-              
-              💡 MEJORA FUTURA: Podría abrir modal con formulario para actualizar
-              nombre, teléfono y email, con validación y confirmación.
-            -->
-            <div class="action-card" onclick="editarPerfil()">
-                <div class="action-icon">✏️</div>
-                <div class="action-title">Editar Perfil</div>
-                <div class="action-desc">Actualiza tus datos personales</div>
-            </div>
-            
         </div>
-        <!-- Fin del grid de acciones -->
 
-        <!-- 
-          ==========================================
-          SECCIÓN DINÁMICA: MIS CITAS AGENDADAS
-          ==========================================
-          - `id="seccionMisCitas"` → Identificador para mostrar/ocultar con JS
-          - `style="display: none"` → Inicialmente oculta (se muestra al hacer clic en "Mis Citas")
-          
-          🎯 PATRÓN DE DISEÑO: "Carga bajo demanda"
-          No consultamos la base de datos al cargar la página,
-          solo cuando el usuario explícitamente pide ver sus citas.
-          Esto mejora el rendimiento inicial y respeta la privacidad
-          (no traemos datos si el usuario no los necesita).
-        -->
+        <!-- Seccion dinamica: Mis Citas (oculta inicialmente, se muestra al hacer clic) -->
         <div class="card" id="seccionMisCitas" style="display: none;">
-            <!-- Título de la sección con emoji para identificación rápida -->
             <h2>📋 Mis Citas Agendadas</h2>
             
-            <!-- Contenedor de tabla responsive (scroll horizontal en móviles) -->
-            <div class="contenedor-tabla">
-                <!-- 
-                  ==========================================
-                  TABLA DE CITAS DEL CLIENTE
-                  ==========================================
-                  - `id="tablaCitasCliente"` → Referencia para estilos/JS
-                  - Estructura semántica: <thead> (encabezados), <tbody> (datos dinámicos)
-                  
-                  📋 COLUMNAS ESPECÍFICAS PARA CLIENTE:
-                  1. ID → Referencia única para soporte o consultas
-                  2. Fecha → Información temporal principal
-                  3. Hora → Complemento para programación del día
-                  4. Tipo Vehículo → Categoría del servicio (afecta precio)
-                  5. Vehículo → Marca + modelo para identificación visual
-                  6. Placa → Identificador único del vehículo (con badge)
-                  7. Estado → Pendiente/Completada/Hoy (feedback visual)
-                  8. Acciones → Botones para ver detalle o eliminar
-                -->
+            <div class="contenedor-tabla"> <!-- Permite scroll horizontal en moviles -->
+                
                 <table id="tablaCitasCliente">
-                    <thead>
+                    <thead> <!-- Encabezados de columna -->
                         <tr>
                             <th>ID</th>
                             <th>Fecha</th>
                             <th>Hora</th>
-                            <th>Tipo Vehículo</th>
-                            <th>Vehículo</th>
+                            <th>Tipo Vehiculo</th>
+                            <th>Vehiculo</th>
                             <th>Placa</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     
-                    <!-- 
-                      ==========================================
-                      CUERPO DE TABLA DINÁMICO
-                      ==========================================
-                      - `id="tbodyCitasCliente"` → JavaScript inserta filas aquí
-                      - Contenido inicial: mensaje guía para el usuario
-                      
-                      🔧 FUNCIONAMIENTO CON JAVASCRIPT:
-                      1. Usuario hace clic en "Mis Citas" → cargarMisCitas()
-                      2. JS muestra esta sección + mensaje "Cargando..."
-                      3. Consulta a Supabase con filtro id_usuario
-                      4. Por cada cita: crea <tr> con <td> formateados
-                      5. appendChild() inserta fila en este tbody
-                      6. Scroll suave hacia la tabla para feedback visual
-                      
-                      📝 EJEMPLO DE FILA GENERADA:
-                      <tr>
-                        <td><strong>#15</strong></td>
-                        <td>25/4/2026</td>
-                        <td>10:00</td>
-                        <td>menor_3_5_ton</td>
-                        <td>Toyota Corolla</td>
-                        <td><span class="badge">ABC123</span></td>
-                        <td><span style="color: #FFA500;">Pendiente</span></td>
-                        <td>
-                          <button onclick="verDetalleCita(15)" class="boton boton-secundario boton-pequeno">👁️</button>
-                          <button onclick="eliminarCita(15)" class="boton boton-peligro boton-pequeno">🗑️</button>
-                        </td>
-                      </tr>
-                    -->
                     <tbody id="tbodyCitasCliente">
-                        <!-- Mensaje inicial guía al usuario sobre cómo usar la funcionalidad -->
+                        <!-- JavaScript insertara aqui las filas con las citas del usuario actual -->
                         <tr><td colspan="8" style="text-align: center;">Haz clic en "Mis Citas" para cargar</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <!-- Fin de la sección de Mis Citas -->
 
-        <!-- 
-          ==========================================
-          SECCIÓN DINÁMICA: MIS FACTURAS
-          ==========================================
-          - `id="seccionMisFacturas"` → Identificador para mostrar/ocultar con JS
-          - `style="display: none; margin-top: 20px"` → Oculta inicialmente + espaciado
-          
-          🎯 PATRÓN DE "PESTAÑAS" SIN RECARGAR:
-          Al hacer clic en "Mis Facturas", JavaScript:
-          1. Oculta la sección de citas (si está visible)
-          2. Muestra esta sección de facturas
-          3. Carga datos específicos de facturas
-          
-          Esto crea una experiencia tipo tabs sin necesidad de librerías externas.
-        -->
+        <!-- Seccion dinamica: Mis Facturas (oculta inicialmente, se muestra al hacer clic) -->
         <div class="card" id="seccionMisFacturas" style="display: none; margin-top: 20px;">
-            <!-- Título de la sección con emoji para identificación rápida -->
             <h2>💰 Mis Facturas</h2>
             
-            <!-- Contenedor de tabla responsive -->
             <div class="contenedor-tabla">
-                <!-- 
-                  ==========================================
-                  TABLA DE FACTURAS DEL CLIENTE
-                  ==========================================
-                  - `id="tablaFacturasCliente"` → Referencia para estilos/JS
-                  
-                  📋 COLUMNAS ESPECÍFICAS PARA FACTURAS:
-                  1. Factura # → Número único para referencia o soporte
-                  2. Fecha → Cuándo se generó la factura
-                  3. Servicio → Tipo de revisión (del campo detalles JSON)
-                  4. Vehículo → Marca + modelo + placa (del JOIN con citas)
-                  5. Monto → Precio total con formato monetario (₡7,500)
-                  6. Estado → Visual con color e ícono (✅ pagada / ⏳ pendiente)
-                  7. Acciones → Botón para ver detalle completo en modal
-                -->
+                
                 <table id="tablaFacturasCliente">
                     <thead>
                         <tr>
                             <th>Factura #</th>
                             <th>Fecha</th>
                             <th>Servicio</th>
-                            <th>Vehículo</th>
+                            <th>Vehiculo</th>
                             <th>Monto</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     
-                    <!-- 
-                      ==========================================
-                      CUERPO DE TABLA DINÁMICO PARA FACTURAS
-                      ==========================================
-                      - `id="tbodyFacturasCliente"` → JavaScript inserta filas aquí
-                      
-                      🔧 DIFERENCIA CLAVE VS CITAS:
-                      Esta consulta usa JOIN para traer datos de la cita asociada:
-                      
-                      const {  facturas } = await supabase
-                          .from('facturas')
-                          .select(`
-                              *,
-                              citas (fecha_cita, hora_cita, marca, modelo, placa)
-                          `)
-                          .eq('id_usuario', usuarioActual.id);
-                      
-                      📝 EJEMPLO DE FILA GENERADA:
-                      <tr>
-                        <td><strong>#2</strong></td>
-                        <td>25/4/2026</td>
-                        <td>menor_3_5_ton</td>
-                        <td>Toyota Corolla<br><small>ABC123</small></td>
-                        <td><strong>₡6,000</strong></td>
-                        <td><span style="color: #FFA500;">⏳ pendiente</span></td>
-                        <td>
-                          <button onclick="verFactura(2)" class="boton boton-secundario boton-pequeno">👁️</button>
-                        </td>
-                      </tr>
-                      
-                      💡 FORMATO DE MONTO:
-                      factura.monto_total.toLocaleString() → "6000" → "6,000"
-                      Separador de miles para mejor legibilidad de precios.
-                    -->
                     <tbody id="tbodyFacturasCliente">
-                        <!-- Mensaje inicial guía al usuario -->
+                        <!-- JavaScript insertara aqui las filas con las facturas del usuario actual -->
                         <tr><td colspan="7" style="text-align: center;">Haz clic en "Mis Facturas" para cargar</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <!-- Fin de la sección de Mis Facturas -->
         
     </div>
-    <!-- Fin del contenedor principal -->
 
-    <!-- 
-      ==========================================
-      SCRIPTS AL FINAL DEL <body> (BUENA PRÁCTICA)
-      ==========================================
-      Colocar scripts al final permite que:
-      1. El HTML se renderice primero → Mejor percepción de velocidad
-      2. Los elementos del DOM existan cuando JS intente acceder a ellos
-      3. El usuario vea estructura básica mientras cargan los scripts
-      
-      ⚡ ORDEN DE CARGA IMPORTANTE:
-      1. supabase.js → Configuración de conexión (dependencia base)
-      2. app-auth.js → Verifica sesión y expone cerrarSesion()
-      3. app-dashboard-cliente.js → Lógica específica del dashboard cliente
-      
-      Este orden garantiza que cada módulo tenga disponibles sus dependencias.
-    -->
+    <!-- Scripts al final para mejor rendimiento -->
     
-    <!-- 
-      ==========================================
-      MÓDULO 1: CONFIGURACIÓN DE SUPABASE
-      ==========================================
-      - `type="module"` → Módulo ES6 moderno que permite import/export
-      - `src="supabase.js"` → Archivo que inicializa cliente de Supabase
-        con URL y clave pública desde variables de entorno
-      
-      🔗 CONEXIÓN: Este archivo es la BASE para todos los demás.
-      Sin él, los otros módulos no podrían conectar a la base de datos.
-    -->
-    <script type="module" src="supabase.js"></script>
+    <script type="module" src="supabase.js"></script> <!-- Configuracion de conexion a Supabase -->
     
-    <!-- 
-      ==========================================
-      MÓDULO 2: SISTEMA DE AUTENTICACIÓN
-      ==========================================
-      - `src="app-auth.js"` → Archivo con lógica de:
-        1. Verificar sesión activa al cargar página
-        2. Redirigir a login si no hay sesión
-        3. Exponer función global cerrarSesion() para el botón del header
-      
-      🔐 SEGURIDAD EN CAPAS:
-      • Frontend: Redirige si no hay sesión (experiencia de usuario)
-      • Backend (RLS): Políticas de Supabase bloquean acceso a datos
-        incluso si alguien manipula el frontend para saltarse validaciones
-    -->
-    <script type="module" src="app-auth.js"></script>
+    <script type="module" src="app-Autorizacion.js"></script> <!-- Verifica sesion activa y expone cerrarSesion() -->
     
-    <!-- 
-      ==========================================
-      MÓDULO 3: LÓGICA DEL DASHBOARD CLIENTE
-      ==========================================
-      - `src="app-dashboard-cliente.js"` → Archivo principal de esta página con:
-        1. cargarInfoPerfil() → Actualiza nombre/email en el header
-        2. cargarMisCitas() → Consulta y muestra citas del usuario actual
-        3. cargarMisFacturas() → Consulta con JOIN y muestra facturas
-        4. verDetalleCita(id) / verFactura(id) → Modales con info completa
-        5. eliminarCita(id) → Eliminación con confirmación y refresco
-        6. editarPerfil() → Placeholder para futura implementación
-      
-      🔐 PRIVACIDAD POR DISEÑO:
-      Todas las consultas incluyen .eq('id_usuario', usuarioActual.id)
-      garantizando que cada cliente vea SOLO sus propios datos.
-      
-      🔄 GESTIÓN DE VISTAS:
-      Al cargar citas o facturas, JavaScript oculta la otra sección,
-      creando una experiencia tipo "pestañas" sin recargar la página.
-      
-      💡 FUNCIONES GLOBALES:
-      window.cargarMisCitas = async () => { ... }
-      • Necesario porque onclick en HTML no puede llamar a funciones dentro de módulos
-      • Alternativa moderna: agregar event listeners con JS en lugar de onclick inline
-    -->
-    <script type="module" src="app-dashboard-cliente.js"></script>
+    <script type="module" src="app-dashboard-cliente.js"></script> <!-- Carga citas, facturas y perfil del usuario actual -->
     
 </body>
 </html>

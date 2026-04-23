@@ -1,395 +1,107 @@
 <!--
-  ==========================================
-  PÁGINA DE TARIFAS - TABLA DE PRECIOS
-  Archivo: precios.html
-  ==========================================
-  
-  🎯 PROPÓSITO DE ESTA PÁGINA:
-  Esta página muestra de forma transparente y organizada los costos
-  de inspección técnica vehicular por categoría de vehículo. Su función es:
-  1. Informar a los usuarios los precios antes de agendar una cita
-  2. Diferenciar entre inspección inicial y reinspección
-  3. Presentar la información de forma escaneable y accesible
-  4. Mantener consistencia visual con el resto del sistema
-  
-  🔧 CARACTERÍSTICAS PRINCIPALES:
-  ✅ Tabla responsive con scroll horizontal en móviles
-  ✅ Diseño limpio y jerarquía visual clara (encabezado oscuro, filas alternas)
-  ✅ Formato monetario con símbolo de colón (₡) y separador de miles
-  ✅ Estructura semántica HTML5 para accesibilidad y SEO
-  ✅ Sin JavaScript complejo: página estática de información
-  
-  🔗 CONEXIONES CON OTROS ARCHIVOS:
-  - estilosProyecto.css → Estilos para tablas, tarjetas y diseño responsive
-  - Header compartido → Mismo diseño de navegación en todas las páginas
-  - app-citas.js → Usa estos mismos precios para calcular facturas automáticamente
-  
-  📊 FLUJO DEL USUARIO:
-  1. Usuario quiere saber cuánto cuesta la revisión de su vehículo
-  2. Navega a "Tarifas" desde el menú principal
-  3. Ve tabla organizada por categoría con precios claros
-  4. Identifica su tipo de vehículo y precio correspondiente
-  5. Puede proceder a agendar cita con información de costo clara
+  PAGINA DE TARIFAS - TABLA DE PRECIOS
+  Proposito: Mostrar costos de inspeccion tecnica vehicular por categoria
 -->
 
 <!doctype html>
-<!-- 
-  ==========================================
-  DECLARACIÓN HTML5 CON IDIOMA ESPAÑOL
-  ==========================================
-  - `<!doctype html>` → Estándar HTML5 moderno
-  - `lang="es"` → Idioma español para:
-    • SEO: Posicionamiento en búsquedas en español
-    • Accesibilidad: Lectores de pantalla con pronunciación correcta
-    • Navegador: Corrector ortográfico en español activado
--->
-<html lang="es">
+<html lang="es"> <!-- Define idioma español para SEO y accesibilidad -->
   
   <head>
-    <!-- 
-      ==========================================
-      CODIFICACIÓN UTF-8 (PRIMERA META ETIQUETA)
-      ==========================================
-      - `charset="UTF-8"` → Soporta caracteres especiales:
-        • Tildes y ñ: á, é, í, ó, ú, ñ
-        • Símbolo monetario: ₡ (colón costarricense, U+20A1)
-        • Emojis: 💲, 🚗, 📅
-      
-      ⚠️ IMPORTANTE: Debe ir PRIMERO para interpretación correcta
-      de todo el documento desde el primer byte.
-    -->
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8" /> <!-- Soporta caracteres especiales: tildes, simbolo de colon, emojis -->
     
-    <!-- 
-      ==========================================
-      VIEWPORT PARA DISEÑO RESPONSIVE
-      ==========================================
-      - `width=device-width` → Ancho de página = ancho de pantalla del dispositivo
-      - `initial-scale=1.0` → Zoom inicial al 100%
-      
-      📱 BENEFICIO: Sin esto, en móviles la tabla se vería cortada o con scroll
-      horizontal no controlado. Con esto, el CSS responsive maneja el scroll
-      de forma elegante mediante la clase .table-wrap.
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Hace el diseño responsive para moviles -->
     
-    <!-- 
-      ==========================================
-      TÍTULO DE LA PÁGINA (SEO + PESTAÑA)
-      ==========================================
-      - Se muestra en la pestaña del navegador
-      - Aparece en resultados de búsqueda
-      - Incluye palabra clave "Tarifas" para intención comercial
-      
-      🔍 SEO TIP: "Tarifas - Revisión Vehicular" ayuda a usuarios
-      que buscan "precio revisión vehicular" o "costo inspección auto"
-      a encontrar esta página directamente.
-    -->
-    <title>Tarifas - Revisión Vehicular</title>
+    <title>Tarifas - Revision Vehicular</title> <!-- Titulo de la pestaña y SEO -->
     
-    <!-- 
-      ==========================================
-      HOJA DE ESTILOS BASE DEL PROYECTO
-      ==========================================
-      - `href="estilosProyecto.css"` → Archivo CSS principal con:
-        • Estilos para tablas: thead oscuro, zebra striping, hover
-        • Clase .table-wrap para scroll horizontal responsive
-        • Variables de colores de marca (--bg, --accent)
-        • Diseño responsive con @media queries
-      
-      💡 NOTA: Esta página no necesita CSS adicional porque
-      los estilos de tabla ya están definidos en el archivo base.
-      Esto demuestra reutilización eficiente de código.
-    -->
-    <link rel="stylesheet" href="estilosProyecto.css" />
+    <link rel="stylesheet" href="estilosProyecto.css" /> <!-- Hoja de estilos principal del proyecto -->
   </head>
   
   <body>
-    <!-- 
-      ==========================================
-      CONTENEDOR PRINCIPAL (LAYOUT CENTRALIZADO)
-      ==========================================
-      - `class="container"` → Clase CSS que:
-        • Centra el contenido horizontalmente
-        • Establece ancho máximo (~980px) para legibilidad
-        • Agrega padding lateral en móviles
+    <div class="container"> <!-- Contenedor principal que centra el contenido -->
       
-      📐 BENEFICIO UX: En desktop, la tabla no se estira
-      demasiado (difícil de seguir con la vista). En móvil,
-      el padding evita que el contenido toque los bordes.
-    -->
-    <div class="container">
-      
-      <!-- 
-        ==========================================
-        HEADER: ENCABEZADO CONSISTENTE EN TODAS LAS PÁGINAS
-        ==========================================
-        Este header se REPITE idéntico en todas las páginas del sistema
-        para mantener consistencia visual y navegación predecible.
-        
-        🎨 DISEÑO: Flexbox para alinear elementos horizontalmente
-        en desktop y verticalmente en móviles (@media query).
-      -->
-      <div class="header">
-        <!-- Parte superior con íconos decorativos y título principal -->
+      <div class="header"> <!-- Encabezado comun con logo y navegacion -->
         <div class="header-top">
-          <span class="car-icon">🚗</span>
-          <h1 class="main-title">Revisión Técnica Vehicular</h1>
-          <span class="car-icon">🚗</span>
+          <span class="car-icon">🚗</span> <!-- Icono decorativo izquierdo -->
+          <h1 class="main-title">Revision Tecnica Vehicular</h1> <!-- Titulo principal del sistema -->
+          <span class="car-icon">🚗</span> <!-- Icono decorativo derecho -->
         </div>
         
-        <!-- Subtítulo descriptivo -->
-        <h2>Sistema de Citas para Revisión Vehicular</h2>
+        <h2>Sistema de Citas para Revision Vehicular</h2> <!-- Subtitulo descriptivo -->
 
-        <!-- 
-          ==========================================
-          MENÚ DE NAVEGACIÓN PRINCIPAL
-          ==========================================
-          - `nav` → Etiqueta semántica HTML5 para navegación
-          - Estructura de lista para accesibilidad y relación lógica
-          
-          🔗 ENLACES: Navegación tradicional con recarga de página.
-          Para una SPA moderna se podría usar JavaScript con history API,
-          pero para este proyecto académico la simplicidad es una virtud.
-        -->
-        <nav class="nav-menu">
+        <nav class="nav-menu"> <!-- Menu de navegacion principal -->
           <ul class="nav-list">
             <li class="menu-item">
-              <!-- class="active" → Indica visualmente que esta es la página actual -->
-              <a href="index.html" class="active">🏠 Inicio</a>
+              <a href="index.html" class="active">🏠 Inicio</a> <!-- Enlace a pagina principal -->
             </li>
             <li class="menu-item">
-              <!-- class="btn-login-nav" → Estilo especial para destacar login -->
-              <a href="login.html" class="btn-login-nav">🔐 Login</a>
+              <a href="login.html" class="btn-login-nav">🔐 Login</a> <!-- Enlace destacado a login -->
             </li>
             <li class="menu-item">
-              <!-- 
-                En esta página (precios.html), este enlace debería tener
-                class="active" para resaltar visualmente. 
-                Ej: <a href="precios.html" class="active">💲 Tarifas</a>
-              -->
-              <a href="precios.html">💲 Tarifas</a>
+              <a href="precios.html">💲 Tarifas</a> <!-- Enlace a ESTA pagina -->
             </li>
-            <li class="menu-item"><a href="citas.html">📅 Citas</a></li>
-            <li class="menu-item"><a href="citas-agendadas.html">📋 Citas Agendadas</a></li>
-            <li class="menu-item"><a href="contactos.html">📬 Contacto</a></li>
+            <li class="menu-item"><a href="citas.html">📅 Citas</a></li> <!-- Enlace a formulario de citas -->
+            <li class="menu-item"><a href="citas-agendadas.html">📋 Citas Agendadas</a></li> <!-- Enlace a citas agendadas -->
+            <li class="menu-item"><a href="contactos.html">📬 Contacto</a></li> <!-- Enlace a contacto -->
           </ul>
         </nav>
       </div>
-      <!-- Fin del header -->
 
-      <!-- 
-        ==========================================
-        CONTENIDO PRINCIPAL: TARJETA CON TABLA DE PRECIOS
-        ==========================================
-        - `class="card centered-card"` → Estilos para:
-          • Fondo blanco con sombra (efecto tarjeta flotante)
-          • Bordes redondeados, centrado horizontal
-          • Ancho máximo 800px para legibilidad óptima
+      <div class="card centered-card"> <!-- Tarjeta centrada con tabla de precios -->
         
-        🎨 BENEFICIO VISUAL: La tarjeta enfoca la atención
-        en la tabla de precios sin distracciones del fondo.
-      -->
-      <div class="card centered-card">
-        
-        <!-- Título de la sección con emoji para identificación rápida -->
-        <h1>💲 Tarifas Inspección Técnica Vehicular</h1>
+        <h1>💲 Tarifas Inspeccion Tecnica Vehicular</h1> <!-- Titulo de la seccion -->
 
-        <!-- 
-          ==========================================
-          CONTENEDOR DE TABLA RESPONSIVE
-          ==========================================
-          - `class="table-wrap"` → Clase CSS definida en estilosProyecto.css que:
-            • overflow: auto → Permite scroll horizontal si la tabla excede el ancho
-            • border-radius + border → Estética consistente con el diseño de tarjetas
+        <div class="table-wrap"> <!-- Contenedor con scroll horizontal para moviles -->
           
-          📱 PROBLEMA QUE RESUELVE:
-          En móviles, una tabla con 3 columnas puede exceder el ancho de pantalla.
-          Sin .table-wrap, la tabla rompería el layout o se vería comprimida.
-          Con .table-wrap, el usuario puede deslizar horizontalmente para ver
-          todas las columnas sin afectar el diseño general de la página.
-          
-          💡 ALTERNATIVA MODERNA:
-          Se podría usar CSS Grid o flexbox para apilar columnas en móvil,
-          pero para tablas de precios tradicionales, scroll horizontal es
-          más simple y mantiene la comparación visual entre filas.
-        -->
-        <div class="table-wrap">
-          
-          <!-- 
-            ==========================================
-            TABLA HTML ESTÁNDAR PARA DATOS TABULARES
-            ==========================================
-            - Estructura semántica: <thead> (encabezados), <tbody> (datos)
-            - Sin id específico porque no se manipula con JavaScript
-            - Estilos definidos completamente en estilosProyecto.css
+          <table> <!-- Tabla estandar HTML para datos tabulares -->
             
-            🎨 DISEÑO DE TABLA (definido en CSS base):
-            • thead: fondo oscuro (--bg), texto blanco, sticky position
-            • tbody: zebra striping (filas pares con fondo gris claro)
-            • hover: fondo turquesa transparente para feedback visual
-            • padding generoso para legibilidad y toque en móvil
-            
-            ♿ ACCESIBILIDAD DE TABLAS:
-            • Estructura thead/tbody ayuda a lectores de pantalla
-              a anunciar "encabezado: Categoría del vehículo, dato: ..."
-            • Alineación izquierda para texto, derecha para números
-              (convención estándar para datos financieros)
-          -->
-          <table>
-            
-            <!-- 
-              ==========================================
-              ENCABEZADOS DE COLUMNA (<thead>)
-              ==========================================
-              Define los títulos de cada columna.
-              Se estilan con CSS para destacar visualmente.
-              
-              📋 ORDEN LÓGICO DE COLUMNAS:
-              1. Categoría del vehículo → Identificador principal (texto)
-              2. Inspección → Precio de servicio inicial (moneda)
-              3. Reinspección → Precio de servicio repetido (moneda)
-              
-              💡 UX WRITING:
-              • "Categoría del vehículo" → Claro y descriptivo
-              • "Inspección" / "Reinspección" → Términos técnicos
-                pero comprensibles para el contexto automotriz
-            -->
-            <!-- Encabezado de la tabla (fondo oscuro, texto blanco) -->
-            <thead>
+            <thead> <!-- Encabezados de columna -->
               <tr>
-                <th>Categoría del vehículo</th>
-                <th>Inspección</th>
-                <th>Reinspección</th>
+                <th>Categoria del vehiculo</th> <!-- Columna 1: Tipo de vehiculo -->
+                <th>Inspeccion</th> <!-- Columna 2: Precio de servicio inicial -->
+                <th>Reinspeccion</th> <!-- Columna 3: Precio de servicio repetido -->
               </tr>
             </thead>
 
-            <!-- 
-              ==========================================
-              CUERPO DE LA TABLA (<tbody>) - DATOS DE PRECIOS
-              ==========================================
-              Contiene 6 filas, una por categoría de vehículo.
-              Cada fila tiene 3 celdas: categoría, precio inspección, precio reinspección.
+            <tbody> <!-- Cuerpo de la tabla con datos de precios -->
               
-              💰 LÓGICA DE PRECIOS:
-              • Reinspección siempre cuesta menos que inspección inicial
-                (ej: ₡6,000 vs ₡4,500 para vehículos < 3.5 ton)
-              • Esto incentiva a usuarios a corregir fallas y volver,
-                en lugar de abandonar el proceso
-              • Los precios están hardcodeados aquí y también en app-citas.js
-                para cálculo automático de facturas (DRY principle aplicado)
-              
-              📱 RESPONSIVE:
-              En móvil, el usuario desliza horizontalmente dentro de .table-wrap
-              para ver las columnas de precio. El texto de categoría queda
-              fijo a la izquierda como referencia visual.
-            -->
-            <!-- Cuerpo de la tabla con 6 categorías de vehículos -->
-            <tbody>
-              
-              <!-- 
-                ==========================================
-                FILA 1: VEHÍCULOS LIGEROS (< 3.5 TON)
-                ==========================================
-                - Categoría más común: autos particulares, pickups pequeñas
-                - Precio base: ₡6,000 (referencia para otras categorías)
-                - Reinspección: ₡4,500 (25% de descuento)
-                
-                💡 NOTA TÉCNICA:
-                Este valor "menor_3_5_ton" coincide con el `value` del radio button
-                en citas.html, permitiendo que app-citas.js calcule automáticamente
-                el precio correcto al generar la factura.
-              -->
-              <!-- Fila 1: Vehículos ligeros -->
+              <!-- Fila 1: Vehiculos ligeros (< 3.5 ton) - Precio base -->
               <tr>
-                <td>Vehículos Menor a 3.5 Toneladas</td>
-                <td>₡6,000</td>
-                <td>₡4,500</td>
+                <td>Vehiculos Menor a 3.5 Toneladas</td>
+                <td>₡6,000</td> <!-- Precio inspeccion inicial -->
+                <td>₡4,500</td> <!-- Precio reinspeccion (25% descuento) -->
               </tr>
 
-              <!-- 
-                ==========================================
-                FILA 2: VEHÍCULOS PESADOS (> 3.5 TON)
-                ==========================================
-                - Camiones, furgones grandes, vehículos de carga
-                - Precio mayor: ₡7,500 (25% más que ligeros)
-                - Justificación: requieren más tiempo y equipo especializado
-              -->
-              <!-- Fila 2: Vehículos pesados -->
+              <!-- Fila 2: Vehiculos pesados (> 3.5 ton) - Precio mayor por equipo especializado -->
               <tr>
-                <td>Vehículos Mayor a 3.5 Toneladas</td>
+                <td>Vehiculos Mayor a 3.5 Toneladas</td>
                 <td>₡7,500</td>
                 <td>₡5,000</td>
               </tr>
 
-              <!-- 
-                ==========================================
-                FILA 3: MOTOCICLETAS
-                ==========================================
-                - Categoría especializada con proceso de inspección diferente
-                - Precio intermedio: ₡7,000
-                - Reinspección: ₡4,500 (mismo descuento que ligeros)
-                
-                💡 UX: Ordenar filas por frecuencia de uso ayuda al usuario
-                a encontrar su categoría más rápido. Motocicletas van tercero
-                porque son menos comunes que autos particulares.
-              -->
-              <!-- Fila 3: Motocicletas -->
+              <!-- Fila 3: Motocicletas - Categoria especializada -->
               <tr>
                 <td>Motocicletas</td>
                 <td>₡7,000</td>
                 <td>₡4,500</td>
               </tr>
 
-              <!-- 
-                ==========================================
-                FILA 4: SERVICIO PÚBLICO
-                ==========================================
-                - Taxis, Uber, buses interurbanos pequeños
-                - Precio más alto: ₡9,000
-                - Justificación: mayor desgaste, inspección más rigurosa,
-                  impacto en seguridad pública
-              -->
-              <!-- Fila 4: Servicio público -->
+              <!-- Fila 4: Servicio publico - Precio mas alto por rigurosidad -->
               <tr>
-                <td>Servicio Público</td>
+                <td>Servicio Publico</td>
                 <td>₡9,000</td>
                 <td>₡6,500</td>
               </tr>
 
-              <!-- 
-                ==========================================
-                FILA 5: EQUIPO ESPECIAL
-                ==========================================
-                - Grúas, montacargas, vehículos de construcción
-                - Precio más bajo: ₡5,000
-                - Justificación: proceso de inspección simplificado
-                  para maquinaria especializada
-              -->
-              <!-- Fila 5: Equipo especial -->
+              <!-- Fila 5: Equipo especial - Precio bajo por proceso simplificado -->
               <tr>
                 <td>Equipo Especial</td>
                 <td>₡5,000</td>
                 <td>₡3,500</td>
               </tr>
 
-              <!-- 
-                ==========================================
-                FILA 6: AUTOBUSES Y TRANSPORTE MASIVO
-                ==========================================
-                - Buses urbanos, microbuses, busetas
-                - Precio: ₡7,000 (igual que motocicletas)
-                - Reinspección: ₡4,500
-                
-                💡 CONSISTENCIA DE DATOS:
-                Estos mismos valores aparecen en app-citas.js dentro del
-                switch para cálculo de factura. Mantenerlos sincronizados
-                es crítico para evitar discrepancias entre lo que ve el
-                usuario y lo que se cobra.
-              -->
-              <!-- Fila 6: Autobuses -->
+              <!-- Fila 6: Autobuses y transporte masivo -->
               <tr>
-                <td>Autobús, Busetas-Microbús</td>
+                <td>Autobus, Busetas-Microbus</td>
                 <td>₡7,000</td>
                 <td>₡4,500</td>
               </tr>
@@ -397,11 +109,8 @@
             </tbody>
           </table>
         </div>
-        <!-- Fin del contenedor de tabla responsive -->
       </div>
-      <!-- Fin de la tarjeta de precios -->
       
     </div>
-    <!-- Fin del contenedor principal -->
   </body>
 </html>

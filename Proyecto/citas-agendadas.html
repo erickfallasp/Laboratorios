@@ -1,483 +1,127 @@
 <!--
-  ==========================================
-  CITAS AGENDADAS - PÁGINA PÚBLICA
-  Archivo: citas-agendadas.html
-  ==========================================
-  
-  🎯 PROPÓSITO DE ESTA PÁGINA:
-  Esta página muestra TODAS las citas agendadas en el sistema
-  de forma PÚBLICA (cualquier visitante puede verla).
-  
-  ⚠️ NOTA IMPORTANTE PARA PRODUCCIÓN:
-  En un entorno real, esta página debería estar protegida
-  con autenticación. Para este proyecto educativo, se muestra
-  pública para demostrar la funcionalidad de visualización.
-  
-  🔧 FUNCIONALIDADES:
-  1. 📋 Mostrar tabla con todas las citas de la base de datos
-  2. 🔄 Carga dinámica desde Supabase (sin recargar página)
-  3. 🗑️ Botón para eliminar citas (con confirmación)
-  4. 📅 Fechas formateadas en español para mejor legibilidad
-  5. 📭 Mensaje amigable cuando no hay citas registradas
-  
-  🔗 CONEXIONES CON OTROS ARCHIVOS:
-  - estilosProyecto.css → Estilos visuales personalizados
-  - app-citas-agendadas.js → Lógica JavaScript para cargar/mostrar citas
-  - SweetAlert2 (CDN) → Alertas y confirmaciones bonitas
-  - supabase.js (importado en JS) → Conexión con base de datos en la nube
-  
-  📊 FLUJO DE DATOS:
-  1. Usuario entra a citas-agendadas.html
-  2. El navegador carga HTML + CSS + SweetAlert2
-  3. Se ejecuta app-citas-agendadas.js (módulo)
-  4. JS consulta a Supabase: "SELECT * FROM citas ORDER BY fecha"
-  5. JS genera filas HTML dinámicamente con los datos
-  6. Usuario ve la tabla actualizada en tiempo real
+  CITAS AGENDADAS - PAGINA PUBLICA
+  Proposito: Mostrar todas las citas del sistema en una tabla publica
 -->
 
 <!doctype html>
-<!-- 
-  ==========================================
-  DECLARACIÓN DEL DOCUMENTO HTML5
-  ==========================================
-  - `<!doctype html>` → Indica que es HTML5 (estándar moderno)
-  - `lang="es"` → Define el idioma como español
-    • Ayuda a motores de búsqueda (SEO)
-    • Mejora accesibilidad para lectores de pantalla
-    • Permite corrección ortográfica en el navegador
--->
-<html lang="es">
+<html lang="es"> <!-- Define idioma español para SEO y accesibilidad -->
   
-  <!-- 
-    ==========================================
-    SECCIÓN <head>: METADATOS Y CONFIGURACIÓN
-    ==========================================
-    Esta sección NO se muestra en la página, pero configura:
-    - Codificación de caracteres
-    - Diseño responsive para móviles
-    - Título de la pestaña del navegador
-    - Archivos CSS y JavaScript necesarios
-  -->
   <head>
+    <meta charset="UTF-8" /> <!-- Soporta caracteres especiales: tildes, emojis, simbolos -->
     
-    <!-- 
-      ==========================================
-      CODIFICACIÓN DE CARACTERES UTF-8
-      ==========================================
-      - `charset="UTF-8"` → Permite mostrar caracteres especiales:
-        • Tildes: á, é, í, ó, ú, ñ
-        • Símbolos: ₡, €, £, ¥
-        • Emojis: 🚗, 📅, 📋
-      
-      ⚠️ IMPORTANTE: Debe ser la PRIMERA etiqueta <meta>
-      para que el navegador interprete correctamente todo el documento.
-    -->
-    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Hace el diseño responsive para moviles -->
     
-    <!-- 
-      ==========================================
-      VIEWPORT PARA DISEÑO RESPONSIVE
-      ==========================================
-      - `width=device-width` → El ancho de la página se adapta
-        al ancho de la pantalla del dispositivo (móvil, tablet, desktop)
-      
-      - `initial-scale=1.0` → Nivel de zoom inicial al 100%
-        (sin ampliar ni reducir automáticamente)
-      
-      📱 BENEFICIO: Sin esta línea, los móviles mostrarían
-      la página como si fuera de escritorio (muy pequeña),
-      obligando al usuario a hacer zoom manual.
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Citas Agendadas - Revision Vehicular</title> <!-- Titulo de la pestaña y SEO -->
     
-    <!-- 
-      ==========================================
-      TÍTULO DE LA PÁGINA
-      ==========================================
-      - Se muestra en la pestaña del navegador
-      - Aparece en resultados de búsqueda (SEO)
-      - Es el texto que se guarda al marcar como favorito
-      
-      💡 CONSEJO: Usar palabras clave relevantes para SEO:
-      "Citas", "Revisión Vehicular", "Agendamiento"
-    -->
-    <title>Citas Agendadas - Revisión Vehicular</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Libreria para alertas bonitas -->
     
-    <!-- 
-      ==========================================
-      LIBRERÍA EXTERNA: SweetAlert2 (CDN)
-      ==========================================
-      - `src="https://cdn.jsdelivr.net/npm/sweetalert2@11"` → 
-        Carga la librería desde un servidor público (CDN)
-      
-      🎨 ¿QUÉ HACE SWEETALERT2?
-      Reemplaza las alertas nativas del navegador (`alert()`)
-      por modales modernos y personalizables:
-      • Animaciones suaves
-      • Íconos visuales (✅❌⚠️)
-      • Botones con colores personalizados
-      • Soporte para HTML dentro del contenido
-      
-      🔗 VERSIÓN @11 → Usamos la versión 11 para garantizar
-      compatibilidad y características estables.
-    -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- 
-      ==========================================
-      HOJA DE ESTILOS PERSONALIZADA
-      ==========================================
-      - `href="estilosProyecto.css"` → Enlace al archivo CSS
-        que define colores, fuentes, espaciados y diseño
-      
-      🎨 ¿QUÉ CONTIENE estilosProyecto.css?
-      • Variables CSS para colores de marca (--color-principal)
-      • Estilos para tarjetas (.card), botones (.btn), tablas
-      • Diseño responsive con @media queries
-      • Animaciones y efectos hover
-      
-      💡 NOTA: El archivo debe estar en la misma carpeta
-      o ajustar la ruta relativa si está en subcarpeta.
-    -->
-    <link rel="stylesheet" href="estilosProyecto.css" />
+    <link rel="stylesheet" href="estilosProyecto.css" /> <!-- Hoja de estilos principal del proyecto -->
     
   </head>
   
-  <!-- 
-    ==========================================
-    SECCIÓN <body>: CONTENIDO VISIBLE
-    ==========================================
-    Todo lo que va aquí se muestra en la página web.
-    Usamos una estructura semántica con clases para estilizar.
-  -->
   <body>
     
-    <!-- 
-      ==========================================
-      CONTENEDOR PRINCIPAL
-      ==========================================
-      - `class="container"` → Clase CSS que centra el contenido
-        y establece un ancho máximo para mejor legibilidad
+    <div class="container"> <!-- Contenedor principal que centra el contenido -->
       
-      📐 BENEFICIO: En pantallas grandes, el contenido
-      no se estira de extremo a extremo (difícil de leer).
-      En móviles, ocupa el 100% del ancho disponible.
-    -->
-    <div class="container">
-      
-      <!-- 
-        ==========================================
-        HEADER: ENCABEZADO CON NAVEGACIÓN
-        ==========================================
-        Esta sección contiene:
-        1. Logo/título del sistema
-        2. Menú de navegación principal
-        3. Botón destacado de Login
+      <div class="header"> <!-- Encabezado con logo y navegacion -->
         
-        🎨 DISEÑO: Usamos flexbox (en CSS) para alinear
-        los elementos horizontalmente en desktop y
-        verticalmente en móviles (responsive).
-      -->
-      <div class="header">
-        
-        <!-- 
-          ==========================================
-          HEADER SUPERIOR: LOGO Y TÍTULO
-          ==========================================
-          Diseño simétrico con íconos de autos a los lados
-          para reforzar visualmente el tema vehicular.
-        -->
-        <div class="header-top">
+        <div class="header-top"> <!-- Fila superior con iconos y titulo -->
           
-          <!-- Ícono decorativo izquierdo -->
-          <span class="car-icon">🚗</span>
+          <span class="car-icon">🚗</span> <!-- Icono decorativo izquierdo -->
           
-          <!-- 
-            ==========================================
-            TÍTULO PRINCIPAL DEL SISTEMA
-            ==========================================
-            - `class="main-title"` → Estilos grandes y destacados
-            - Texto claro que identifica el propósito del sitio
-          -->
-          <h1 class="main-title">Revisión Técnica Vehicular</h1>
+          <h1 class="main-title">Revision Tecnica Vehicular</h1> <!-- Titulo principal del sistema -->
           
-          <!-- Ícono decorativo derecho (simetría visual) -->
-          <span class="car-icon">🚗</span>
+          <span class="car-icon">🚗</span> <!-- Icono decorativo derecho -->
           
         </div>
         
-        <!-- 
-          ==========================================
-          SUBTÍTULO DESCRIPTIVO
-          ==========================================
-          - `h2` → Jerarquía semántica correcta (después de h1)
-          - Explica brevemente qué hace el sistema
-          - Ayuda a usuarios nuevos a entender el propósito
-        -->
-        <h2>Sistema de Citas para Revisión Vehicular</h2>
+        <h2>Sistema de Citas para Revision Vehicular</h2> <!-- Subtitulo descriptivo -->
 
-        <!-- 
-          ==========================================
-          MENÚ DE NAVEGACIÓN PRINCIPAL
-          ==========================================
-          - `nav` → Etiqueta semántica HTML5 para navegación
-          - `class="nav-menu"` → Estilos personalizados en CSS
-          
-          🧭 ESTRUCTURA:
-          • Lista no ordenada (<ul>) para elementos de menú
-          • Cada ítem (<li>) contiene un enlace (<a>)
-          • Clases para estados: .active (página actual), .btn-login-nav (destacado)
-          
-          🔗 ENLACES:
-          Todos apuntan a archivos .html en la misma carpeta.
-          El navegador recarga la página al hacer clic (navegación tradicional).
-        -->
-        <nav class="nav-menu">
+        <nav class="nav-menu"> <!-- Menu de navegacion principal -->
           <ul class="nav-list">
             
-            <!-- Ítem: Inicio (página principal) -->
             <li class="menu-item">
-              <!-- 
-                class="active" → Indica que esta es la página actual
-                (se usa en CSS para resaltar visualmente)
-              -->
-              <a href="index.html" class="active">🏠 Inicio</a>
+              <a href="index.html" class="active">🏠 Inicio</a> <!-- Enlace a pagina principal -->
             </li>
             
-            <!-- Ítem: Login (acceso a cuenta personal) -->
             <li class="menu-item">
-              <!-- 
-                class="btn-login-nav" → Estilo especial para destacar
-                este enlace como botón de acción principal
-              -->
-              <a href="login.html" class="btn-login-nav">🔐 Login</a>
+              <a href="login.html" class="btn-login-nav">🔐 Login</a> <!-- Enlace destacado a login -->
             </li>
             
-            <!-- Ítem: Tarifas (tabla de precios) -->
             <li class="menu-item">
-              <a href="precios.html">💲 Tarifas</a>
+              <a href="precios.html">💲 Tarifas</a> <!-- Enlace a tabla de precios -->
             </li>
             
-            <!-- Ítem: Agendar nueva cita (formulario) -->
             <li class="menu-item">
-              <a href="citas.html">📅 Citas</a>
+              <a href="citas.html">📅 Citas</a> <!-- Enlace a formulario de agendamiento -->
             </li>
             
-            <!-- Ítem: Citas Agendadas (ESTA PÁGINA) -->
             <li class="menu-item">
-              <!-- 
-                Nota: En esta página, este enlace NO tiene class="active"
-                porque podríamos querer resaltar otra página según el flujo.
-                La lógica de "active" se maneja en cada archivo HTML.
-              -->
-              <a href="citas-agendadas.html">📋 Citas Agendadas</a>
+              <a href="citas-agendadas.html">📋 Citas Agendadas</a> <!-- Enlace a ESTA pagina -->
             </li>
             
-            <!-- Ítem: Contacto (información de ubicación/teléfono) -->
             <li class="menu-item">
-              <a href="contactos.html">📬 Contacto</a>
+              <a href="contactos.html">📬 Contacto</a> <!-- Enlace a informacion de contacto -->
             </li>
             
           </ul>
         </nav>
         
       </div>
-      <!-- Fin del header -->
 
-      <!-- 
-        ==========================================
-        CONTENIDO PRINCIPAL: TARJETA DE CITAS
-        ==========================================
-        - `class="card centered-card"` → Estilos para:
-          • Fondo blanco con sombra (efecto tarjeta)
-          • Bordes redondeados
-          • Centrado horizontal en la página
-          • Espaciado interno (padding)
-      -->
-      <div class="card centered-card">
+      <div class="card centered-card"> <!-- Tarjeta centrada con contenido principal -->
         
-        <!-- Título de la sección -->
-        <h1>📋 Mis Citas Agendadas</h1>
+        <h1>📋 Mis Citas Agendadas</h1> <!-- Titulo de la seccion -->
         
-        <!-- 
-          ==========================================
-          TEXTO DE APOYO (SUBTÍTULO)
-          ==========================================
-          - `class="text-muted"` → Color de texto atenuado en CSS
-          - Explica brevemente qué verá el usuario
-          - Mejora la experiencia guiando al usuario
-        -->
-        <p class="text-muted">ver todas tus citas programadas</p>
+        <p class="text-muted">ver todas tus citas programadas</p> <!-- Texto de apoyo -->
 
-        <!-- 
-          ==========================================
-          CONTENEDOR DE TABLA RESPONSIVE
-          ==========================================
-          - `class="table-wrap"` → Permite scroll horizontal
-            en móviles si la tabla es muy ancha
+        <div class="table-wrap"> <!-- Contenedor con scroll horizontal para moviles -->
           
-          📱 PROBLEMA QUE RESUELVE:
-          En pantallas pequeñas, las tablas con muchas columnas
-          se salen de la pantalla. Este contenedor permite
-          deslizar horizontalmente sin romper el diseño.
-        -->
-        <div class="table-wrap">
-          
-          <!-- 
-            ==========================================
-            TABLA HTML ESTÁNDAR
-            ==========================================
-            - `id="tablaCitas"` → Identificador único para que
-              JavaScript pueda encontrar y manipular esta tabla
-            - Estructura semántica: <thead> (encabezados), <tbody> (datos)
-          -->
-          <table id="tablaCitas">
+          <table id="tablaCitas"> <!-- Tabla donde JavaScript insertara las citas -->
             
-            <!-- 
-              ==========================================
-              ENCABEZADOS DE COLUMNA (<thead>)
-              ==========================================
-              Define los títulos de cada columna de la tabla.
-              Se estilan con CSS para destacar visualmente.
-            -->
-            <thead>
-              <tr>  <!-- Fila de encabezados -->
-                <th>Fecha</th>        <!-- Columna 1: Fecha de la cita -->
-                <th>Hora</th>         <!-- Columna 2: Hora programada -->
-                <th>Cliente</th>      <!-- Columna 3: Nombre del cliente -->
-                <th>Teléfono</th>     <!-- Columna 4: Contacto telefónico -->
-                <th>Vehículo</th>     <!-- Columna 5: Marca y modelo -->
-                <th>Placa</th>        <!-- Columna 6: Placa del vehículo -->
-                <th>Acciones</th>     <!-- Columna 7: Botones (ver/eliminar) -->
+            <thead> <!-- Encabezados de columna -->
+              <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Cliente</th>
+                <th>Telefono</th>
+                <th>Vehiculo</th>
+                <th>Placa</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             
-            <!-- 
-              ==========================================
-              CUERPO DE LA TABLA (<tbody>)
-              ==========================================
-              - `id="tbodyCitas"` → Identificador para que JavaScript
-                pueda insertar filas dinámicamente
-              
-              🔧 FUNCIONAMIENTO CON JAVASCRIPT:
-              1. Al cargar la página, app-citas-agendadas.js consulta a Supabase
-              2. Por cada cita recibida, crea un elemento <tr> con <td>
-              3. Usa appendChild() para agregar la fila a este tbody
-              
-              📝 EJEMPLO DE FILA GENERADA DINÁMICAMENTE:
-              <tr>
-                <td>25 de abril de 2026</td>
-                <td>10:00</td>
-                <td>Juan Pérez</td>
-                <td>8888-8888</td>
-                <td>Toyota Corolla</td>
-                <td><span class="badge">ABC123</span></td>
-                <td>
-                  <button onclick="eliminarCita(15)">🗑️</button>
-                </td>
-              </tr>
-            -->
             <tbody id="tbodyCitas">
-              <!-- 
-                Las citas se insertan aquí mediante JavaScript.
-                Inicialmente está vacío; se llena después de consultar a Supabase.
-              -->
+              <!-- JavaScript insertara aqui las filas con las citas de Supabase -->
             </tbody>
             
           </table>
         </div>
-        <!-- Fin del contenedor de tabla -->
 
-        <!-- 
-          ==========================================
-          MENSAJE "SIN CITAS" (ESTADO VACÍO)
-          ==========================================
-          - `id="sinCitas"` → Identificador para mostrar/ocultar con JS
-          - `style="display: none"` → Inicialmente oculto (se muestra solo si no hay citas)
+        <!-- Mensaje que se muestra cuando no hay citas (estado vacio) -->
+        <div id="sinCitas" style="text-align: center; padding: 40px; display: none">
           
-          🎨 DISEÑO DE ESTADO VACÍO (Empty State):
-          En UX, es importante guiar al usuario cuando no hay datos:
-          • Ícono grande y amigable (📭)
-          • Mensaje claro: "No tienes citas agendadas"
-          • Texto de apoyo: "Agenda tu primera cita..."
-          • Botón de acción principal: "➕ Agendar Cita"
+          <p style="font-size: 48px; margin: 0">📭</p> <!-- Icono grande decorativo -->
           
-          🔧 LÓGICA EN JAVASCRIPT:
-          if (!citas || citas.length === 0) {
-            tabla.style.display = 'none';      // Ocultar tabla vacía
-            mensajeSinCitas.style.display = 'block'; // Mostrar este mensaje
-          }
-        -->
-        <div
-          id="sinCitas"
-          style="text-align: center; padding: 40px; display: none"
-        >
-          <!-- Ícono decorativo grande -->
-          <p style="font-size: 48px; margin: 0">📭</p>
+          <h3>No tienes citas agendadas</h3> <!-- Titulo del estado vacio -->
           
-          <!-- Título del estado vacío -->
-          <h3>No tienes citas agendadas</h3>
+          <p class="text-muted">Agenda tu primera cita para verla aqui</p> <!-- Texto de apoyo -->
           
-          <!-- Texto de apoyo con clase para estilo atenuado -->
-          <p class="text-muted">Agenda tu primera cita para verla aquí</p>
-          
-          <!-- 
-            ==========================================
-            BOTÓN DE ACCIÓN PRINCIPAL (CTA)
-            ==========================================
-            - `class="btn btn-primary"` → Estilos de botón destacado
-            - `href="citas.html"` → Redirige al formulario de agendamiento
-            - `style="margin-top: 16px"` → Espaciado vertical adicional
-            
-            🎯 PROPÓSITO: Guiar al usuario hacia la acción deseada
-            (agendar una cita) cuando no hay datos que mostrar.
-          -->
+          <!-- Boton que guia al usuario a agendar su primera cita -->
           <a href="citas.html" class="btn btn-primary" style="margin-top: 16px">
             ➕ Agendar Cita
           </a>
         </div>
         
       </div>
-      <!-- Fin de la tarjeta principal -->
       
     </div>
-    <!-- Fin del contenedor principal -->
 
-    <!-- 
-      ==========================================
-      SCRIPTS AL FINAL DEL <body>
-      ==========================================
-      Buena práctica: cargar scripts al final para que:
-      1. El HTML se renderice primero (mejor percepción de velocidad)
-      2. Los elementos del DOM estén disponibles cuando JS se ejecute
-      
-      ⚠️ NOTA: SweetAlert2 se carga DOS veces (en head y aquí).
-      Esto no causa error, pero es redundante. Se puede dejar solo
-      en el head para optimizar.
-    -->
+    <!-- Scripts al final para mejor rendimiento -->
     
-    <!-- SweetAlert2 (redundante, pero seguro) -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 (redundante pero seguro) -->
     
-    <!-- 
-      ==========================================
-      SCRIPT PRINCIPAL DE LA PÁGINA
-      ==========================================
-      - `type="module"` → Indica que es un módulo ES6 moderno
-        • Permite usar `import`/`export`
-        • Ejecución en modo estricto automático
-        • Scope aislado (no contamina variables globales)
-      
-      - `src="app-citas-agendadas.js"` → Archivo con la lógica:
-        1. Consultar citas desde Supabase
-        2. Generar filas HTML dinámicamente
-        3. Manejar eliminación con confirmación
-        4. Formatear fechas a español
-        
-      🔗 CONEXIÓN: Este archivo importa { supabase } desde
-      supabase.js, que contiene la configuración de conexión
-      a la base de datos en la nube.
-    -->
+    <!-- Script principal con logica de carga de citas -->
     <script type="module" src="app-citas-agendadas.js"></script>
     
   </body>

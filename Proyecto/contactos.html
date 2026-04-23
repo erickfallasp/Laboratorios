@@ -1,375 +1,92 @@
 <!--
-  ==========================================
-  PÁGINA DE CONTACTO - INFORMACIÓN DE ATENCIÓN
-  Archivo: contactos.html
-  ==========================================
-  
-  🎯 PROPÓSITO DE ESTA PÁGINA:
-  Proporcionar a los usuarios múltiples canales de comunicación
-  con el servicio de revisión vehicular, incluyendo teléfonos,
-  WhatsApp, email y horario de atención.
-  
-  🔧 CARACTERÍSTICAS PRINCIPALES:
-  1. 📋 Información de contacto clara y organizada
-  2. 🎨 Diseño consistente con el resto del sistema
-  3. ♿ Accesibilidad básica con estructura semántica
-  4. 📱 Responsive: se adapta a móvil y desktop
-  5. 🔗 Navegación uniforme con el header compartido
-  
-  🔗 CONEXIONES CON OTROS ARCHIVOS:
-  - estilosProyecto.css → Estilos visuales personalizados
-  - (Sin JavaScript) → Página estática, solo información
-  
-  📊 FLUJO DEL USUARIO:
-  1. Usuario tiene una duda o problema → hace clic en "Contacto"
-  2. Ve múltiples opciones de comunicación (teléfono, WhatsApp, email)
-  3. Conoce el horario de atención y tiempo de respuesta esperado
-  4. Puede volver al menú principal para otras acciones
+  PAGINA DE CONTACTO - INFORMACION DE ATENCION
+  Proposito: Mostrar canales de comunicacion con el servicio
 -->
 
 <!doctype html>
-<!-- 
-  ==========================================
-  DECLARACIÓN HTML5 CON IDIOMA ESPAÑOL
-  ==========================================
-  - `<!doctype html>` → Indica que es documento HTML5 válido
-  - `lang="es"` → Define español como idioma principal
-  
-  🌍 BENEFICIOS:
-  • SEO: Google prioriza páginas con idioma declarado para búsquedas locales
-  • Accesibilidad: Lectores de pantalla usan pronunciación y entonación en español
-  • Navegador: Activa corrector ortográfico en español para campos de texto
--->
-<html lang="es">
+<html lang="es"> <!-- Define idioma español para SEO y accesibilidad -->
   
   <head>
-    <!-- 
-      ==========================================
-      CODIFICACIÓN UTF-8 (PRIMERA META ETIQUETA)
-      ==========================================
-      - `charset="UTF-8"` → Soporta caracteres especiales:
-        • Tildes y ñ: á, é, í, ó, ú, ñ
-        • Símbolos: ₡ (colón), ©, ®
-        • Emojis: 📬, 📞, 💬, ✉️, 🕒
-      
-      ⚠️ IMPORTANTE: Debe ser la PRIMERA etiqueta <meta>
-      para que el navegador interprete correctamente
-      todo el documento desde el primer byte.
-    -->
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8" /> <!-- Soporta caracteres especiales: tildes, emojis, simbolos -->
     
-    <!-- 
-      ==========================================
-      VIEWPORT PARA DISEÑO RESPONSIVE
-      ==========================================
-      - `width=device-width` → Ancho de página = ancho de pantalla del dispositivo
-      - `initial-scale=1.0` → Nivel de zoom inicial al 100%
-      
-      📱 SIN ESTO: En móviles, la página se vería como en desktop
-      (muy pequeña), obligando al usuario a hacer zoom manual.
-      CON ESTO: Se adapta automáticamente a cualquier tamaño de pantalla.
-      
-      💡 DATO: Esta meta etiqueta es OBLIGATORIA para diseño responsive moderno.
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Hace el diseño responsive para moviles -->
     
-    <!-- 
-      ==========================================
-      TÍTULO DE LA PÁGINA (SEO + PESTAÑA)
-      ==========================================
-      - Se muestra en la pestaña del navegador
-      - Aparece en resultados de búsqueda (Google, Bing)
-      - Es el texto al guardar como favorito o compartir enlace
-      
-      🔍 SEO TIP: "Contacto - Revisión Vehicular" incluye:
-      • Palabra clave principal: "Contacto" (intención del usuario)
-      • Nombre del servicio: "Revisión Vehicular" (contexto)
-      • Separador "-" → Mejora legibilidad en resultados de búsqueda
-    -->
-    <title>Contacto - Revisión Vehicular</title>
+    <title>Contacto - Revision Vehicular</title> <!-- Titulo de la pestaña y SEO -->
     
-    <!-- 
-      ==========================================
-      HOJA DE ESTILOS PERSONALIZADA
-      ==========================================
-      - `href="estilosProyecto.css"` → Archivo CSS con:
-        • Variables de colores de marca (--color-principal: #10CFC8)
-        • Estilos para tarjetas (.card), listas (.lista-sin-puntos)
-        • Clases utilitarias (.mt-2, .text-muted)
-        • Diseño responsive con @media queries
-      
-      💡 NOTA: Al ser un archivo estático (sin JS), esta página
-      carga muy rápido porque solo necesita HTML + CSS.
-    -->
-    <link rel="stylesheet" href="estilosProyecto.css" />
+    <link rel="stylesheet" href="estilosProyecto.css" /> <!-- Hoja de estilos principal del proyecto -->
   </head>
   
   <body>
-    <!-- 
-      ==========================================
-      CONTENEDOR PRINCIPAL (LAYOUT CENTRALIZADO)
-      ==========================================
-      - `class="container"` → Clase CSS que:
-        • Centra el contenido horizontalmente (margin: 0 auto)
-        • Establece ancho máximo (~1200px) para legibilidad
-        • Agrega padding lateral en móviles para evitar bordes pegados
+    <div class="container"> <!-- Contenedor principal que centra el contenido -->
       
-      📐 BENEFICIO UX: En pantallas grandes, el contenido
-      no se estira de extremo a extremo (difícil de leer).
-      En móviles, ocupa el 100% disponible con márgenes cómodos.
-    -->
-    <div class="container">
-      
-      <!-- 
-        ==========================================
-        HEADER: ENCABEZADO CONSISTENTE EN TODAS LAS PÁGINAS
-        ==========================================
-        Este header se REPITE idéntico en todas las páginas del sistema
-        para mantener consistencia visual y navegación predecible.
+      <div class="header"> <!-- Encabezado con logo y navegacion -->
         
-        🎨 DISEÑO: Usa Flexbox (definido en CSS) para:
-        • Alinear elementos horizontalmente en desktop
-        • Apilar elementos verticalmente en móviles (@media query)
-        • Mantener espaciado uniforme entre componentes
-      -->
-      <div class="header">
-        
-        <!-- Parte superior con íconos decorativos y título principal -->
-        <div class="header-top">
-          <!-- Ícono de auto izquierdo (decorativo, refuerza tema vehicular) -->
-          <span class="car-icon">🚗</span>
-          
-          <!-- 
-            ==========================================
-            TÍTULO PRINCIPAL DEL SISTEMA (H1)
-            ==========================================
-            - `class="main-title"` → Estilos grandes, negrita, color de marca
-            - Texto claro que identifica el propósito del sitio
-            - Único H1 por página → Buenas prácticas de SEO y accesibilidad
-          -->
-          <h1 class="main-title">Revisión Técnica Vehicular</h1>
-          
-          <!-- Ícono de auto derecho (simetría visual con el izquierdo) -->
-          <span class="car-icon">🚗</span>
+        <div class="header-top"> <!-- Fila superior con iconos y titulo -->
+          <span class="car-icon">🚗</span> <!-- Icono decorativo izquierdo -->
+          <h1 class="main-title">Revision Tecnica Vehicular</h1> <!-- Titulo principal del sistema -->
+          <span class="car-icon">🚗</span> <!-- Icono decorativo derecho -->
         </div>
         
-        <!-- 
-          ==========================================
-          SUBTÍTULO DESCRIPTIVO (H2)
-          ==========================================
-          - Jerarquía semántica correcta: H1 → H2 → H3...
-          - Explica brevemente qué hace el sistema para nuevos usuarios
-          - Color atenuado en CSS para no competir visualmente con el H1
-        -->
-        <h2>Sistema de Citas para Revisión Vehicular</h2>
+        <h2>Sistema de Citas para Revision Vehicular</h2> <!-- Subtitulo descriptivo -->
 
-        <!-- 
-          ==========================================
-          MENÚ DE NAVEGACIÓN PRINCIPAL
-          ==========================================
-          - `nav` → Etiqueta semántica HTML5 para navegación
-          - `class="nav-menu"` → Estilos personalizados en CSS
-          
-          🧭 ESTRUCTURA SEMÁNTICA ACCESIBLE:
-          <nav> (contenedor semántico para navegación)
-            └─ <ul> (lista no ordenada → relación lógica entre ítems)
-                └─ <li> (ítem individual de menú)
-                    └─ <a> (enlace navegable con href)
-          
-          ♿ BENEFICIOS DE ACCESIBILIDAD:
-          • Lectores de pantalla anuncian "Navegación" al entrar al <nav>
-          • Usuarios de teclado pueden navegar con Tab entre enlaces
-          • Estructura de lista ayuda a entender relación entre opciones
-          
-          🔗 ENLACES: Todos apuntan a archivos .html en la misma carpeta.
-          El navegador recarga la página al hacer clic (navegación tradicional).
-        -->
-        <nav class="nav-menu">
+        <nav class="nav-menu"> <!-- Menu de navegacion principal -->
           <ul class="nav-list">
-            
-            <!-- Ítem: Inicio (página principal del sistema) -->
             <li class="menu-item">
-              <!-- 
-                class="active" → Indica visualmente que esta es la página actual
-                (en CSS: color diferente, subrayado, o fondo destacado)
-                
-                💡 NOTA: En esta página (contactos.html), el enlace a contactos.html
-                debería tener class="active", no el de index.html.
-                Esto se ajusta manualmente en cada archivo HTML.
-              -->
-              <a href="index.html" class="active">🏠 Inicio</a>
+              <a href="index.html" class="active">🏠 Inicio</a> <!-- Enlace a pagina principal -->
             </li>
-            
-            <!-- Ítem: Login (acceso a cuenta personal con autenticación) -->
             <li class="menu-item">
-              <!-- 
-                class="btn-login-nav" → Estilo especial para destacar
-                este enlace como botón de acción principal (color de marca)
-              -->
-              <a href="login.html" class="btn-login-nav">🔐 Login</a>
+              <a href="login.html" class="btn-login-nav">🔐 Login</a> <!-- Enlace destacado a login -->
             </li>
-            
-            <!-- Ítem: Tarifas (tabla de precios por tipo de vehículo) -->
+            <li class="menu-item"><a href="precios.html">💲 Tarifas</a></li> <!-- Enlace a tabla de precios -->
+            <li class="menu-item"><a href="citas.html">📅 Citas</a></li> <!-- Enlace a formulario de citas -->
             <li class="menu-item">
-              <a href="precios.html">💲 Tarifas</a>
+              <a href="citas-agendadas.html">📋 Citas Agendadas</a> <!-- Enlace a citas agendadas -->
             </li>
-            
-            <!-- Ítem: Agendar nueva cita (formulario principal de interacción) -->
             <li class="menu-item">
-              <a href="citas.html">📅 Citas</a>
+              <a href="contactos.html">📬 Contacto</a> <!-- Enlace a ESTA pagina -->
             </li>
-            
-            <!-- Ítem: Citas Agendadas (lista pública de citas programadas) -->
-            <li class="menu-item">
-              <a href="citas-agendadas.html">📋 Citas Agendadas</a>
-            </li>
-            
-            <!-- Ítem: Contacto (ESTA PÁGINA - información de atención) -->
-            <li class="menu-item">
-              <!-- 
-                En esta página, este enlace debería tener class="active"
-                para resaltar visualmente que el usuario está aquí.
-                Ej: <a href="contactos.html" class="active">📬 Contacto</a>
-              -->
-              <a href="contactos.html">📬 Contacto</a>
-            </li>
-            
           </ul>
         </nav>
       </div>
-      <!-- Fin del header -->
 
-      <!-- 
-        ==========================================
-        CONTENIDO PRINCIPAL: TARJETA DE CONTACTO
-        ==========================================
-        - `class="card centered-card"` → Estilos para:
-          • Fondo blanco con sombra sutil (efecto tarjeta flotante)
-          • Bordes redondeados (border-radius: 12px)
-          • Centrado horizontal en la página (margin: 0 auto)
-          • Espaciado interno generoso (padding: 24-40px)
+      <div class="card centered-card"> <!-- Tarjeta centrada con informacion de contacto -->
         
-        🎨 BENEFICIO VISUAL: La tarjeta separa visualmente
-        el contenido del fondo, enfocando la atención del usuario
-        en la información de contacto sin distracciones.
-      -->
-      <div class="card centered-card">
-        
-        <!-- 
-          ==========================================
-          TÍTULO DE LA SECCIÓN CON EMOJI
-          ==========================================
-          - H1 dentro de la tarjeta → Jerarquía local (no compite con el H1 global)
-          - Emoji 📬 → Refuerzo visual del propósito (contacto/comunicación)
-          - Texto claro: "Atención al Cliente" → Expectativa inmediata
-        -->
-        <h1>📬 Atención al Cliente</h1>
+        <h1>📬 Atencion al Cliente</h1> <!-- Titulo de la seccion -->
 
-        <!-- 
-          ==========================================
-          PÁRRAFO INTRODUCTORIO (CONTEXTO)
-          ==========================================
-          - Explica el propósito de la página: canal para sugerencias, quejas, recomendaciones
-          - Tono amigable y profesional: "Su satisfacción es nuestra prioridad"
-          - Prepara al usuario para la información que viene a continuación
-        -->
         <p>
-          Su satisfacción es nuestra prioridad. Para sugerencias, quejas o
+          Su satisfaccion es nuestra prioridad. Para sugerencias, quejas o
           recomendaciones:
-        </p>
+        </p> <!-- Texto introductorio -->
 
-        <!-- 
-          ==========================================
-          LISTA DE INFORMACIÓN DE CONTACTO
-          ==========================================
-          - `class="lista-sin-puntos"` → CSS que remove bullets (list-style: none)
-          - Cada ítem combina emoji + texto en negrita + dato de contacto
+        <ul class="lista-sin-puntos"> <!-- Lista sin viñetas con datos de contacto -->
           
-          🎨 DISEÑO DE MICROCOPY:
-          • 📞 Teléfono: → Ícono universal de llamada
-          • 💬 WhatsApp: → Ícono reconocido para mensajería instantánea
-          • ✉️ Email: → Ícono clásico de correo electrónico
-          • 🕒 Horario: → Ícono de reloj para disponibilidad temporal
+          <li>📞 <strong>Telefono:</strong> 2222-2222</li> <!-- Telefono fijo de atencion -->
           
-          ♿ ACCESIBILIDAD: Los emojis son decorativos, el texto
-          contiene toda la información necesaria para lectores de pantalla.
-        -->
-        <ul class="lista-sin-puntos">
+          <li>💬 <strong>WhatsApp:</strong> 8888-8888</li> <!-- WhatsApp para comunicacion rapida -->
           
-          <!-- Ítem 1: Teléfono fijo de atención -->
-          <li>📞 <strong>Teléfono:</strong> 2222-2222</li>
+          <li>✉️ <strong>Email:</strong> contacto@revisionvehicular.com</li> <!-- Email para consultas formales -->
           
-          <!-- Ítem 2: WhatsApp para comunicación rápida -->
-          <li>💬 <strong>WhatsApp:</strong> 8888-8888</li>
-          
-          <!-- Ítem 3: Email para consultas formales o con adjuntos -->
-          <li>✉️ <strong>Email:</strong> contacto@revisionvehicular.com</li>
-          
-          <!-- 
-            ==========================================
-            ÍTEM 4: HORARIO DE ATENCIÓN
-            ==========================================
-            - Formato claro: Días + Hora inicio - Hora fin
-            - "Lunes a Viernes" → Excluye fines de semana (expectativa clara)
-            - "8:00 AM - 5:00 PM" → Formato de 12 horas con AM/PM (común en CR)
-            
-            💡 UX TIP: Incluir horario previene frustración:
-            el usuario sabe cuándo puede esperar respuesta.
-          -->
           <li>
             🕒 <strong>Horario:</strong> Lunes a Viernes, 8:00 AM - 5:00 PM
-          </li>
+          </li> <!-- Horario de atencion con expectativa clara -->
           
         </ul>
 
-        <!-- 
-          ==========================================
-          MENSAJE DE CIERRE Y AGRADECIMIENTO
-          ==========================================
-          - `class="mt-2"` → Clase utilitaria CSS: margin-top: 16px (espaciado)
-          - Tono cálido: "¡Gracias por confiar en nosotros!" → Construye relación
-          - Refuerza compromiso: "mejor servicio" → Expectativa de calidad
-        -->
         <p class="mt-2">
-          ¡Gracias por confiar en nosotros para la revisión de su vehículo!
-        </p>
-        <p>Estamos comprometidos a brindarle el mejor servicio.</p>
+          ¡Gracias por confiar en nosotros para la revision de su vehiculo!
+        </p> <!-- Mensaje de agradecimiento -->
         
-        <!-- 
-          ==========================================
-          INFORMACIÓN DE TIEMPO DE RESPUESTA (EXPECTATIVAS)
-          ==========================================
-          - `class="text-muted"` → Color de texto atenuado en CSS (gris)
-          - "24 horas hábiles" → Define expectativa clara sin prometer inmediatez
-          - Reduce ansiedad del usuario: sabe cuándo esperar respuesta
-          
-          🎯 PSICOLOGÍA UX: Gestionar expectativas previene:
-          • Frustración por respuesta lenta
-          • Múltiples contactos por el mismo tema
-          • Percepción negativa del servicio
-        -->
+        <p>Estamos comprometidos a brindarle el mejor servicio.</p> <!-- Refuerza compromiso de calidad -->
+        
         <p class="text-muted">
-          Respondemos en un plazo máximo de 24 horas hábiles.
-        </p>
+          Respondemos en un plazo maximo de 24 horas habiles.
+        </p> <!-- Gestiona expectativas de tiempo de respuesta -->
         
-        <!-- 
-          ==========================================
-          NOTA DE CONTEXTO ACADÉMICO
-          ==========================================
-          - `class="text-muted"` → Mismo estilo atenuado para información secundaria
-          - "Proyecto con Fines Educativos" → Transparencia sobre el propósito
-          
-          🎓 IMPORTANTE PARA PRESENTACIÓN:
-          Esta línea aclara que el sistema es un ejercicio académico,
-          no un producto comercial. Esto es ético y evita malentendidos.
-        -->
-        <p class="text-muted">Proyecto con Fines Educativos.</p>
+        <p class="text-muted">Proyecto con Fines Educativos.</p> <!-- Aclara proposito academico del proyecto -->
         
       </div>
-      <!-- Fin de la tarjeta de contacto -->
       
     </div>
-    <!-- Fin del contenedor principal -->
     
   </body>
 </html>

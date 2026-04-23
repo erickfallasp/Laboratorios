@@ -1,551 +1,159 @@
 <!--
-  ==========================================
   FORMULARIO DE AGENDAMIENTO DE CITAS
-  Archivo: citas.html
-  ==========================================
-  
-  🎯 PROPÓSITO DE ESTA PÁGINA:
-  Esta es la página PRINCIPAL de interacción del sistema.
-  Permite a cualquier usuario (logueado o invitado) agendar
-  una cita para revisión vehicular completando un formulario.
-  
-  🔧 FUNCIONALIDADES CLAVE:
-  1. 📝 Formulario estructurado en 4 secciones lógicas
-  2. ✅ Validaciones HTML5 nativas (required, type, min/max)
-  3. 🔄 Validación dinámica de horas disponibles (vía JavaScript)
-  4. 💰 Cálculo automático de precio según tipo de vehículo
-  5. 🧾 Generación automática de factura al confirmar cita
-  6. 🔗 Vinculación con usuario logueado (si aplica)
-  
-  🔗 CONEXIONES CON OTROS ARCHIVOS:
-  - estilosProyecto.css → Estilos visuales personalizados
-  - app-citas.js → Lógica JavaScript para validación, envío y facturación
-  - SweetAlert2 (CDN) → Alertas y loading profesionales
-  - supabase.js (importado en JS) → Conexión con base de datos
-  
-  📊 FLUJO COMPLETO DEL USUARIO:
-  1. Usuario entra a citas.html
-  2. Completa datos personales, vehículo y fecha/hora preferida
-  3. Al seleccionar fecha, JS consulta horas ocupadas en Supabase
-  4. Usuario selecciona hora disponible y envía formulario
-  5. JS valida, guarda cita en BD y genera factura automáticamente
-  6. Usuario recibe confirmación y es redirigido según su estado
+  Proposito: Permitir a usuarios agendar citas para revision vehicular
 -->
 
 <!doctype html>
-<!-- 
-  ==========================================
-  DECLARACIÓN HTML5 CON IDIOMA
-  ==========================================
-  - `<!doctype html>` → Estándar HTML5 moderno
-  - `lang="es"` → Idioma español para:
-    • SEO: Mejora posicionamiento en búsquedas en español
-    • Accesibilidad: Lectores de pantalla usan pronunciación correcta
-    • Navegador: Activa corrector ortográfico en español
--->
-<html lang="es">
+<html lang="es"> <!-- Define idioma español para SEO y accesibilidad -->
   
   <head>
-    <!-- 
-      ==========================================
-      CODIFICACIÓN UTF-8 (PRIMERA META ETIQUETA)
-      ==========================================
-      - Permite caracteres especiales del español: á, é, í, ó, ú, ñ
-      - Soporta símbolos monetarios: ₡ (colón costarricense)
-      - Muestra emojis correctamente: 🚗, 📅, ✅
-      
-      ⚠️ IMPORTANTE: Debe ir PRIMERO para que el navegador
-      interprete correctamente todo el documento desde el inicio.
-    -->
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8" /> <!-- Soporta caracteres especiales: tildes, emojis, simbolos -->
     
-    <!-- 
-      ==========================================
-      VIEWPORT PARA DISEÑO RESPONSIVE
-      ==========================================
-      - `width=device-width` → Ancho de página = ancho de pantalla
-      - `initial-scale=1.0` → Zoom inicial al 100%
-      
-      📱 SIN ESTO: En móviles, la página se vería como en desktop
-      (muy pequeña), obligando al usuario a hacer zoom manual.
-      CON ESTO: Se adapta automáticamente a cualquier dispositivo.
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Hace el diseño responsive para moviles -->
     
-    <!-- 
-      ==========================================
-      TÍTULO DE LA PÁGINA (SEO + PESTAÑA)
-      ==========================================
-      - Se muestra en la pestaña del navegador
-      - Aparece en resultados de Google (SEO)
-      - Es el texto al guardar como favorito
-      
-      💡 CONSEJO SEO: Incluir palabras clave que los usuarios buscan:
-      "Citas", "Revisión Vehicular", "Agendamiento"
-    -->
-    <title>Citas - Revisión Vehicular</title>
+    <title>Citas - Revision Vehicular</title> <!-- Titulo de la pestaña y SEO -->
 
-    <!-- 
-      ==========================================
-      LIBRERÍA EXTERNA: SweetAlert2 (CDN)
-      ==========================================
-      - Carga desde jsdelivr (CDN público y rápido)
-      - Versión @11 → Versión estable y probada
-      
-      🎨 ¿POR QUÉ SWEETALERT2 EN LUGAR DE alert()?
-      | Característica      | alert() nativo | SweetAlert2 |
-      |--------------------|---------------|-------------|
-      | Diseño             | Básico, antiguo | Moderno, personalizable |
-      | Animaciones        | ❌ No          | ✅ Sí        |
-      | Íconos visuales    | ❌ No          | ✅ ✅❌⚠️    |
-      | Botones personalizados | ❌ Limitado | ✅ Colores, texto, acciones |
-      | HTML en contenido  | ❌ No          | ✅ Sí        |
-      | Accesibilidad      | ⚠️ Básica     | ✅ Mejorada  |
-      
-      🔗 SE CARGA DOS VECES (head + body) → Es redundante pero seguro.
-      Se puede dejar solo en el head para optimizar.
-    -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Libreria para alertas bonitas -->
     
-    <!-- 
-      ==========================================
-      HOJA DE ESTILOS PERSONALIZADA
-      ==========================================
-      - `href="estilosProyecto.css"` → Archivo CSS con:
-        • Variables de colores de marca (--color-principal: #10CFC8)
-        • Estilos para formularios (.form-group, .radio-group)
-        • Diseño responsive con @media queries
-        • Efectos hover, focus y transiciones suaves
-      
-      💡 NOTA: El archivo debe estar en la misma carpeta.
-      Si está en subcarpeta, ajustar ruta: css/estilosProyecto.css
-    -->
-    <link rel="stylesheet" href="estilosProyecto.css" />
+    <link rel="stylesheet" href="estilosProyecto.css" /> <!-- Hoja de estilos principal del proyecto -->
   </head>
   
   <body>
-    <!-- 
-      ==========================================
-      CONTENEDOR PRINCIPAL (LAYOUT CENTRALIZADO)
-      ==========================================
-      - `class="container"` → Clase CSS que:
-        • Centra el contenido horizontalmente
-        • Establece ancho máximo para legibilidad
-        • Agrega padding lateral en móviles
+    <div class="container"> <!-- Contenedor principal que centra el contenido -->
       
-      📐 BENEFICIO UX: En pantallas grandes, el contenido
-      no se estira de extremo a extremo (difícil de leer).
-      En móviles, ocupa el 100% disponible sin márgenes excesivos.
-    -->
-    <div class="container">
-      
-      <!-- 
-        ==========================================
-        HEADER: ENCABEZADO CONSISTENTE
-        ==========================================
-        Este header se REPITE en todas las páginas del sistema
-        para mantener consistencia visual y navegación uniforme.
+      <div class="header"> <!-- Encabezado con logo y navegacion -->
         
-        🎨 DISEÑO: Flexbox (en CSS) para alinear elementos
-        horizontalmente en desktop y verticalmente en móviles.
-      -->
-      <div class="header">
-        
-        <!-- Parte superior con logo visual (autos) y título -->
-        <div class="header-top">
-          <span class="car-icon">🚗</span>
-          <h1 class="main-title">Revisión Técnica Vehicular</h1>
-          <span class="car-icon">🚗</span>
+        <div class="header-top"> <!-- Fila superior con iconos y titulo -->
+          <span class="car-icon">🚗</span> <!-- Icono decorativo izquierdo -->
+          <h1 class="main-title">Revision Tecnica Vehicular</h1> <!-- Titulo principal del sistema -->
+          <span class="car-icon">🚗</span> <!-- Icono decorativo derecho -->
         </div>
         
-        <!-- Subtítulo descriptivo para nuevos usuarios -->
-        <h2>Sistema de Citas para Revisión Vehicular</h2>
+        <h2>Sistema de Citas para Revision Vehicular</h2> <!-- Subtitulo descriptivo -->
 
-        <!-- 
-          ==========================================
-          MENÚ DE NAVEGACIÓN PRINCIPAL
-          ==========================================
-          - `nav` → Etiqueta semántica HTML5 para navegación
-          - `class="nav-menu"` → Estilos personalizados en CSS
-          
-          🧭 ESTRUCTURA SEMÁNTICA:
-          <nav> (contenedor semántico)
-            └─ <ul> (lista no ordenada)
-                └─ <li> (ítem de menú)
-                    └─ <a> (enlace a otra página)
-          
-          🔗 ENLACES: Todos apuntan a archivos .html locales.
-          El navegador recarga la página al hacer clic (navegación tradicional).
-        -->
-        <nav class="nav-menu">
+        <nav class="nav-menu"> <!-- Menu de navegacion principal -->
           <ul class="nav-list">
             <li class="menu-item">
-              <!-- class="active" → Resalta visualmente la página actual -->
-              <a href="index.html" class="active">🏠 Inicio</a>
+              <a href="index.html" class="active">🏠 Inicio</a> <!-- Enlace a pagina principal -->
             </li>
             <li class="menu-item">
-              <!-- class="btn-login-nav" → Estilo de botón destacado -->
-              <a href="login.html" class="btn-login-nav">🔐 Login</a>
+              <a href="login.html" class="btn-login-nav">🔐 Login</a> <!-- Enlace destacado a login -->
             </li>
-            <li class="menu-item"><a href="precios.html">💲 Tarifas</a></li>
-            <li class="menu-item"><a href="citas.html">📅 Citas</a></li>
+            <li class="menu-item"><a href="precios.html">💲 Tarifas</a></li> <!-- Enlace a tabla de precios -->
+            <li class="menu-item"><a href="citas.html">📅 Citas</a></li> <!-- Enlace a ESTA pagina -->
             <li class="menu-item">
-              <a href="citas-agendadas.html">📋 Citas Agendadas</a>
+              <a href="citas-agendadas.html">📋 Citas Agendadas</a> <!-- Enlace a citas agendadas -->
             </li>
-            <li class="menu-item"><a href="contactos.html">📬 Contacto</a></li>
+            <li class="menu-item"><a href="contactos.html">📬 Contacto</a></li> <!-- Enlace a contacto -->
           </ul>
         </nav>
       </div>
-      <!-- Fin del header -->
 
-      <!-- 
-        ==========================================
-        TARJETA PRINCIPAL: FORMULARIO DE CITAS
-        ==========================================
-        - `class="card centered-card"` → Estilos para:
-          • Fondo blanco con sombra (efecto tarjeta flotante)
-          • Bordes redondeados (border-radius)
-          • Centrado horizontal en la página
-          • Espaciado interno generoso (padding)
+      <div class="card centered-card"> <!-- Tarjeta centrada con formulario -->
         
-        🎨 BENEFICIO VISUAL: La tarjeta separa visualmente
-        el formulario del fondo, enfocando la atención del usuario.
-      -->
-      <div class="card centered-card">
-        
-        <!-- Título principal del formulario -->
-        <h1>📅 Registro de Cita</h1>
+        <h1>📅 Registro de Cita</h1> <!-- Titulo del formulario -->
 
-        <!-- 
-          ==========================================
-          FORMULARIO HTML CON IDENTIFICADOR ÚNICO
-          ==========================================
-          - `id="citaForm"` → Identificador único para que JavaScript
-            pueda encontrar este formulario y agregarle eventos
+        <form id="citaForm"> <!-- Formulario principal, JavaScript lo controla con submit -->
           
-          🔧 CONEXIÓN CON JAVASCRIPT (app-citas.js):
-          const formulario = document.getElementById('citaForm');
-          formulario.addEventListener('submit', async (evento) => { ... });
-          
-          ⚠️ NOTA: No tiene `action` ni `method` porque:
-          • JavaScript controla el envío (preventDefault)
-          • Los datos se envían vía API a Supabase, no como POST tradicional
-        -->
-        <form id="citaForm">
-          
-          <!-- 
-            ==========================================
-            SECCIÓN 1: DATOS PERSONALES DEL CLIENTE
-            ==========================================
-            - `fieldset` → Agrupa visualmente campos relacionados
-            - `legend` → Título de la sección (accesible para lectores de pantalla)
-            
-            🎨 BENEFICIO UX: Dividir un formulario largo en secciones
-            reduce la carga cognitiva y hace el proceso menos abrumador.
-          -->
+          <!-- SECCION 1: Datos personales del cliente -->
           <fieldset>
             <legend>👤 Datos del Cliente</legend>
 
-            <!-- 
-              ==========================================
-              CAMPO: NOMBRE COMPLETO
-              ==========================================
-              - `type="text"` → Entrada de texto libre
-              - `required` → Validación HTML5: no se puede enviar vacío
-              - `placeholder` → Texto de ayuda que desaparece al escribir
-              - `id` y `for` → Vinculación accesible: clic en label enfoca el input
-              
-              ♿ ACCESIBILIDAD: La asociación label-for permite que:
-              • Usuarios de teclado naveguen con Tab
-              • Lectores de pantalla anuncien el propósito del campo
-              • Clic en el texto "Nombre" enfoque el campo automáticamente
-            -->
             <div class="form-group">
               <label for="nombre">Nombre del Propietario:</label>
-              <input
-                type="text"
-                id="nombre"
-                name="nombre"
-                required
-                placeholder="Ingrese su nombre completo"
-              />
+              <input type="text" id="nombre" name="nombre" required placeholder="Ingrese su nombre completo" />
+              <!-- required: no se puede enviar vacio, placeholder: texto de ayuda -->
             </div>
 
-            <!-- 
-              ==========================================
-              CAMPO: CORREO ELECTRÓNICO
-              ==========================================
-              - `type="email"` → Validación automática de formato:
-                • Debe contener @ y dominio válido
-                • En móviles, muestra teclado con @ y .
-              
-              🔍 VALIDACIÓN EN DOS NIVELES:
-              1. Frontend (HTML5): Rechaza formato inválido inmediatamente
-              2. Backend (Supabase): Verifica que el email no esté duplicado
-                 (en caso de usuarios registrados)
-            -->
             <div class="form-group">
-              <label for="email">Correo Electrónico:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                placeholder="correo@ejemplo.com"
-              />
+              <label for="email">Correo Electronico:</label>
+              <input type="email" id="email" name="email" required placeholder="correo@ejemplo.com" />
+              <!-- type="email": valida formato automatico, teclado con @ en movil -->
             </div>
 
-            <!-- 
-              ==========================================
-              CAMPO: TELÉFONO
-              ==========================================
-              - `type="tel"` → Semántica para número telefónico
-                • En móviles, muestra teclado numérico
-                • No valida formato estricto (varía por país)
-              
-              📱 UX MOBILE: Al usar type="tel", el usuario
-              no tiene que cambiar manualmente al teclado numérico,
-              mejorando la velocidad de llenado del formulario.
-            -->
             <div class="form-group">
-              <label for="telefono">Teléfono / Celular:</label>
-              <input
-                type="tel"
-                id="telefono"
-                name="telefono"
-                required
-                placeholder="8888-8888"
-              />
+              <label for="telefono">Telefono / Celular:</label>
+              <input type="tel" id="telefono" name="telefono" required placeholder="8888-8888" />
+              <!-- type="tel": muestra teclado numerico en movil -->
             </div>
           </fieldset>
 
-          <!-- 
-            ==========================================
-            SECCIÓN 2: TIPO DE VEHÍCULO (RADIO BUTTONS)
-            ==========================================
-            - `fieldset` + `legend` → Agrupación semántica
-            - `name="tipoVehiculo"` (igual en todos) → Solo se puede seleccionar UNO
-            - `value` → Valor que se enviará a la base de datos
-            
-            💰 IMPORTANCIA COMERCIAL:
-            El tipo de vehículo determina el PRECIO de la revisión.
-            Esta selección desencadena el cálculo automático de la factura.
-          -->
+          <!-- SECCION 2: Tipo de vehiculo (radio buttons) -->
           <fieldset>
-            <legend>🚙 Tipo de Vehículo</legend>
+            <legend>🚙 Tipo de Vehiculo</legend>
             
-            <!-- Contenedor flex para organizar opciones en grid responsive -->
             <div class="radio-group">
-              
-              <!-- Opción 1: Vehículos ligeros (precio base) -->
+              <!-- name="tipoVehiculo" igual en todos: solo se puede seleccionar uno -->
               <div class="radio-item">
-                <input
-                  type="radio"
-                  id="menor35"
-                  name="tipoVehiculo"
-                  value="menor_3_5_ton"
-                  required  ← ¡Este required aplica a TODO el grupo de radios!
-                />
-                <label for="menor35">Vehículos Menor a 3.5 Toneladas</label>
+                <input type="radio" id="menor35" name="tipoVehiculo" value="menor_3_5_ton" required />
+                <label for="menor35">Vehiculos Menor a 3.5 Toneladas</label>
               </div>
               
-              <!-- Opción 2: Vehículos pesados (precio mayor) -->
               <div class="radio-item">
-                <input
-                  type="radio"
-                  id="mayor35"
-                  name="tipoVehiculo"
-                  value="mayor_3_5_ton"
-                />
-                <label for="mayor35">Vehículos Mayor a 3.5 Toneladas</label>
+                <input type="radio" id="mayor35" name="tipoVehiculo" value="mayor_3_5_ton" />
+                <label for="mayor35">Vehiculos Mayor a 3.5 Toneladas</label>
               </div>
               
-              <!-- Opción 3: Motocicletas (precio intermedio) -->
               <div class="radio-item">
-                <input
-                  type="radio"
-                  id="motocicleta"
-                  name="tipoVehiculo"
-                  value="motocicleta"
-                />
+                <input type="radio" id="motocicleta" name="tipoVehiculo" value="motocicleta" />
                 <label for="motocicleta">Motocicleta</label>
               </div>
               
-              <!-- Opción 4: Servicio público (taxis, Uber, etc.) -->
               <div class="radio-item">
-                <input
-                  type="radio"
-                  id="servicio_publico"
-                  name="tipoVehiculo"
-                  value="servicio_publico"
-                />
-                <label for="servicio_publico">Servicio Público</label>
+                <input type="radio" id="servicio_publico" name="tipoVehiculo" value="servicio_publico" />
+                <label for="servicio_publico">Servicio Publico</label>
               </div>
               
-              <!-- Opción 5: Equipos especiales (grúas, montacargas, etc.) -->
               <div class="radio-item">
-                <input
-                  type="radio"
-                  id="equipo_especial"
-                  name="tipoVehiculo"
-                  value="equipo_especial"
-                />
+                <input type="radio" id="equipo_especial" name="tipoVehiculo" value="equipo_especial" />
                 <label for="equipo_especial">Equipo Especial</label>
               </div>
               
-              <!-- Opción 6: Transporte de pasajeros -->
               <div class="radio-item">
-                <input
-                  type="radio"
-                  id="autobus"
-                  name="tipoVehiculo"
-                  value="autobus"
-                />
-                <label for="autobus">Autobús, Busetas-Microbús</label>
+                <input type="radio" id="autobus" name="tipoVehiculo" value="autobus" />
+                <label for="autobus">Autobus, Busetas-Microbus</label>
               </div>
-              
             </div>
           </fieldset>
 
-          <!-- 
-            ==========================================
-            SECCIÓN 3: INFORMACIÓN DETALLADA DEL VEHÍCULO
-            ==========================================
-            Datos específicos para identificación y registro técnico.
-            Algunos campos son opcionales para no abrumar al usuario.
-          -->
+          <!-- SECCION 3: Informacion detallada del vehiculo -->
           <fieldset>
-            <legend>🔧 Datos del Vehículo</legend>
+            <legend>🔧 Datos del Vehiculo</legend>
 
-            <!-- 
-              ==========================================
-              CAMPO: PLACA (CON TRANSFORMACIÓN A MAYÚSCULAS)
-              ==========================================
-              - `style="text-transform: uppercase"` → CSS inline que:
-                • Muestra el texto en mayúsculas mientras escribe
-                • No cambia el valor real, solo la visualización
-              
-              🎯 PROPÓSITO: Las placas en Costa Rica se escriben
-              en mayúsculas (ABC123). Esto guía al usuario visualmente
-              y estandariza el formato en la base de datos.
-            -->
             <div class="form-group">
-              <label for="placa">Placa del Vehículo:</label>
-              <input
-                type="text"
-                id="placa"
-                name="placa"
-                required
-                placeholder="ABC123"
-                style="text-transform: uppercase"
-              />
+              <label for="placa">Placa del Vehiculo:</label>
+              <input type="text" id="placa" name="placa" required placeholder="ABC123" style="text-transform: uppercase" />
+              <!-- text-transform: muestra mayusculas mientras escribe, estandariza formato -->
             </div>
 
-            <!-- CAMPO: MARCA (obligatorio para identificación) -->
             <div class="form-group">
               <label for="marca">Marca:</label>
-              <input
-                type="text"
-                id="marca"
-                name="marca"
-                required
-                placeholder="Toyota, Honda, etc."
-              />
+              <input type="text" id="marca" name="marca" required placeholder="Toyota, Honda, etc." />
             </div>
 
-            <!-- 
-              ==========================================
-              CAMPO: MODELO (OPCIONAL)
-              ==========================================
-              - Sin `required` → El usuario puede omitirlo
-              
-              💡 DECISIÓN DE DISEÑO:
-              No todos los usuarios recuerdan el modelo exacto,
-              o puede no ser relevante para la revisión técnica.
-              Hacerlo opcional reduce la fricción en el formulario.
-            -->
             <div class="form-group">
               <label for="modelo">Modelo:</label>
-              <input
-                type="text"
-                id="modelo"
-                name="modelo"
-                placeholder="Corolla, Civic, etc."
-              />
+              <input type="text" id="modelo" name="modelo" placeholder="Corolla, Civic, etc." />
+              <!-- Sin required: campo opcional para reducir friccion -->
             </div>
 
-            <!-- 
-              ==========================================
-              CAMPO: AÑO (CON VALIDACIÓN DE RANGO)
-              ==========================================
-              - `type="number"` → Solo acepta números, teclado numérico en móvil
-              - `min="1900"` → No se pueden ingresar años antes de 1900
-              - `max="2026"` → No se pueden ingresar años futuros (ajustar anualmente)
-              
-              🔍 VALIDACIÓN EN TIEMPO REAL:
-              Si el usuario escribe "3000", el navegador muestra error
-              inmediatamente sin necesidad de JavaScript.
-            -->
             <div class="form-group">
               <label for="anio">Año:</label>
-              <input
-                type="number"
-                id="anio"
-                name="anio"
-                placeholder="2020"
-                min="1900"
-                max="2026"
-              />
+              <input type="number" id="anio" name="anio" placeholder="2020" min="1900" max="2026" />
+              <!-- min/max: valida rango de años, teclado numerico en movil -->
             </div>
           </fieldset>
 
-          <!-- 
-            ==========================================
-            SECCIÓN 4: SELECCIÓN DE FECHA Y HORA
-            ==========================================
-            La parte MÁS INTERACTIVA del formulario:
-            - Fecha: Selector nativo de calendario
-            - Hora: Selector dinámico que se actualiza según disponibilidad
-          -->
+          <!-- SECCION 4: Seleccion de fecha y hora -->
           <fieldset>
             <legend>📆 Seleccione Fecha y Hora</legend>
 
-            <!-- 
-              ==========================================
-              CAMPO: FECHA (CALENDARIO NATIVO)
-              ==========================================
-              - `type="date"` → Muestra selector de calendario del navegador
-              - Formato de valor: "YYYY-MM-DD" (estándar ISO)
-              
-              📱 EXPERIENCIA MULTI-DISPOSITIVO:
-              • Desktop: Calendario desplegable
-              • Android: Selector de fecha nativo
-              • iOS: Wheel picker giratorio
-              
-              El navegador se encarga de la UI; nosotros solo recibimos el valor.
-            -->
             <div class="form-group">
               <label for="fechaCita">Fecha Preferida:</label>
               <input type="date" id="fechaCita" name="fechaCita" required />
+              <!-- type="date": muestra calendario nativo del navegador -->
             </div>
 
-            <!-- 
-              ==========================================
-              CAMPO: HORA (SELECTOR DINÁMICO)
-              ==========================================
-              - `id="horaCita"` → JavaScript escucha cambios en fecha para actualizar esto
-              - Opciones predefinidas: Horario de atención del taller (8AM-4PM con pausa)
-              
-              🔧 FUNCIONAMIENTO CON JAVASCRIPT (app-citas.js):
-              1. Usuario selecciona una fecha en #fechaCita
-              2. Evento 'change' dispara consulta a Supabase:
-                 "¿Qué horas ya están ocupadas para esta fecha?"
-              3. JS deshabilita (<option disabled>) las horas ocupadas
-              4. Usuario solo puede seleccionar horas disponibles
-              
-              🎯 BENEFICIO: Previene doble reserva (overbooking)
-              en tiempo real, sin necesidad de recargar la página.
-            -->
             <div class="form-group">
               <label for="horaCita">Hora Preferida:</label>
               <select id="horaCita" name="horaCita" required>
@@ -554,97 +162,34 @@
                 <option value="09:00">09:00 AM</option>
                 <option value="10:00">10:00 AM</option>
                 <option value="11:00">11:00 AM</option>
-                <!-- Pausa de 12:00 a 13:00 (almuerzo) -->
                 <option value="13:00">01:00 PM</option>
                 <option value="14:00">02:00 PM</option>
                 <option value="15:00">03:00 PM</option>
                 <option value="16:00">04:00 PM</option>
               </select>
-              
-              <!-- 
-                ==========================================
-                MENSAJE DE AYUDA (MICROCOPY)
-                ==========================================
-                - `class="hora-info"` → Estilo de texto secundario en CSS
-                - Texto breve que explica comportamiento dinámico
-                
-                💡 UX WRITING: "Aparecerán deshabilitadas" prepara
-                al usuario para lo que verá, reduciendo confusión
-                cuando algunas horas no se puedan seleccionar.
-              -->
-              <small class="hora-info">
-                💡 Las horas ocupadas aparecerán deshabilitadas
-              </small>
+              <!-- JavaScript actualiza este select: deshabilita horas ocupadas segun fecha -->
+              <small class="hora-info">💡 Las horas ocupadas apareceran deshabilitadas</small>
             </div>
           </fieldset>
 
-          <!-- 
-            ==========================================
-            BOTÓN DE ENVÍO PRINCIPAL (CTA)
-            ==========================================
-            - `type="submit"` → Al hacer clic, dispara el evento 'submit' del formulario
-            - `class="btn btn-primary"` → Estilos de botón destacado (color de marca)
-            - `style="width: 100%"` → Ocupa todo el ancho en móviles para fácil toque
-            - `style="margin-top: 16px"` → Espaciado visual respecto al último campo
-            
-            🎯 DISEÑO DE CTA (Call To Action):
-            • Texto claro: "✅ Agendar Cita" (acción + beneficio)
-            • Ícono visual: ✅ refuerza acción positiva
-            • Color destacado: Atrae la atención como acción principal
-            • Tamaño generoso: Fácil de tocar en pantallas táctiles
-          -->
-          <button
-            type="submit"
-            class="btn btn-primary"
-            style="margin-top: 16px; width: 100%"
-          >
+          <!-- Boton de envio principal -->
+          <button type="submit" class="btn btn-primary" style="margin-top: 16px; width: 100%">
             ✅ Agendar Cita
           </button>
+          <!-- type="submit": dispara evento submit que JavaScript controla -->
           
         </form>
       </div>
-      <!-- Fin de la tarjeta del formulario -->
       
     </div>
-    <!-- Fin del contenedor principal -->
 
-    <!-- 
-      ==========================================
-      SCRIPTS AL FINAL DEL <body> (BUENA PRÁCTICA)
-      ==========================================
-      Colocar scripts al final permite que:
-      1. El HTML se renderice primero → Mejor percepción de velocidad
-      2. Los elementos del DOM existan cuando JS intente acceder a ellos
-      3. El usuario vea contenido mientras cargan los scripts
-    -->
+    <!-- Scripts al final para mejor rendimiento -->
     
-    <!-- SweetAlert2 (redundante pero seguro, se puede dejar solo en head) -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 -->
 
-    <!-- 
-      ==========================================
-      SCRIPT PRINCIPAL: app-citas.js
-      ==========================================
-      - `type="module"` → Módulo ES6 moderno que permite:
-        • Usar `import { supabase } from "./supabase.js"`
-        • Scope aislado (variables no contaminan global)
-        • Ejecución en modo estricto automático
-        • Carga asíncrona y en orden de dependencias
-      
-      - `src="app-citas.js"` → Archivo con toda la lógica:
-        1. Detectar usuario logueado (para vincular cita a su cuenta)
-        2. Escuchar cambio de fecha → Consultar horas ocupadas en Supabase
-        3. Actualizar select de horas: deshabilitar ocupadas, habilitar libres
-        4. Al enviar formulario: validar, guardar cita, generar factura
-        5. Mostrar feedback visual (loading, éxito, error) con SweetAlert2
-        6. Redirigir: dashboard si está logueado, login si es invitado
-      
-      🔗 FLUJO DE DATOS COMPLETO:
-      Usuario llena formulario → JS valida → POST a Supabase (citas)
-      → Obtiene ID de cita creada → POST a Supabase (facturas)
-      → Muestra confirmación → Redirige según estado de autenticación
-    -->
+    <!-- Script principal con logica de agendamiento y facturacion -->
     <script type="module" src="app-citas.js"></script>
+    <!-- type="module": permite importar supabase, scope aislado, carga en orden -->
     
   </body>
 </html>
