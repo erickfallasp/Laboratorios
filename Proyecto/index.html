@@ -1,102 +1,531 @@
-<!DOCTYPE html>
+<!--
+  ==========================================
+  PÁGINA PRINCIPAL - PORTADA DEL PROYECTO
+  Archivo: index.html
+  ==========================================
+  
+  🎯 PROPÓSITO DE ESTA PÁGINA:
+  Esta es la página de ENTRADA (landing page) del sistema de revisión vehicular.
+  Su función es:
+  1. Presentar el proyecto académico y su contexto institucional
+  2. Mostrar información clave: estudiante, profesor, periodo, tema
+  3. Listar las funcionalidades implementadas (CRUD, login, facturación, etc.)
+  4. Proporcionar navegación hacia las demás páginas del sistema
+  5. Incluir un video informativo para demostración visual
+  
+  🔧 CARACTERÍSTICAS PRINCIPALES:
+  ✅ Diseño responsive que se adapta a móvil, tablet y desktop
+  ✅ Navegación consistente con el resto del sistema (mismo header)
+  ✅ Estructura semántica HTML5 para accesibilidad y SEO
+  ✅ Integración de video de YouTube con contenedor responsive
+  ✅ Sin JavaScript complejo: página estática de presentación
+  
+  🔗 CONEXIONES CON OTROS ARCHIVOS:
+  - estilosProyecto.css → Estilos visuales unificados en todo el proyecto
+  - Header compartido → Mismo diseño de navegación en todas las páginas
+  - Enlaces internos → Navegación a login, citas, contactos, etc.
+  
+  📊 FLUJO DEL USUARIO:
+  1. Usuario entra a index.html (página por defecto del proyecto)
+  2. Ve información académica y descripción del sistema
+  3. Puede navegar a otras secciones mediante el menú superior
+  4. O ver el video informativo para entender el funcionamiento
+  5. Si quiere usar el sistema, hace clic en "Login" o "Citas"
+-->
+
+<!doctype html>
+<!-- 
+  ==========================================
+  DECLARACIÓN HTML5 CON IDIOMA ESPAÑOL
+  ==========================================
+  - `<!doctype html>` → Indica que es documento HTML5 válido (estándar moderno)
+  - `lang="es"` → Define español como idioma principal del documento
+  
+  🌍 BENEFICIOS DE DECLARAR EL IDIOMA:
+  • SEO: Google prioriza páginas con idioma declarado para búsquedas locales
+  • Accesibilidad: Lectores de pantalla usan pronunciación y entonación en español
+  • Navegador: Activa corrector ortográfico en español para campos de texto
+  • Traducción: Permite a navegadores ofrecer traducción automática si el usuario lo solicita
+-->
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    
+  
+  <head>
+    <!-- 
+      ==========================================
+      CODIFICACIÓN UTF-8 (PRIMERA META ETIQUETA)
+      ==========================================
+      - `charset="UTF-8"` → Soporta caracteres especiales del español:
+        • Tildes: á, é, í, ó, ú, ñ
+        • Símbolos: ₡ (colón costarricense), ©, ®
+        • Emojis: 🚗, 📅, 🎥, 🏠
+      
+      ⚠️ IMPORTANTE: Debe ser la PRIMERA etiqueta <meta>
+      para que el navegador interprete correctamente todo el documento
+      desde el primer byte. Si va después, caracteres especiales
+      podrían mostrarse como "????" o símbolos extraños.
+    -->
+    <meta charset="UTF-8" />
+
+    <!-- 
+      ==========================================
+      VIEWPORT PARA DISEÑO RESPONSIVE
+      ==========================================
+      - `width=device-width` → El ancho de la página se adapta al ancho
+        de la pantalla del dispositivo (móvil, tablet, desktop)
+      
+      - `initial-scale=1.0` → Nivel de zoom inicial al 100%
+        (sin ampliar ni reducir automáticamente al cargar)
+      
+      📱 SIN ESTA LÍNEA:
+      En móviles, el navegador asumiría que la página está diseñada
+      para desktop (~980px de ancho) y la mostraría muy pequeña,
+      obligando al usuario a hacer zoom manual con los dedos.
+      
+      CON ESTA LÍNEA:
+      La página se renderiza al ancho real del dispositivo,
+      permitiendo que el CSS responsive funcione correctamente.
+      
+      💡 DATO: Esta meta etiqueta es OBLIGATORIA para diseño
+      responsive moderno. Sin ella, media queries como
+      `@media (max-width: 768px)` no funcionarían como se espera.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- 
+      ==========================================
+      TÍTULO DE LA PÁGINA (SEO + PESTAÑA DEL NAVEGADOR)
+      ==========================================
+      - Se muestra en la pestaña del navegador
+      - Aparece en resultados de búsqueda de Google/Bing
+      - Es el texto que se guarda al marcar como favorito
+      - Lo leen los lectores de pantalla al cargar la página
+      
+      🔍 ESTRATEGIA SEO:
+      "Revisión Vehicular - Sistema de Citas" incluye:
+      • Palabra clave principal: "Revisión Vehicular" (tema del proyecto)
+      • Funcionalidad: "Sistema de Citas" (qué hace)
+      • Separador "-" → Mejora legibilidad en resultados de búsqueda
+      
+      💡 CONSEJO: Mantener títulos únicos por página ayuda a Google
+      a entender la estructura del sitio y posicionar mejor cada sección.
+    -->
     <title>Revisión Vehicular - Sistema de Citas</title>
-    
-   
-    <link rel="stylesheet" href="estilosProyecto.css">
-</head>
-<body>
-    
+
+    <!-- 
+      ==========================================
+      HOJA DE ESTILOS PRINCIPAL DEL PROYECTO
+      ==========================================
+      - `href="estilosProyecto.css"` → Enlace al archivo CSS que define:
+        • Colores de marca (--accent: #10CFC8, --bg: #0B2D39)
+        • Diseño responsive con media queries
+        • Estilos para componentes: header, cards, formularios, tablas
+        • Clases utilitarias: .text-center, .mt-2, .badge
+      
+      🎨 BENEFICIO DE CSS EXTERNO:
+      • Reutilización: Mismos estilos en todas las páginas
+      • Mantenimiento: Cambiar un color en un solo lugar actualiza todo el sitio
+      • Caché: El navegador descarga el CSS una vez y lo reusa en otras páginas
+      • Separación de responsabilidades: HTML (estructura) vs CSS (presentación)
+      
+      💡 NOTA: El archivo debe estar en la misma carpeta que este HTML.
+      Si está en subcarpeta, ajustar ruta: css/estilosProyecto.css
+    -->
+    <link rel="stylesheet" href="estilosProyecto.css" />
+  </head>
+  
+  <body>
+    <!-- 
+      ==========================================
+      CONTENEDOR PRINCIPAL - LAYOUT CENTRALIZADO
+      ==========================================
+      - `class="container"` → Clase CSS definida en estilosProyecto.css que:
+        • Centra el contenido horizontalmente (margin: 0 auto)
+        • Establece ancho máximo (~980px) para legibilidad en pantallas grandes
+        • Agrega padding lateral en móviles para evitar que el contenido toque bordes
+      
+      📐 PRINCIPIO DE DISEÑO: "Legibilidad por ancho controlado"
+      Líneas de texto muy largas (más de 75-100 caracteres) son difíciles
+      de seguir para el ojo humano. Limitar el ancho máximo mejora
+      la experiencia de lectura sin importar el tamaño de pantalla.
+      
+      📱 RESPONSIVE:
+      • Desktop: Contenido centrado con márgenes laterales generosos
+      • Móvil: padding:16px evita que el texto toque los bordes de la pantalla
+    -->
     <div class="container">
+      
+      <!-- 
+        ==========================================
+        HEADER - ENCABEZADO CONSISTENTE EN TODAS LAS PÁGINAS
+        ==========================================
+        Esta sección se REPITE idéntica en todas las páginas del sistema
+        para mantener consistencia visual y navegación predecible.
         
-        <!-- ==========================================
-             HEADER - Encabezado principal del sitio
-             Incluye logo, título y menú de navegación
-             ========================================== -->
-        <div class="header">
-            <!-- Sección superior con iconos de autos y título central -->
-            <div class="header-top">
-              
-                <span class="car-icon">🚗</span>
-                
-               
-                <h1 class="main-title">Revisión Técnica Vehicular</h1>
-                
-             
-                <span class="car-icon">🚗</span>
-            </div>
-
-           
-            <h2>Sistema de Citas para Revisión Vehicular</h2>
-            
-            
-            <nav class="nav-menu">
-                <ul class="nav-list">
-                    <li class="menu-item"><a href="index.html" class="active">Inicio</a></li>
-                    <li class="menu-item"><a href="precios.html">Tarifas</a></li>
-                    <li class="menu-item"><a href="citas.html">Citas</a></li>
-                    <li class="menu-item"><a href="citas-agendadas.html">Citas Agendadas</a></li>
-                    <li class="menu-item"><a href="contactos.html">Contacto</a></li>
-                </ul>    
-            </nav>
-        </div>
-
-        <!-- ==========================================
-             CONTENIDO PRINCIPAL - Información del proyecto
-             ========================================== -->
-        <div class="card centered-card">
-            <h1>🏠 II-51 Programación Internet</h1>
-            
-            <!-- Información académica del proyecto -->
-            <p><strong>Estudiante:</strong> Erick Eduardo Fallas Pérez.</p>
-            <p><strong>Profesor:</strong> Fabian Chinchilla Mayorga.</p>
-            <p><strong>Periodo:</strong> 2026-IQ.</p>
-            <p><strong>Fecha de Presentación:</strong> 01/04/2026.</p>
-            <p><strong>Tema:</strong> Sistema de Citas para Revisión Vehicular.</p>
-            <p><strong>Avance:</strong> Segundo.</p>
-            <!-- Descripción general del proyecto -->
-            <p>En este proyecto, se desarrollará un sistema de citas para la revisión vehicular, permitiendo a los usuarios agendar sus citas de manera eficiente y sencilla. Además de tener una interfaz amigable, el sistema contará con funcionalidades para gestionar y consultar las citas agendadas.</p>
-            
-            <!-- Lista de contenidos-->
-            <h3>Contenidos:</h3>
-            <ol>
-              <li>Formularios.</li>
-              <li>Tablas.</li>
-              <li>Estilos CSS.</li>
-              <li>Conexión a SupaBase.</li>
-               <li>Implemtencacion de CRUD.</li>
-            </ol>
-        </div>
-
-        <!-- ==========================================
-             VIDEO DE YOUTUBE - Video informativo 
-             ========================================== -->
-        <div class="card video-card">
-            <h2>🎥 Video Informativo</h2>
-            
-            
-            <div class="video-container">
-                
-                <iframe 
-                    width="560" 
-                    height="315" 
-                    src="https://www.youtube.com/embed/psZc1x1TQNI" 
-                    title="Video de YouTube" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    referrerpolicy="strict-origin-when-cross-origin" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </div>
+        🎨 DISEÑO: Usa Flexbox (definido en CSS) para:
+        • Alinear elementos horizontalmente en desktop
+        • Apilar elementos verticalmente en móviles (@media query)
+        • Mantener espaciado uniforme entre componentes
         
+        🔗 CONEXIÓN CON UX:
+        La consistencia del header reduce la carga cognitiva: el usuario
+        siempre sabe dónde está el menú, cómo volver al inicio, y cómo
+        acceder a su cuenta, sin tener que reaprender en cada página.
+      -->
+      <div class="header">
+        
+        <!-- 
+          ==========================================
+          HEADER TOP - LOGO VISUAL Y TÍTULO PRINCIPAL
+          ==========================================
+          Diseño simétrico con íconos de autos a los lados para:
+          • Reforzar visualmente el tema vehicular del proyecto
+          • Crear equilibrio visual que guía la atención al título central
+          • Agregar un toque dinámico con animación CSS (bounce)
+        -->
+        <div class="header-top">
+          
+          <!-- Ícono decorativo izquierdo (emoji de auto) -->
+          <!-- 
+            ==========================================
+            ÍCONO DE AUTO - ELEMENTO DECORATIVO ANIMADO
+            ==========================================
+            - `class="car-icon"` → Estilos CSS que incluyen:
+              • font-size: 32px (tamaño grande para visibilidad)
+              • animation: bounce 2s infinite (animación de rebote)
+            
+            🎬 ANIMACIÓN CSS (definida en estilosProyecto.css):
+            @keyframes bounce {
+              0%, 100% { transform: translateY(0); }
+              50% { transform: translateY(-10px); }
+            }
+            → El auto "rebota" suavemente cada 2 segundos
+            
+            💡 PSICOLOGÍA UX:
+            El movimiento sutil atrae la atención sin distraer.
+            Comunica energía y servicio activo, reforzando la
+            identidad del negocio de revisión vehicular.
+          -->
+          <span class="car-icon">🚗</span>
+
+          <!-- 
+            ==========================================
+            TÍTULO PRINCIPAL DEL SISTEMA (H1)
+            ==========================================
+            - `class="main-title"` → Estilos CSS con:
+              • font-size: 28px, font-weight: 900 (impacto visual)
+              • color: var(--accent) (turquesa de marca)
+              • text-shadow (legibilidad sobre cualquier fondo)
+            
+            🔍 SEO Y ACCESIBILIDAD:
+            • Único H1 por página → Buenas prácticas para motores de búsqueda
+            • Texto claro y descriptivo → Lectores de pantalla anuncian
+              inmediatamente el propósito del sitio
+            • Color de marca → Refuerza identidad visual consistente
+          -->
+          <h1 class="main-title">Revisión Técnica Vehicular</h1>
+
+          <!-- Ícono decorativo derecho (simetría visual con el izquierdo) -->
+          <span class="car-icon">🚗</span>
+        </div>
+
+        <!-- 
+          ==========================================
+          SUBTÍTULO DESCRIPTIVO (H2)
+          ==========================================
+          - Jerarquía semántica correcta: H1 → H2 → H3...
+          - Explica brevemente qué hace el sistema para nuevos usuarios
+          - Color atenuado en CSS para no competir visualmente con el H1
+          
+          💡 COPYWRITING:
+          "Sistema de Citas para Revisión Vehicular" es claro,
+          conciso y contiene palabras clave que los usuarios
+          podrían buscar: "citas", "revisión", "vehicular".
+        -->
+        <h2>Sistema de Citas para Revisión Vehicular</h2>
+
+        <!-- 
+          ==========================================
+          MENÚ DE NAVEGACIÓN PRINCIPAL
+          ==========================================
+          - `nav` → Etiqueta semántica HTML5 para navegación
+          - `class="nav-menu"` → Estilos personalizados en CSS
+          
+          🧭 ESTRUCTURA SEMÁNTICA ACCESIBLE:
+          <nav> (contenedor semántico para navegación)
+            └─ <ul> (lista no ordenada → relación lógica entre ítems)
+                └─ <li> (ítem individual de menú)
+                    └─ <a> (enlace navegable con href)
+          
+          ♿ BENEFICIOS DE ACCESIBILIDAD:
+          • Lectores de pantalla anuncian "Navegación" al entrar al <nav>
+          • Usuarios de teclado pueden navegar con Tab entre enlaces
+          • Estructura de lista ayuda a entender relación entre opciones
+          
+          🔗 ENLACES: Todos apuntan a archivos .html en la misma carpeta.
+          El navegador recarga la página al hacer clic (navegación tradicional).
+          Para una SPA moderna, se podría usar JavaScript con history API.
+        -->
+        <nav class="nav-menu">
+          <ul class="nav-list">
+            
+            <!-- Ítem: Inicio (página actual) -->
+            <li class="menu-item">
+              <!-- 
+                class="active" → Indica visualmente que esta es la página actual
+                (en CSS: color diferente, subrayado, o fondo destacado)
+                
+                💡 UX: Resaltar la página actual ayuda al usuario a orientarse:
+                "Estoy en Inicio, puedo ir a Login, Citas, etc."
+              -->
+              <a href="index.html" class="active">🏠 Inicio</a>
+            </li>
+            
+            <!-- Ítem: Login (acceso a cuenta personal) -->
+            <li class="menu-item">
+              <!-- 
+                class="btn-login-nav" → Estilo especial para destacar
+                este enlace como botón de acción principal (color de marca)
+                
+                🎯 ESTRATEGIA DE CONVERSIÓN:
+                Destacar visualmente el login guía al usuario hacia
+                la acción principal: "inicia sesión para usar el sistema".
+              -->
+              <a href="login.html" class="btn-login-nav">🔐 Login</a>
+            </li>
+            
+            <!-- Ítem: Tarifas (tabla de precios por tipo de vehículo) -->
+            <li class="menu-item">
+              <a href="precios.html">💲 Tarifas</a>
+            </li>
+            
+            <!-- Ítem: Agendar nueva cita (formulario principal de interacción) -->
+            <li class="menu-item">
+              <a href="citas.html">📅 Citas</a>
+            </li>
+            
+            <!-- Ítem: Citas Agendadas (lista pública de citas programadas) -->
+            <li class="menu-item">
+              <a href="citas-agendadas.html">📋 Citas Agendadas</a>
+            </li>
+            
+            <!-- Ítem: Contacto (información de atención al cliente) -->
+            <li class="menu-item">
+              <a href="contactos.html">📬 Contacto</a>
+            </li>
+            
+          </ul>
+        </nav>
+      </div>
+      <!-- Fin del header -->
+
+      <!-- 
+        ==========================================
+        CONTENIDO PRINCIPAL - TARJETA DE INFORMACIÓN ACADÉMICA
+        ==========================================
+        - `class="card centered-card"` → Estilos CSS para:
+          • Fondo blanco con sombra sutil (efecto tarjeta flotante)
+          • Bordes redondeados (border-radius: 14px)
+          • Centrado horizontal en la página (margin: 0 auto)
+          • Espaciado interno generoso (padding: 16px)
+          • Ancho máximo 800px para legibilidad óptima
+        
+        🎨 BENEFICIO VISUAL:
+        La tarjeta separa visualmente el contenido del fondo,
+        enfocando la atención del usuario en la información
+        académica sin distracciones.
+      -->
+      <div class="card centered-card">
+        
+        <!-- Título de la sección con emoji para identificación rápida -->
+        <h1>🏠 II-51 Programación Internet</h1>
+
+        <!-- 
+          ==========================================
+          INFORMACIÓN ACADÉMICA DEL PROYECTO
+          ==========================================
+          Lista de datos institucionales con formato claro:
+          • Etiquetas en negrita (<strong>) para jerarquía visual
+          • Puntos finales para consistencia tipográfica
+          • Orden lógico: estudiante → profesor → periodo → fecha → tema
+          
+          🎓 PROPÓSITO ACADÉMICO:
+          Esta sección documenta el contexto educativo del proyecto,
+          esencial para evaluaciones, portafolios y transparencia.
+        -->
+        
+        <!-- Estudiante responsable del desarrollo -->
+        <p><strong>Estudiante:</strong> Erick Eduardo Fallas Pérez.</p>
+        
+        <!-- Profesor encargado de la evaluación -->
+        <p><strong>Profesor:</strong> Fabian Chinchilla Mayorga.</p>
+        
+        <!-- Periodo académico (IQ = I Quimestre) -->
+        <p><strong>Periodo:</strong> 2026-IQ.</p>
+        
+        <!-- Fecha de entrega/presentación del proyecto -->
+        <p><strong>Fecha de Presentación:</strong> 01/04/2026.</p>
+        
+        <!-- Tema central del proyecto -->
+        <p><strong>Tema:</strong> Sistema de Citas para Revisión Vehicular.</p>
+        
+        <!-- Nivel de avance (para proyectos por etapas) -->
+        <p><strong>Avance:</strong> Segundo.</p>
+        
+        <!-- 
+          ==========================================
+          DESCRIPCIÓN GENERAL DEL PROYECTO
+          ==========================================
+          Párrafo que resume en lenguaje natural:
+          1. QUÉ es el proyecto (sistema de citas para revisión vehicular)
+          2. PARA QUIÉN (usuarios clientes y administradores)
+          3. CÓMO (interfaz amigable, funcionalidades de gestión)
+          4. VALOR AGREGADO (generación automática de facturas)
+          
+          💡 COPYWRITING TÉCNICO:
+          • Oraciones cortas y claras → Fácil de escanear
+          • Palabras clave repetidas → Refuerza propósito ("citas", "sistema")
+          • Beneficios explícitos → "eficiente y sencilla", "interfaz amigable"
+        -->
+        <p>
+          En este proyecto Final, se desarrollará un sistema de citas para la revisión
+          vehicular, permitiendo a los usuarios agendar sus citas de manera
+          eficiente y sencilla. Contará con Usuario con Perfil de Cliente y Administrador.
+          Además de tener una interfaz amigable, el sistema contará con funcionalidades para gestionar 
+          y consultar las citas agendadas. Finalmente el sistema Genera una Factura, con los datos del Cliente 
+          y Servicio Solicitado.
+        </p>
+
+        <!-- 
+          ==========================================
+          LISTA DE CONTENIDOS IMPLEMENTADOS
+          ==========================================
+          - `h3` → Jerarquía semántica (después de h1 y h2)
+          - `ol` → Lista ordenada (1, 2, 3...) para indicar secuencia o importancia
+          
+          📋 PROPÓSITO DE LA LISTA:
+          Documenta las tecnologías y funcionalidades clave del proyecto,
+          útil para:
+          • Evaluación académica (qué se esperaba vs qué se entregó)
+          • Portafolio profesional (habilidades demostradas)
+          • Futuros desarrolladores (qué aprender del código)
+        -->
+        <h3>Contenidos:</h3>
+        <ol>
+          <!-- Funcionalidad básica de HTML: captura de datos -->
+          <li>Formularios.</li>
+          
+          <!-- Presentación estructurada de información -->
+          <li>Tablas.</li>
+          
+          <!-- Diseño visual y experiencia de usuario -->
+          <li>Estilos CSS.</li>
+          
+          <!-- Conexión con base de datos en la nube -->
+          <li>Conexión a SupaBase.</li>
+          
+          <!-- Operaciones CRUD: Create, Read, Update, Delete -->
+          <li>Implementación de CRUD.</li>
+          
+          <!-- Sistema de autenticación de usuarios -->
+          <li>Implementación Login.</li>
+          
+          <!-- Módulo de facturación automática -->
+          <li>Implementación de Facturación.</li>
+        </ol>
+      </div>
+      <!-- Fin de la tarjeta de información académica -->
+
+      <!-- 
+        ==========================================
+        VIDEO DE YOUTUBE - DEMOSTRACIÓN VISUAL
+        ==========================================
+        - `class="card video-card"` → Estilos para tarjeta con video
+        - Contiene contenedor responsive para iframe de YouTube
+        
+        🎥 PROPÓSITO DEL VIDEO:
+        • Demostrar el funcionamiento del sistema en acción
+        • Complementar la documentación escrita con ejemplo visual
+        • Facilitar evaluación remota o asíncrona del proyecto
+      -->
+      <div class="card video-card">
+        <!-- Título de la sección con emoji para identificación rápida -->
+        <h2>🎥 Video Informativo</h2>
+
+        <!-- 
+          ==========================================
+          CONTENEDOR RESPONSIVE PARA VIDEO 16:9
+          ==========================================
+          - `class="video-container"` → Estilos CSS que mantienen
+            proporción 16:9 sin importar el ancho de pantalla
+          
+          🔧 TÉCNICA CSS (definida en estilosProyecto.css):
+          .video-container {
+            position: relative;
+            padding-bottom: 56.25%;  /* 9÷16 = 0.5625 = 56.25% */
+            height: 0;
+            overflow: hidden;
+          }
+          .video-container iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+          }
+          
+          💡 POR QUÉ ESTA TÉCNICA:
+          • Funciona en navegadores antiguos (IE11+)
+          • Mantiene proporción exacta sin distorsión
+          • Se adapta automáticamente a móvil, tablet, desktop
+          • Alternativa moderna: aspect-ratio: 16/9 (pero menos compatible)
+        -->
+        <div class="video-container">
+          
+          <!-- 
+            ==========================================
+            IFRAME DE YOUTUBE - VIDEO EMBEBIDO
+            ==========================================
+            - `src` → URL del video en modo embed (no página completa)
+            - `title` → Texto alternativo para accesibilidad (lectores de pantalla)
+            - `frameborder="0"` → Eliminar borde por defecto del iframe
+            - `allowfullscreen` → Permitir que el usuario expanda a pantalla completa
+            
+            🔐 ATRIBUTOS DE SEGURIDAD Y PRIVACIDAD:
+            • `allow="accelerometer; autoplay; ..."` → Permisos explícitos
+              para funcionalidades del video (evita que YouTube acceda
+              a sensores del dispositivo sin consentimiento)
+            
+            • `referrerpolicy="strict-origin-when-cross-origin"` → Controla
+              qué información de referencia se envía a YouTube al cargar
+              el video (protege privacidad del usuario)
+            
+            📱 RESPONSIVE:
+            Los atributos width/height (560x315) son ignorados por el CSS
+            del contenedor, que fuerza al iframe a ocupar 100% del ancho
+            disponible manteniendo proporción 16:9.
+          -->
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/psZc1x1TQNI"
+            title="Video de YouTube"
+            frameborder="0"
+            allow="
+              accelerometer;
+              autoplay;
+              clipboard-write;
+              encrypted-media;
+              gyroscope;
+              picture-in-picture;
+              web-share;
+            "
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+      </div>
+      <!-- Fin de la sección de video -->
+      
     </div>
-</body>
+    <!-- Fin del contenedor principal -->
+  </body>
 </html>

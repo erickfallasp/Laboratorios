@@ -1,0 +1,629 @@
+<!--
+  ==========================================
+  PÁGINA DE REGISTRO DE USUARIOS
+  Archivo: registro.html
+  ==========================================
+  
+  🎯 PROPÓSITO DE ESTA PÁGINA:
+  Esta página permite a nuevos usuarios crear una cuenta en el sistema
+  de revisión vehicular. Su función es:
+  1. Capturar datos básicos del usuario (nombre, email, teléfono)
+  2. Validar credenciales seguras (contraseña mínima 6 caracteres)
+  3. Crear usuario en Supabase Auth con perfil asociado
+  4. Redirigir al login para iniciar sesión después del registro
+  5. Mantener consistencia visual con el resto del sistema
+  
+  🔐 SEGURIDAD INTEGRADA:
+  • Validación HTML5 nativa (required, type="email", minlength)
+  • Contraseñas ocultas (type="password")
+  • Confirmación de contraseña para prevenir errores de tipeo
+  • Conexión HTTPS segura con Supabase
+  • Mensajes de error amigables sin exponer detalles técnicos
+  
+  🔧 CARACTERÍSTICAS PRINCIPALES:
+  ✅ Diseño centrado y enfocado en la acción principal (registro)
+  ✅ Formularios accesibles con labels vinculados y atributos ARIA implícitos
+  ✅ Feedback visual en inputs (focus con color de marca)
+  ✅ Validación de contraseñas coincidentes en JavaScript
+  ✅ Responsive: se adapta perfectamente a móvil y desktop
+  
+  🔗 CONEXIONES CON OTROS ARCHIVOS:
+  - estilosProyecto.css → Estilos base del sistema (colores, tarjetas, botones)
+  - SweetAlert2 (CDN) → Alertas y loading profesionales
+  - app-auth.js → Lógica de registro: handleRegistro, validaciones, creación de usuario
+  - supabase.js (importado) → Conexión segura con base de datos en la nube
+  
+  📊 FLUJO DE REGISTRO:
+  1. Usuario ingresa nombre, email, teléfono y contraseña
+  2. JavaScript valida que contraseñas coincidan y tengan longitud mínima
+  3. Muestra loading con SweetAlert2 mientras procesa
+  4. Crea usuario en Supabase Auth con signUp()
+  5. Trigger en BD crea automáticamente perfil en tabla 'perfiles' con rol 'cliente'
+  6. Muestra mensaje de éxito y redirige a login.html para iniciar sesión
+  7. Si hay error (email duplicado, formato inválido), muestra mensaje amigable
+-->
+
+<!DOCTYPE html>
+<!-- 
+  ==========================================
+  DECLARACIÓN HTML5 CON IDIOMA ESPAÑOL
+  ==========================================
+  - `<!DOCTYPE html>` → Estándar HTML5 moderno
+  - `lang="es"` → Idioma español para:
+    • SEO: Posicionamiento en búsquedas en español
+    • Accesibilidad: Lectores de pantalla con pronunciación correcta
+    • Navegador: Corrector ortográfico en español activado
+-->
+<html lang="es">
+<head>
+    <!-- 
+      ==========================================
+      CODIFICACIÓN UTF-8 (PRIMERA META ETIQUETA)
+      ==========================================
+      - `charset="UTF-8"` → Soporta caracteres especiales:
+        • Tildes y ñ: á, é, í, ó, ú, ñ (nombres en español)
+        • Símbolos: 📝, ✅, ←
+        • Emojis para refuerzo visual en interfaz
+      
+      ⚠️ IMPORTANTE: Debe ir PRIMERO para interpretación correcta
+      de todo el documento desde el primer byte.
+    -->
+    <meta charset="UTF-8">
+    
+    <!-- 
+      ==========================================
+      VIEWPORT PARA DISEÑO RESPONSIVE
+      ==========================================
+      - `width=device-width` → Ancho de página = ancho de pantalla del dispositivo
+      - `initial-scale=1.0` → Zoom inicial al 100%
+      
+      📱 BENEFICIO: Sin esto, en móviles el formulario se vería comprimido
+      o con inputs muy pequeños. Con esto, se adapta automáticamente
+      y los campos son fáciles de tocar con el dedo.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 
+      ==========================================
+      TÍTULO DE LA PÁGINA (SEO + PESTAÑA)
+      ==========================================
+      - Se muestra en la pestaña del navegador
+      - Aparece en resultados de búsqueda
+      - Incluye palabra clave "Registro" para intención de usuario
+      
+      🔍 SEO TIP: "Registro - Revisión Vehicular" ayuda a usuarios
+      que buscan "crear cuenta revisión auto" a encontrar esta página.
+    -->
+    <title>Registro - Revisión Vehicular</title>
+    
+    <!-- 
+      ==========================================
+      HOJA DE ESTILOS BASE DEL PROYECTO
+      ==========================================
+      - `href="estilosProyecto.css"` → Archivo CSS principal con:
+        • Variables de colores de marca (--color-principal, --borde)
+        • Estilos para tarjetas (.card), contenedores (.container)
+        • Diseño responsive con @media queries
+      
+      💡 NOTA: Los estilos específicos de registro están en <style> interno
+      para modularidad: cambios en registro no afectan otras páginas.
+    -->
+    <link rel="stylesheet" href="estilosProyecto.css">
+    
+    <!-- 
+      ==========================================
+      LIBRERÍA EXTERNA: SweetAlert2 (CDN)
+      ==========================================
+      - Carga desde jsdelivr (CDN público y rápido)
+      - Versión @11 → Versión estable y probada
+      
+      🎨 ¿POR QUÉ SWEETALERT2 PARA REGISTRO?
+      • Loading animado mientras crea cuenta → Evita envíos múltiples
+      • Alertas de error con íconos → Feedback visual (❌ email duplicado)
+      • Mensajes de éxito con redirección → Experiencia fluida
+      • Formularios en modales → Podría usarse para edición futura
+      
+      🔗 SE USA EN app-auth.js para:
+      - Validar que contraseñas coincidan antes de enviar
+      - Mostrar loading durante creación de cuenta
+      - Alertas de error con mensajes amigables
+      - Mensaje de éxito con redirección automática a login
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- 
+      ==========================================
+      ESTILOS ESPECÍFICOS PARA ESTA PÁGINA DE REGISTRO
+      ==========================================
+      - `<style>` interno para estilos únicos de registro
+      - Se podrían mover a estilosProyecto.css, pero se dejan
+        aquí para modularidad y separación de responsabilidades
+      
+      🎨 COMPONENTES DEFINIDOS:
+      1. .registro-container → Contenedor centrado con ancho máximo
+      2. .registro-header → Título y subtítulo centrados
+      3. .registro-form → Estilos para inputs, labels y botón
+      4. .registro-footer → Enlaces secundarios (login, volver)
+      
+      💡 DISEÑO CENTRADO EN LA CONVERSIÓN:
+      El formulario ocupa el centro visual, con elementos secundarios
+      (enlaces) en la parte inferior con menor énfasis visual.
+    -->
+    <style>
+        /* ==========================================
+           CONTENEDOR PRINCIPAL DEL FORMULARIO
+           ==========================================
+           - max-width: 500px → Ancho óptimo para formularios de registro
+             (más ancho que login porque hay más campos)
+           
+           - margin: 50px auto → Centrado horizontal perfecto
+           - padding: 40px → Espacio interno generoso para:
+             • Comodidad visual (contenido no toca bordes)
+             • Área de toque amplia en móviles (dedos grandes)
+        */
+        .registro-container {
+            max-width: 500px;              /* Ancho óptimo para formularios con múltiples campos */
+            margin: 50px auto;             /* Centrado horizontal + margen vertical */
+            padding: 40px;                 /* Espacio interno generoso */
+        }
+        
+        /* ==========================================
+           ENCABEZADO DEL FORMULARIO
+           ==========================================
+           - text-align: center → Centrar texto para jerarquía visual
+           - margin-bottom: 30px → Espacio antes del formulario
+           
+           🎯 PROPÓSITO UX:
+           El título claro ("Crear Cuenta") confirma al usuario
+           que está en el lugar correcto antes de empezar a escribir.
+        */
+        .registro-header {
+            text-align: center;            /* Centrar contenido */
+            margin-bottom: 30px;           /* Espacio antes del formulario */
+        }
+        
+        /* Título principal del registro */
+        .registro-header h1 {
+            color: var(--color-principal); /* Color turquesa de marca para énfasis */
+            font-size: 28px;               /* Tamaño grande para jerarquía */
+            margin-bottom: 10px;           /* Espacio antes del subtítulo */
+        }
+        
+        /* ==========================================
+           GRUPOS DE FORMULARIO (LABEL + INPUT)
+           ==========================================
+           - margin-bottom: 20px → Espacio uniforme entre campos
+           
+           💡 PRINCIPIO DE DISEÑO: "Espaciado generoso"
+           Campos muy juntos generan errores de toque en móviles.
+           20px es suficiente para evitar clics accidentales.
+        */
+        .registro-form .form-group {
+            margin-bottom: 20px;           /* Espacio entre campos */
+        }
+        
+        /* ==========================================
+           INPUTS DE FORMULARIO
+           ==========================================
+           - width: 100% → Ocupar todo el ancho del contenedor padre
+           - padding: 12px → Espacio interno generoso para toque en móvil
+           - border: 2px solid → Borde visible para definición clara
+           - border-radius: 8px → Bordes redondeados para apariencia moderna
+           - font-size: 16px → Mínimo para evitar zoom automático en iOS
+           - transition: border-color → Animación suave al cambiar estado
+           
+           ♿ ACCESIBILIDAD CRÍTICA:
+           font-size: 16px previene que iOS haga zoom automático
+           al enfocar un input, lo que rompería la experiencia móvil.
+        */
+        .registro-form input {
+            width: 100%;                   /* Ancho completo del contenedor */
+            padding: 12px;                 /* Espacio interno generoso */
+            border: 2px solid var(--borde); /* Borde visible para definición */
+            border-radius: 8px;            /* Bordes redondeados modernos */
+            font-size: 16px;               /* Mínimo para evitar zoom en iOS */
+            transition: border-color 0.3s; /* Transición suave para cambios de estado */
+        }
+        
+        /* ==========================================
+           ESTADO FOCUS - FEEDBACK DE SELECCIÓN
+           ==========================================
+           - border-color: var(--color-principal) → Borde turquesa al enfocar
+           - outline: none → Eliminar contorno azul por defecto del navegador
+           
+           💡 ACCESIBILIDAD:
+           El estado focus es ESENCIAL para usuarios de teclado que navegan con Tab.
+           Sin un indicador visual claro, no saben en qué campo están escribiendo.
+           WCAG requiere que el foco sea "altamente visible".
+        */
+        .registro-form input:focus {
+            border-color: var(--color-principal);  /* Borde turquesa al enfocar */
+            outline: none;                          /* Eliminar contorno azul por defecto */
+        }
+        
+        /* ==========================================
+           BOTÓN DE ENVÍO PRINCIPAL (CTA)
+           ==========================================
+           - width: 100% → Ancho completo para área de toque grande en móvil
+           - padding: 14px → Espacio vertical generoso para toque cómodo
+           - background: var(--color-principal) → Color de marca para acción principal
+           - color: #05323A → Texto oscuro para contraste máximo sobre turquesa
+           - border: none → Sin borde para apariencia limpia
+           - border-radius: 8px → Consistencia con inputs
+           - font-weight: 700 → Texto grueso para legibilidad
+           - cursor: pointer → Cursor de mano para indicar interactividad
+           - transition: all 0.3s → Animación suave para hover/active
+           
+           🎯 DISEÑO DE CTA (Call To Action):
+           • Texto claro: "✅ Crear Cuenta" (acción + confirmación visual)
+           • Ícono visual: ✅ refuerza éxito/confirmación
+           • Color destacado: Atrae la atención como acción principal
+           • Tamaño generoso: Fácil de tocar en pantallas táctiles
+        */
+        .registro-form button {
+            width: 100%;                   /* Ancho completo para toque fácil en móvil */
+            padding: 14px;                 /* Espacio vertical generoso */
+            background: var(--color-principal);  /* Color de marca para acción principal */
+            color: #05323A;                /* Texto oscuro para contraste */
+            border: none;                  /* Sin borde para apariencia limpia */
+            border-radius: 8px;            /* Bordes redondeados consistentes */
+            font-size: 16px;               /* Tamaño legible */
+            font-weight: 700;              /* Texto grueso para énfasis */
+            cursor: pointer;               /* Cursor de mano: indica interactividad */
+            transition: all 0.3s;          /* Transición suave para interacciones */
+        }
+        
+        /* ==========================================
+           EFECTO HOVER EN BOTÓN - FEEDBACK VISUAL
+           ==========================================
+           - background: #0dd3cd → Turquesa ligeramente más claro al hover
+           - transform: translateY(-2px) → "Levanta" el botón 2px hacia arriba
+           
+           💡 PSICOLOGÍA UX:
+           El movimiento sutil confirma "esto responde", aumentando
+           la confianza del usuario en la interfaz.
+        */
+        .registro-form button:hover {
+            background: #0dd3cd;           /* Turquesa más claro al hover */
+            transform: translateY(-2px);   /* Efecto de elevación sutil */
+        }
+        
+        /* ==========================================
+           PIE DEL FORMULARIO (ENLACES SECUNDARIOS)
+           ==========================================
+           - text-align: center → Centrar enlaces para simetría
+           - margin-top: 20px → Espacio respecto al botón principal
+           - color: var(--texto-atenuado) → Color atenuado para jerarquía secundaria
+           
+           🎯 JERARQUÍA VISUAL:
+           Los enlaces del footer tienen menor énfasis visual que el botón
+           principal, guiando al usuario hacia la acción principal (registro)
+           sin eliminar alternativas (login, volver).
+        */
+        .registro-footer {
+            text-align: center;            /* Centrar enlaces */
+            margin-top: 20px;              /* Espacio respecto al formulario */
+            color: var(--texto-atenuado);  /* Color atenuado para jerarquía secundaria */
+        }
+        
+        /* ==========================================
+           ENLACES DEL FOOTER (LOGIN + VOLVER)
+           ==========================================
+           - color: var(--color-principal) → Color de marca para enlaces
+           - text-decoration: none → Sin subrayado por defecto (más limpio)
+           - font-weight: 600 → Texto semigrueso para legibilidad
+           
+           🎯 UX WRITING:
+           "¿Ya tienes cuenta? Inicia sesión aquí" → Pregunta + solución
+           "← Volver al inicio" → Ícono direccional + acción clara
+        */
+        .registro-footer a {
+            color: var(--color-principal); /* Color de marca para enlaces */
+            text-decoration: none;         /* Sin subrayado para apariencia limpia */
+            font-weight: 600;              /* Texto semigrueso para legibilidad */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 
+      ==========================================
+      CONTENEDOR PRINCIPAL (LAYOUT CENTRALIZADO)
+      ==========================================
+      - `class="container"` → Clase CSS que:
+        • Centra el contenido horizontalmente (margin: 0 auto)
+        • Establece ancho máximo (~980px) para legibilidad
+        • Agrega padding lateral en móviles para evitar bordes pegados
+      
+      📐 BENEFICIO UX: En desktop, el contenido no se estira
+      de extremo a extremo (difícil de leer). En móvil, ocupa
+      el 100% disponible con márgenes cómodos.
+    -->
+    <div class="container">
+        
+        <!-- 
+          ==========================================
+          HEADER: ENCABEZADO CONSISTENTE EN TODAS LAS PÁGINAS
+          ==========================================
+          Este header se REPITE idéntico en todas las páginas del sistema
+          para mantener consistencia visual y navegación predecible.
+        -->
+        <div class="header">
+            <!-- Parte superior con íconos decorativos y título principal -->
+            <div class="header-top">
+                <span class="car-icon">🚗</span>
+                <h1 class="main-title">Revisión Técnica Vehicular</h1>
+                <span class="car-icon">🚗</span>
+            </div>
+        </div>
+        <!-- Fin del header -->
+
+        <!-- 
+          ==========================================
+          TARJETA PRINCIPAL: FORMULARIO DE REGISTRO
+          ==========================================
+          - `class="card registro-container"` → Combina:
+            • .card: estilos base de tarjeta (fondo blanco, sombra, bordes)
+            • .registro-container: estilos específicos de registro (centrado, padding)
+          
+          🎨 BENEFICIO VISUAL: La tarjeta separa visualmente
+          el formulario del fondo, enfocando la atención del usuario
+          en la acción principal sin distracciones.
+        -->
+        <div class="card registro-container">
+            
+            <!-- Encabezado del formulario con título y descripción -->
+            <div class="registro-header">
+                <h1>📝 Crear Cuenta</h1>
+                <p>Regístrate para agendar tus citas</p>
+            </div>
+
+            <!-- 
+              ==========================================
+              FORMULARIO HTML CON IDENTIFICADOR ÚNICO
+              ==========================================
+              - `id="registroForm"` → Identificador único para que JavaScript
+                pueda encontrar este formulario y agregarle eventos
+              
+              - `class="registro-form"` → Estilos específicos definidos en <style>
+              
+              🔧 CONEXIÓN CON JAVASCRIPT (app-auth.js):
+              const registroForm = document.getElementById('registroForm');
+              registroForm.addEventListener('submit', handleRegistro);
+              
+              ⚠️ NOTA: No tiene `action` ni `method` porque:
+              • JavaScript controla el envío (preventDefault)
+              • Los datos se envían vía API a Supabase Auth, no como POST tradicional
+            -->
+            <form id="registroForm" class="registro-form">
+                
+                <!-- 
+                  ==========================================
+                  CAMPO 1: NOMBRE COMPLETO
+                  ==========================================
+                  - `type="text"` → Entrada de texto libre para nombres
+                  - `required` → Validación HTML5: no se puede enviar vacío
+                  - `placeholder` → Texto de ayuda que desaparece al escribir
+                  - `id` y `label for` → Vinculación accesible
+                  
+                  💡 UX: El placeholder "Ej: Juan Pérez García" guía al usuario
+                  sobre el formato esperado, reduciendo errores de entrada.
+                -->
+                <div class="form-group">
+                    <label for="nombre_completo">Nombre Completo</label>
+                    <input 
+                        type="text" 
+                        id="nombre_completo" 
+                        name="nombre_completo" 
+                        required 
+                        placeholder="Ej: Juan Pérez García">
+                </div>
+
+                <!-- 
+                  ==========================================
+                  CAMPO 2: CORREO ELECTRÓNICO
+                  ==========================================
+                  - `type="email"` → Validación automática de formato:
+                    • Debe contener @ y dominio válido
+                    • En móviles, muestra teclado con @ y .
+                  
+                  - `required` → No se puede enviar vacío
+                  - `autocomplete="email"` → Permite sugerir emails guardados
+                  
+                  🔍 VALIDACIÓN EN DOS NIVELES:
+                  1. Frontend (HTML5): Rechaza formato inválido inmediatamente
+                  2. Backend (Supabase): Verifica que el email no esté duplicado
+                -->
+                <div class="form-group">
+                    <label for="email_registro">Correo Electrónico</label>
+                    <input 
+                        type="email" 
+                        id="email_registro" 
+                        name="email" 
+                        required 
+                        placeholder="tu@email.com"
+                        autocomplete="email">
+                </div>
+
+                <!-- 
+                  ==========================================
+                  CAMPO 3: TELÉFONO (OPCIONAL)
+                  ==========================================
+                  - `type="tel"` → Semántica para número telefónico
+                    • En móviles, muestra teclado numérico
+                  
+                  - Sin `required` → Campo opcional para reducir fricción
+                  
+                  💡 DECISIÓN DE DISEÑO:
+                  Hacer el teléfono opcional permite registro rápido.
+                  El usuario puede agregarlo después en su perfil si lo necesita.
+                -->
+                <div class="form-group">
+                    <label for="telefono_registro">Teléfono</label>
+                    <input 
+                        type="tel" 
+                        id="telefono_registro" 
+                        name="telefono" 
+                        placeholder="8888-8888">
+                </div>
+
+                <!-- 
+                  ==========================================
+                  CAMPO 4: CONTRASEÑA
+                  ==========================================
+                  - `type="password"` → Oculta caracteres con ••••••••
+                  - `required` → No se puede enviar vacío
+                  - `minlength="6"` → Validación HTML5: mínimo 6 caracteres
+                  - `placeholder` → Guía al usuario sobre requisito de longitud
+                  
+                  🔐 SEGURIDAD UX:
+                  • minlength="6" cumple con estándar básico de seguridad
+                  • El placeholder "Mínimo 6 caracteres" educa al usuario
+                    antes de que intente enviar y reciba error
+                -->
+                <div class="form-group">
+                    <label for="password_registro">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="password_registro" 
+                        name="password" 
+                        required 
+                        placeholder="Mínimo 6 caracteres"
+                        minlength="6">
+                </div>
+
+                <!-- 
+                  ==========================================
+                  CAMPO 5: CONFIRMAR CONTRASEÑA
+                  ==========================================
+                  - `type="password"` → Oculta caracteres
+                  - `required` → No se puede enviar vacío
+                  - `minlength="6"` → Consistencia con campo anterior
+                  
+                  🎯 PROPÓSITO: Prevenir errores de tipeo en contraseña.
+                  Si el usuario escribe mal la contraseña al registrarse,
+                  no podrá iniciar sesión después. La confirmación previene esto.
+                  
+                  🔗 VALIDACIÓN EN JAVASCRIPT (app-auth.js):
+                  if (password !== passwordConfirm) {
+                      Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
+                      return;
+                  }
+                -->
+                <div class="form-group">
+                    <label for="password_confirm">Confirmar Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="password_confirm" 
+                        name="password_confirm" 
+                        required 
+                        placeholder="Repite tu contraseña"
+                        minlength="6">
+                </div>
+
+                <!-- 
+                  ==========================================
+                  BOTÓN DE ENVÍO PRINCIPAL (CTA)
+                  ==========================================
+                  - `type="submit"` → Al hacer clic, dispara evento 'submit'
+                  - `class="btn-registro"` → Estilos definidos en <style>
+                  
+                  🎯 DISEÑO DE CTA:
+                  • Texto: "✅ Crear Cuenta" → Acción + confirmación visual
+                  • Ícono: ✅ → Refuerza éxito/creación exitosa
+                  • Color: var(--color-principal) → Atrae atención como acción principal
+                  
+                  🔗 CONEXIÓN CON JAVASCRIPT:
+                  El evento 'submit' es capturado por app-auth.js:
+                  registroForm.addEventListener('submit', handleRegistro);
+                  → handleRegistro() valida, crea usuario en Supabase, redirige a login
+                -->
+                <button type="submit" class="btn-registro">
+                    ✅ Crear Cuenta
+                </button>
+            </form>
+
+            <!-- 
+              ==========================================
+              PIE DEL FORMULARIO: ENLACES SECUNDARIOS
+              ==========================================
+              - Contiene acciones alternativas al registro principal:
+                • "Inicia sesión aquí" → Para usuarios que ya tienen cuenta
+                • "← Volver al inicio" → Para navegar sin registrarse
+              
+              🎯 JERARQUÍA DE ACCIONES:
+              El botón principal (Crear Cuenta) tiene máximo énfasis visual.
+              Los enlaces del footer tienen menor énfasis para guiar al usuario
+              hacia la acción principal sin eliminar alternativas.
+            -->
+            <div class="registro-footer">
+                <!-- Enlace a login para usuarios existentes -->
+                <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+                
+                <!-- Enlace para volver a página principal -->
+                <p style="margin-top: 10px; font-size: 14px;">
+                    <a href="index.html">← Volver al inicio</a>
+                </p>
+            </div>
+        </div>
+        <!-- Fin de la tarjeta del formulario de registro -->
+        
+    </div>
+    <!-- Fin del contenedor principal -->
+
+    <!-- 
+      ==========================================
+      SCRIPTS AL FINAL DEL <body> (BUENA PRÁCTICA)
+      ==========================================
+      Colocar scripts al final permite que:
+      1. El HTML se renderice primero → Mejor percepción de velocidad
+      2. Los elementos del DOM existan cuando JS intente acceder a ellos
+      3. El usuario vea estructura básica mientras cargan los scripts
+      
+      ⚡ ORDEN DE CARGA IMPORTANTE:
+      1. supabase.js → Configuración de conexión (dependencia base)
+      2. app-auth.js → Lógica de registro (depende de supabase.js)
+    -->
+    
+    <!-- 
+      ==========================================
+      MÓDULO 1: CONFIGURACIÓN DE SUPABASE
+      ==========================================
+      - `type="module"` → Módulo ES6 moderno que permite import/export
+      - `src="supabase.js"` → Archivo que inicializa cliente de Supabase
+        con URL y clave pública desde variables de entorno
+      
+      🔗 CONEXIÓN: Este archivo es la BASE para el registro.
+      Sin él, app-auth.js no podría conectar a Supabase Auth para signUp().
+    -->
+    <script type="module" src="supabase.js"></script>
+    
+    <!-- 
+      ==========================================
+      MÓDULO 2: LÓGICA DE REGISTRO DE USUARIOS
+      ==========================================
+      - `src="app-auth.js"` → Archivo con función handleRegistro():
+        1. Previene envío tradicional (preventDefault)
+        2. Valida que contraseñas coincidan (frontend)
+        3. Valida longitud mínima de contraseña
+        4. Muestra loading con SweetAlert2
+        5. Llama a supabase.auth.signUp() con datos + metadata
+        6. Actualiza perfil en tabla 'perfiles' con nombre y teléfono
+        7. Muestra mensaje de éxito y redirige a login.html
+        8. Maneja errores con mensajes amigables (email duplicado, etc.)
+      
+      🔐 SEGURIDAD EN CAPAS:
+      • Frontend: Validación HTML5 + JavaScript + mensajes amigables
+      • Backend (Supabase Auth): Creación segura de usuario con hash de contraseña
+      • Trigger en BD: Crea automáticamente perfil con rol 'cliente'
+      • RLS: Políticas que garantizan que cada usuario vea solo sus datos
+      
+      🎯 FLUJO COMPLETO:
+      Usuario llena formulario → Clic en "Crear Cuenta" → JS valida contraseñas
+      → Muestra loading → Crea usuario en Supabase → Trigger crea perfil
+      → Muestra éxito → Redirige a login para iniciar sesión
+    -->
+    <script type="module" src="app-auth.js"></script>
+    
+</body>
+</html>

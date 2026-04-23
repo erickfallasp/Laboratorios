@@ -1,0 +1,647 @@
+<!--
+  ==========================================
+  PÁGINA DE INICIO DE SESIÓN - LOGIN
+  Archivo: login.html
+  ==========================================
+  
+  🎯 PROPÓSITO DE ESTA PÁGINA:
+  Esta es la puerta de entrada segura al sistema para usuarios registrados.
+  Su función es:
+  1. Autenticar credenciales (email + contraseña) contra Supabase Auth
+  2. Redirigir al dashboard correcto según el rol (admin → admin, cliente → cliente)
+  3. Proporcionar enlace a registro para nuevos usuarios
+  4. Mantener consistencia visual con el resto del sistema
+  
+  🔐 SEGURIDAD INTEGRADA:
+  • Validación HTML5 nativa (required, type="email")
+  • Contraseñas ocultas (type="password")
+  • Autocomplete deshabilitado para campos sensibles
+  • Conexión segura HTTPS con Supabase
+  • Mensajes de error amigables sin exponer detalles técnicos
+  
+  🔧 CARACTERÍSTICAS PRINCIPALES:
+  ✅ Diseño centrado y enfocado en la acción principal (login)
+  ✅ Formularios accesibles con labels vinculados y atributos ARIA implícitos
+  ✅ Feedback visual en inputs (focus con color de marca)
+  ✅ Integración con SweetAlert2 para alertas profesionales
+  ✅ Responsive: se adapta perfectamente a móvil y desktop
+  
+  🔗 CONEXIONES CON OTROS ARCHIVOS:
+  - estilosProyecto.css → Estilos base del sistema (colores, tarjetas, botones)
+  - SweetAlert2 (CDN) → Alertas y loading profesionales
+  - app-auth.js → Lógica de autenticación: handleLogin, validaciones, redirección
+  - supabase.js (importado) → Conexión segura con base de datos en la nube
+  
+  📊 FLUJO DE AUTENTICACIÓN:
+  1. Usuario ingresa email y contraseña
+  2. JavaScript previene envío tradicional (preventDefault)
+  3. Muestra loading con SweetAlert2 mientras procesa
+  4. Consulta a Supabase Auth: signInWithPassword(email, password)
+  5. Si éxito: consulta perfil para obtener rol → redirige a dashboard correspondiente
+  6. Si error: muestra mensaje amigable sin exponer detalles técnicos
+  7. Si no tiene cuenta: enlace a registro.html para crear nueva cuenta
+-->
+
+<!DOCTYPE html>
+<!-- 
+  ==========================================
+  DECLARACIÓN HTML5 CON IDIOMA ESPAÑOL
+  ==========================================
+  - `<!DOCTYPE html>` → Estándar HTML5 moderno (case-insensitive)
+  - `lang="es"` → Idioma español para:
+    • SEO: Posicionamiento en búsquedas en español
+    • Accesibilidad: Lectores de pantalla con pronunciación correcta
+    • Navegador: Corrector ortográfico en español activado
+-->
+<html lang="es">
+<head>
+    <!-- 
+      ==========================================
+      CODIFICACIÓN UTF-8 (PRIMERA META ETIQUETA)
+      ==========================================
+      - `charset="UTF-8"` → Soporta caracteres especiales:
+        • Tildes y ñ: á, é, í, ó, ú, ñ
+        • Símbolos: 🔐, 🔑, ←
+        • Emojis para refuerzo visual en interfaz
+      
+      ⚠️ IMPORTANTE: Debe ir PRIMERO para interpretación correcta
+      de todo el documento desde el primer byte.
+    -->
+    <!-- Configuración de codificación UTF-8 -->
+    <meta charset="UTF-8">
+    
+    <!-- 
+      ==========================================
+      VIEWPORT PARA DISEÑO RESPONSIVE
+      ==========================================
+      - `width=device-width` → Ancho de página = ancho de pantalla del dispositivo
+      - `initial-scale=1.0` → Zoom inicial al 100%
+      
+      📱 BENEFICIO: Sin esto, en móviles la página se vería como en desktop
+      (muy pequeña). Con esto, se adapta automáticamente a cualquier dispositivo.
+      
+      💡 DATO: Esta meta etiqueta es OBLIGATORIA para diseño responsive moderno.
+    -->
+    <!-- Viewport para diseño responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 
+      ==========================================
+      TÍTULO DE LA PÁGINA (SEO + PESTAÑA)
+      ==========================================
+      - Se muestra en la pestaña del navegador
+      - Aparece en resultados de búsqueda
+      - Identifica claramente el propósito: inicio de sesión
+      
+      🔍 SEO TIP: "Login - Revisión Vehicular" incluye:
+      • Acción: "Login" (intención del usuario)
+      • Contexto: "Revisión Vehicular" (nombre del sistema)
+      • Separador "-" → Mejora legibilidad en resultados
+    -->
+    <!-- Título de la página -->
+    <title>Login - Revisión Vehicular</title>
+    
+    <!-- 
+      ==========================================
+      HOJA DE ESTILOS BASE DEL PROYECTO
+      ==========================================
+      - `href="estilosProyecto.css"` → Archivo CSS principal con:
+        • Variables de colores de marca (--color-principal, --fondo-oscuro)
+        • Estilos para tarjetas (.card), contenedores (.container)
+        • Diseño responsive con @media queries
+        • Clases utilitarias para espaciado y tipografía
+    -->
+    <!-- Enlace a la hoja de estilos CSS -->
+    <link rel="stylesheet" href="estilosProyecto.css">
+    
+    <!-- 
+      ==========================================
+      LIBRERÍA EXTERNA: SweetAlert2 (CDN)
+      ==========================================
+      - Carga desde jsdelivr (CDN público y rápido)
+      - Versión @11 → Versión estable y probada
+      
+      🎨 ¿POR QUÉ SWEETALERT2 PARA LOGIN?
+      • Loading animado mientras autentica → Evita que usuario envíe múltiples veces
+      • Alertas de error con íconos → Feedback visual inmediato (❌ credenciales incorrectas)
+      • Mensajes de éxito con temporizador → Experiencia fluida sin clics extra
+      • HTML en contenido → Permite personalizar mensajes con formato
+      
+      🔗 SE USA EN app-auth.js para:
+      - Mostrar loading durante autenticación
+      - Alertas de error con mensajes amigables
+      - Mensaje de bienvenida con redirección automática
+    -->
+    <!-- SweetAlert2 para alertas bonitas -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- 
+      ==========================================
+      ESTILOS ESPECÍFICOS PARA ESTA PÁGINA DE LOGIN
+      ==========================================
+      - `<style>` interno para estilos únicos de login
+      - Se podrían mover a estilosProyecto.css, pero se dejan
+        aquí para modularidad: cambios en login no afectan otras páginas
+      
+      🎨 COMPONENTES DEFINIDOS:
+      1. .login-container → Contenedor centrado con ancho máximo
+      2. .login-header → Título y subtítulo centrados
+      3. .login-form → Estilos para inputs, labels y botón
+      4. .login-footer → Enlaces secundarios (registro, volver)
+      
+      💡 DISEÑO CENTRADO EN LA ACCIÓN:
+      El formulario ocupa el centro visual, con elementos secundarios
+      (enlaces) en la parte inferior con menor énfasis visual.
+    -->
+    <!-- Estilos específicos para la página de login -->
+    <style>
+        /* ==========================================
+           CONTENEDOR PRINCIPAL DEL FORMULARIO
+           ==========================================
+           - max-width: 450px → Ancho óptimo para formularios de login
+             (ni muy estrecho que corte texto, ni muy ancho que distraiga)
+           
+           - margin: 50px auto → 50px arriba/abajo, auto izquierda/derecha
+             → Centrado horizontal perfecto en cualquier pantalla
+           
+           - padding: 40px → Espacio interno generoso para:
+             • Comodidad visual (contenido no toca bordes)
+             • Área de toque amplia en móviles (dedos grandes)
+        */
+        .login-container {
+            max-width: 450px;              /* Ancho óptimo para formularios */
+            margin: 50px auto;             /* Centrado horizontal + margen vertical */
+            padding: 40px;                 /* Espacio interno generoso */
+        }
+        
+        /* ==========================================
+           ENCABEZADO DEL FORMULARIO (TÍTULO + SUBTÍTULO)
+           ==========================================
+           - text-align: center → Centrar texto para jerarquía visual
+           - margin-bottom: 30px → Espacio antes del formulario
+           
+           🎯 PROPÓSITO UX:
+           El título claro ("Iniciar Sesión") confirma al usuario
+           que está en el lugar correcto antes de empezar a escribir.
+        */
+        .login-header {
+            text-align: center;            /* Centrar contenido */
+            margin-bottom: 30px;           /* Espacio antes del formulario */
+        }
+        
+        /* Título principal del login */
+        .login-header h1 {
+            color: var(--fondo-oscuro);    /* Color oscuro para contraste */
+            font-size: 32px;               /* Tamaño grande para jerarquía */
+            margin-bottom: 10px;           /* Espacio antes del subtítulo */
+        }
+        
+        /* Subtítulo descriptivo */
+        .login-header p {
+            color: var(--texto-atenuado);  /* Gris suave para jerarquía secundaria */
+            font-size: 16px;               /* Tamaño legible */
+        }
+        
+        /* ==========================================
+           GRUPOS DE FORMULARIO (LABEL + INPUT)
+           ==========================================
+           - margin-bottom: 20px → Espacio uniforme entre campos
+           
+           💡 PRINCIPIO DE DISEÑO: "Espaciado generoso"
+           Campos muy juntos generan errores de toque en móviles.
+           20px es suficiente para evitar clics accidentales.
+        */
+        .login-form .form-group {
+            margin-bottom: 20px;           /* Espacio entre campos */
+        }
+        
+        /* Labels de formulario */
+        .login-form label {
+            display: block;                /* Ocupar línea completa */
+            margin-bottom: 8px;            /* Espacio antes del input */
+            font-weight: 600;              /* Texto semigrueso para legibilidad */
+            color: var(--fondo-oscuro);    /* Color oscuro para contraste */
+        }
+        
+        /* ==========================================
+           INPUTS DE FORMULARIO (EMAIL + CONTRASEÑA)
+           ==========================================
+           - width: 100% → Ocupar todo el ancho del contenedor padre
+           - padding: 12px 16px → Espacio interno generoso para toque en móvil
+           - border: 2px solid → Borde visible para definición clara
+           - border-radius: 8px → Bordes redondeados para apariencia moderna
+           - font-size: 16px → Mínimo para evitar zoom automático en iOS
+           - transition: border-color → Animación suave al cambiar estado
+           
+           ♿ ACCESIBILIDAD CRÍTICA:
+           font-size: 16px previene que iOS haga zoom automático
+           al enfocar un input, lo que rompería la experiencia móvil.
+        */
+        .login-form input {
+            width: 100%;                   /* Ancho completo del contenedor */
+            padding: 12px 16px;            /* Espacio interno generoso */
+            border: 2px solid var(--borde); /* Borde visible para definición */
+            border-radius: 8px;            /* Bordes redondeados modernos */
+            font-size: 16px;               /* Mínimo para evitar zoom en iOS */
+            transition: border-color 0.3s; /* Transición suave para cambios de estado */
+        }
+        
+        /* ==========================================
+           ESTADO FOCUS - FEEDBACK DE SELECCIÓN
+           ==========================================
+           - border-color: var(--color-principal) → Borde turquesa al enfocar
+           - outline: none → Eliminar contorno azul por defecto del navegador
+           - box-shadow: 0 0 0 3px rgba(...) → "Glow" sutil turquesa alrededor
+           
+           💡 ACCESIBILIDAD:
+           El estado focus es ESENCIAL para usuarios de teclado que navegan con Tab.
+           Sin un indicador visual claro, no saben en qué campo están escribiendo.
+           WCAG requiere que el foco sea "altamente visible".
+        */
+        .login-form input:focus {
+            border-color: var(--color-principal);  /* Borde turquesa al enfocar */
+            outline: none;                          /* Eliminar contorno azul por defecto */
+            box-shadow: 0 0 0 3px rgba(16, 207, 200, 0.1);  /* "Glow" sutil para visibilidad */
+        }
+        
+        /* ==========================================
+           BOTÓN DE ENVÍO PRINCIPAL (CTA)
+           ==========================================
+           - width: 100% → Ancho completo para área de toque grande en móvil
+           - padding: 14px → Espacio vertical generoso para toque cómodo
+           - background: var(--color-principal) → Color de marca para acción principal
+           - color: #05323A → Texto oscuro para contraste máximo sobre turquesa
+           - border: none → Sin borde para apariencia limpia
+           - border-radius: 8px → Consistencia con inputs
+           - font-weight: 700 → Texto grueso para legibilidad
+           - cursor: pointer → Cursor de mano para indicar interactividad
+           - transition: all 0.3s → Animación suave para hover/active
+           - margin-top: 10px → Espacio respecto al último input
+           
+           🎯 DISEÑO DE CTA (Call To Action):
+           • Texto claro: "🔑 Ingresar al Sistema" (acción + beneficio)
+           • Ícono visual: 🔑 refuerza concepto de acceso/seguridad
+           • Color destacado: Atrae la atención como acción principal
+           • Tamaño generoso: Fácil de tocar en pantallas táctiles
+        */
+        .login-form button {
+            width: 100%;                   /* Ancho completo para toque fácil en móvil */
+            padding: 14px;                 /* Espacio vertical generoso */
+            background: var(--color-principal);  /* Color de marca para acción principal */
+            color: #05323A;                /* Texto oscuro para contraste */
+            border: none;                  /* Sin borde para apariencia limpia */
+            border-radius: 8px;            /* Bordes redondeados consistentes */
+            font-size: 16px;               /* Tamaño legible */
+            font-weight: 700;              /* Texto grueso para énfasis */
+            cursor: pointer;               /* Cursor de mano: indica interactividad */
+            transition: all 0.3s;          /* Transición suave para interacciones */
+            margin-top: 10px;              /* Espacio respecto al último campo */
+        }
+        
+        /* ==========================================
+           EFECTO HOVER EN BOTÓN - FEEDBACK VISUAL
+           ==========================================
+           - background: #0dd3cd → Turquesa ligeramente más claro al hover
+           - transform: translateY(-2px) → "Levanta" el botón 2px hacia arriba
+           - box-shadow: 0 4px 12px rgba(...) → Sombra turquesa para profundidad
+           
+           💡 PSICOLOGÍA UX:
+           El movimiento sutil confirma "esto responde", aumentando
+           la confianza del usuario en la interfaz.
+        */
+        .login-form button:hover {
+            background: #0dd3cd;           /* Turquesa más claro al hover */
+            transform: translateY(-2px);   /* Efecto de elevación sutil */
+            box-shadow: 0 4px 12px rgba(16, 207, 200, 0.3);  /* Sombra para profundidad */
+        }
+        
+        /* ==========================================
+           PIE DEL FORMULARIO (ENLACES SECUNDARIOS)
+           ==========================================
+           - text-align: center → Centrar enlaces para simetría
+           - margin-top: 25px → Espacio respecto al botón principal
+           - padding-top: 25px + border-top → Separador visual sutil
+           
+           🎯 JERARQUÍA VISUAL:
+           El borde superior separa visualmente las acciones principales
+           (login) de las secundarias (registro, volver), guiando la atención.
+        */
+        .login-footer {
+            text-align: center;            /* Centrar enlaces */
+            margin-top: 25px;              /* Espacio respecto al formulario */
+            padding-top: 25px;             /* Espacio interno para separador */
+            border-top: 1px solid var(--borde);  /* Línea divisoria sutil */
+        }
+        
+        /* Párrafos del footer */
+        .login-footer p {
+            margin: 10px 0;                /* Espacio vertical entre líneas */
+            color: var(--texto-atenuado);  /* Color atenuado para jerarquía secundaria */
+        }
+        
+        /* ==========================================
+           ENLACES DEL FOOTER (REGISTRO + VOLVER)
+           ==========================================
+           - color: var(--color-principal) → Color de marca para enlaces
+           - text-decoration: none → Sin subrayado por defecto (más limpio)
+           - font-weight: 600 → Texto semigrueso para legibilidad
+           
+           🎯 UX WRITING:
+           "¿No tienes cuenta? Regístrate aquí" → Pregunta + solución
+           "← Volver al inicio" → Ícono direccional + acción clara
+        */
+        .login-footer a {
+            color: var(--color-principal); /* Color de marca para enlaces */
+            text-decoration: none;         /* Sin subrayado para apariencia limpia */
+            font-weight: 600;              /* Texto semigrueso para legibilidad */
+        }
+        
+        /* Hover en enlaces - Feedback de interacción */
+        .login-footer a:hover {
+            text-decoration: underline;    /* Subrayado al hover para indicar clickable */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 
+      ==========================================
+      CONTENEDOR PRINCIPAL (LAYOUT CENTRALIZADO)
+      ==========================================
+      - `class="container"` → Clase CSS que:
+        • Centra el contenido horizontalmente (margin: 0 auto)
+        • Establece ancho máximo (~980px) para legibilidad
+        • Agrega padding lateral en móviles para evitar bordes pegados
+      
+      📐 BENEFICIO UX: En desktop, el contenido no se estira
+      de extremo a extremo (difícil de leer). En móvil, ocupa
+      el 100% disponible con márgenes cómodos.
+    -->
+    <!-- Contenedor principal -->
+    <div class="container">
+        
+        <!-- 
+          ==========================================
+          HEADER: ENCABEZADO CONSISTENTE EN TODAS LAS PÁGINAS
+          ==========================================
+          Este header se REPITE idéntico en todas las páginas del sistema
+          para mantener consistencia visual y navegación predecible.
+          
+          🎨 DISEÑO: Flexbox (en CSS base) para alinear elementos
+          horizontalmente en desktop y verticalmente en móviles.
+        -->
+        <!-- Header con navegación -->
+        <div class="header">
+            <!-- Parte superior con íconos decorativos y título principal -->
+            <div class="header-top">
+                <span class="car-icon">🚗</span>
+                <h1 class="main-title">Revisión Técnica Vehicular</h1>
+                <span class="car-icon">🚗</span>
+            </div>
+            
+            <!-- 
+              ==========================================
+              MENÚ DE NAVEGACIÓN CON LOGIN DESTACADO
+              ==========================================
+              - `nav` → Etiqueta semántica HTML5 para navegación
+              - class="active btn-login-nav" en enlace de login →
+                • active: indica visualmente que esta es la página actual
+                • btn-login-nav: estilo especial para destacar como botón
+              
+              🎯 ESTRATEGIA DE CONVERSIÓN:
+              Destacar visualmente el enlace de login en el menú guía
+              al usuario hacia la acción principal: "inicia sesión para usar el sistema".
+            -->
+            <!-- Menú de navegación CON LOGIN -->
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li class="menu-item"><a href="index.html">🏠 Inicio</a></li>
+                    <!-- 
+                      ==========================================
+                      ENLACE DE LOGIN DESTACADO (PÁGINA ACTUAL)
+                      ==========================================
+                      - class="active" → Resalta visualmente que estamos en login
+                      - class="btn-login-nav" → Estilo de botón para énfasis adicional
+                      
+                      💡 UX: Doble énfasis (active + btn) asegura que el usuario
+                      siempre sepa dónde está, incluso si llega directo por URL.
+                    -->
+                    <li class="menu-item"><a href="login.html" class="active btn-login-nav">🔐 Login</a></li>
+                    <li class="menu-item"><a href="precios.html">💲 Tarifas</a></li>
+                    <li class="menu-item"><a href="citas.html">📅 Citas</a></li>
+                    <li class="menu-item"><a href="citas-agendadas.html">📋 Citas Agendadas</a></li>
+                    <li class="menu-item"><a href="contactos.html">📬 Contacto</a></li>
+                </ul>    
+            </nav>
+        </div>
+        <!-- Fin del header -->
+
+        <!-- 
+          ==========================================
+          TARJETA PRINCIPAL: FORMULARIO DE LOGIN
+          ==========================================
+          - `class="card login-container"` → Combina:
+            • .card: estilos base de tarjeta (fondo blanco, sombra, bordes)
+            • .login-container: estilos específicos de login (centrado, padding)
+          
+          🎨 BENEFICIO VISUAL: La tarjeta separa visualmente
+          el formulario del fondo, enfocando la atención del usuario
+          en la acción principal sin distracciones.
+        -->
+        <!-- Formulario de Login -->
+        <div class="card login-container">
+            
+            <!-- Encabezado del formulario con título y descripción -->
+            <div class="login-header">
+                <h1>🔐 Iniciar Sesión</h1>
+                <p>Ingresa tus credenciales para continuar</p>
+            </div>
+
+            <!-- 
+              ==========================================
+              FORMULARIO HTML CON IDENTIFICADOR ÚNICO
+              ==========================================
+              - `id="loginForm"` → Identificador único para que JavaScript
+                pueda encontrar este formulario y agregarle eventos
+              
+              - `class="login-form"` → Estilos específicos definidos en <style>
+              
+              🔧 CONEXIÓN CON JAVASCRIPT (app-auth.js):
+              const loginForm = document.getElementById('loginForm');
+              loginForm.addEventListener('submit', handleLogin);
+              
+              ⚠️ NOTA: No tiene `action` ni `method` porque:
+              • JavaScript controla el envío (preventDefault)
+              • Los datos se envían vía API a Supabase Auth, no como POST tradicional
+            -->
+            <form id="loginForm" class="login-form">
+                
+                <!-- 
+                  ==========================================
+                  GRUPO 1: CAMPO DE CORREO ELECTRÓNICO
+                  ==========================================
+                  - `type="email"` → Validación automática de formato:
+                    • Debe contener @ y dominio válido
+                    • En móviles, muestra teclado con @ y .
+                  
+                  - `required` → Validación HTML5: no se puede enviar vacío
+                  
+                  - `autocomplete="email"` → Permite al navegador sugerir
+                    emails guardados, mejorando velocidad de llenado
+                  
+                  🔍 VALIDACIÓN EN DOS NIVELES:
+                  1. Frontend (HTML5): Rechaza formato inválido inmediatamente
+                  2. Backend (Supabase): Verifica que el email exista en auth.users
+                -->
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required 
+                        placeholder="tu@email.com"
+                        autocomplete="email">
+                </div>
+
+                <!-- 
+                  ==========================================
+                  GRUPO 2: CAMPO DE CONTRASEÑA
+                  ==========================================
+                  - `type="password"` → Oculta caracteres con ••••••••
+                    • Protege privacidad en pantallas compartidas
+                    • En móviles, puede mostrar último carácter brevemente
+                  
+                  - `required` → No se puede enviar vacío
+                  
+                  - `autocomplete="current-password"` → Permite al navegador
+                    sugerir contraseña guardada para este sitio
+                  
+                  🔐 SEGURIDAD UX:
+                  Aunque la contraseña se oculta visualmente, el atributo
+                  name="password" se envía cifrado vía HTTPS a Supabase.
+                  Nunca se expone en código cliente ni en consola.
+                -->
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        placeholder="••••••••"
+                        autocomplete="current-password">
+                </div>
+
+                <!-- 
+                  ==========================================
+                  BOTÓN DE ENVÍO PRINCIPAL (CTA)
+                  ==========================================
+                  - `type="submit"` → Al hacer clic, dispara evento 'submit' del formulario
+                  - `class="btn-login-submit"` → Estilos definidos en <style>
+                  
+                  🎯 DISEÑO DE CTA:
+                  • Texto: "🔑 Ingresar al Sistema" → Acción clara + beneficio
+                  • Ícono: 🔑 → Refuerza concepto de acceso/seguridad
+                  • Color: var(--color-principal) → Atrae atención como acción principal
+                  • Ancho: 100% → Área de toque grande para móviles
+                  
+                  🔗 CONEXIÓN CON JAVASCRIPT:
+                  El evento 'submit' es capturado por app-auth.js:
+                  loginForm.addEventListener('submit', handleLogin);
+                  → handleLogin() previene envío tradicional y procesa con Supabase
+                -->
+                <button type="submit" class="btn-login-submit">
+                    🔑 Ingresar al Sistema
+                </button>
+            </form>
+
+            <!-- 
+              ==========================================
+              PIE DEL FORMULARIO: ENLACES SECUNDARIOS
+              ==========================================
+              - Contiene acciones alternativas al login principal:
+                • "Regístrate aquí" → Para usuarios nuevos
+                • "← Volver al inicio" → Para navegar sin autenticarse
+              
+              🎯 JERARQUÍA DE ACCIONES:
+              El botón principal (Ingresar) tiene máximo énfasis visual.
+              Los enlaces del footer tienen menor énfasis (color atenuado,
+              sin botón) para guiar al usuario hacia la acción principal
+              sin eliminar alternativas.
+            -->
+            <div class="login-footer">
+                <!-- Enlace a registro para nuevos usuarios -->
+                <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+                
+                <!-- Enlace para volver a página principal sin autenticarse -->
+                <p><a href="index.html">← Volver al inicio</a></p>
+            </div>
+        </div>
+        <!-- Fin de la tarjeta del formulario de login -->
+        
+    </div>
+    <!-- Fin del contenedor principal -->
+
+    <!-- 
+      ==========================================
+      SCRIPTS AL FINAL DEL <body> (BUENA PRÁCTICA)
+      ==========================================
+      Colocar scripts al final permite que:
+      1. El HTML se renderice primero → Mejor percepción de velocidad
+      2. Los elementos del DOM existan cuando JS intente acceder a ellos
+      3. El usuario vea estructura básica mientras cargan los scripts
+      
+      ⚡ ORDEN DE CARGA IMPORTANTE:
+      1. supabase.js → Configuración de conexión (dependencia base)
+      2. app-auth.js → Lógica de autenticación (depende de supabase.js)
+      
+      Este orden garantiza que app-auth.js tenga disponible el cliente
+      de Supabase cuando intente usarlo para signInWithPassword().
+    -->
+    <!-- Scripts -->
+    
+    <!-- 
+      ==========================================
+      MÓDULO 1: CONFIGURACIÓN DE SUPABASE
+      ==========================================
+      - `type="module"` → Módulo ES6 moderno que permite import/export
+      - `src="supabase.js"` → Archivo que:
+        • Importa cliente de @supabase/supabase-js
+        • Inicializa con URL y clave pública desde variables de entorno
+        • Exporta instancia 'supabase' para usar en otros módulos
+      
+      🔗 CONEXIÓN: Este archivo es la BASE para la autenticación.
+      Sin él, app-auth.js no podría conectar a Supabase Auth.
+    -->
+    <script type="module" src="supabase.js"></script>
+    
+    <!-- 
+      ==========================================
+      MÓDULO 2: LÓGICA DE AUTENTICACIÓN
+      ==========================================
+      - `src="app-auth.js"` → Archivo con lógica de:
+        1. handleLogin() → Procesa envío del formulario:
+           • Valida campos (frontend)
+           • Muestra loading con SweetAlert2
+           • Llama a supabase.auth.signInWithPassword()
+           • Consulta perfil para obtener rol
+           • Redirige a dashboard según rol (admin/cliente)
+           • Maneja errores con mensajes amigables
+        
+        2. Funciones auxiliares → cerrarSesion(), validaciones
+        
+      🔐 SEGURIDAD EN CAPAS:
+      • Frontend: Validación HTML5 + mensajes amigables
+      • Backend (Supabase Auth): Verificación real de credenciales
+      • RLS: Políticas de base de datos que filtran datos por usuario
+      
+      🎯 FLUJO COMPLETO:
+      Usuario escribe credenciales → Clic en "Ingresar" → JS valida formato
+      → Muestra loading → Consulta Supabase → Si éxito: obtiene rol
+      → Redirige a dashboard correcto → Si error: muestra mensaje amigable
+    -->
+    <script type="module" src="app-auth.js"></script>
+    
+</body>
+</html>

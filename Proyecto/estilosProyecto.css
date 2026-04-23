@@ -1,199 +1,429 @@
 /**
  * ==========================================
  * ESTILOS PROYECTO - SISTEMA DE CITAS
+ * Archivo: estilosProyecto.css
  * ==========================================
- * Hoja de estilos principal con:
- * - Variables CSS
- * - Reset básico
- * - Header y navegación
- * - Formularios
- * - Tablas
- * - Responsive design
+ * 
+ * 🎯 PROPÓSITO DE ESTE ARCHIVO:
+ * Esta es la hoja de estilos PRINCIPAL que define la identidad
+ * visual de todo el sistema de revisión vehicular. Centraliza:
+ * - Colores de marca y variables reutilizables
+ * - Diseño responsive para móvil, tablet y desktop
+ * - Estilos para componentes: header, formularios, tablas, botones
+ * - Animaciones y efectos de interacción
+ * 
+ * 🔧 CARACTERÍSTICAS CLAVE:
+ * ✅ CSS Custom Properties (variables) para mantenimiento fácil
+ * ✅ Mobile-first: diseño base para móvil, enhancements para desktop
+ * ✅ Accesibilidad: contraste adecuado, focus visible, tamaños legibles
+ * ✅ Consistencia: mismos estilos aplicados en todas las páginas
+ * 
+ * 🔗 CONEXIONES CON OTROS ARCHIVOS:
+ * - Todos los archivos HTML incluyen: <link rel="stylesheet" href="estilosProyecto.css">
+ * - Las clases CSS (.card, .btn, .form-group) se usan en el HTML
+ * - Los colores (--accent, --bg) definen la identidad visual de la marca
+ * 
+ * 🎨 PALETA DE COLORES DEL PROYECTO:
+ * | Variable      | Valor     | Uso                           |
+ * |--------------|-----------|-------------------------------|
+ * | --bg         | #0B2D39   | Header, títulos principales   |
+ * | --accent     | #10CFC8   | Color principal (turquesa)    |
+ * | --accent2    | #EB6763   | Acciones de peligro/eliminar  |
+ * | --card       | #ffffff   | Fondos de tarjetas/formularios|
+ * | --muted      | #64748b   | Texto secundario/atenuado     |
+ * | --border     | #e5e7eb   | Bordes sutiles                |
  */
 
 /* ============================================
    VARIABLES CSS (Custom Properties)
    ============================================
-   Colores y valores reutilizables en todo el proyecto
-   */
+   🎯 PROPÓSITO: Centralizar valores reutilizables
+   para facilitar mantenimiento y consistencia.
+   
+   💡 BENEFICIOS:
+   • Cambiar un color en :root actualiza TODO el sitio
+   • Nombres semánticos (--accent vs "#10CFC8") hacen el código legible
+   • Facilita temas oscuros/claros en el futuro
+   
+   🔗 USO EN HTML/JS:
+   - CSS: background: var(--accent);
+   - JS: getComputedStyle(element).getPropertyValue('--accent')
+*/
 :root {
-  --bg: #0B2D39;              /* Azul oscuro - Header */
-  --accent: #10CFC8;          /* Turquesa - Color principal */
-  --accent2: #EB6763;         /* Rojo/Coral - Color secundario */
-  --card: #ffffff;            /* Blanco - Fondos de tarjetas */
-  --muted: #64748b;           /* Gris azulado - Texto atenuado */
-  --border: #e5e7eb;          /* Gris claro - Bordes */
-  --shadow: 0 8px 18px rgba(2, 6, 23, .06);  /* Sombra suave */
+  /* Color de fondo para header y elementos destacados */
+  --bg: #0B2D39;              /* Azul oscuro profesional */
+  
+  /* Color principal de marca (turquesa) - usado en botones, enlaces, acentos */
+  --accent: #10CFC8;          /* Turquesa vibrante pero profesional */
+  
+  /* Color secundario para acciones destructivas (eliminar, cancelar) */
+  --accent2: #EB6763;         /* Rojo/coral para alertas visuales */
+  
+  /* Fondo para tarjetas, formularios y áreas de contenido */
+  --card: #ffffff;            /* Blanco limpio para contraste */
+  
+  /* Color para texto secundario, etiquetas, información menos importante */
+  --muted: #64748b;           /* Gris azulado suave */
+  
+  /* Color para bordes sutiles, separadores visuales */
+  --border: #e5e7eb;          /* Gris muy claro, casi imperceptible */
+  
+  /* Sombra suave para efecto de profundidad en tarjetas */
+  --shadow: 0 8px 18px rgba(2, 6, 23, .06);  /* Sombra sutil y elegante */
 }
 
 /* ============================================
-   RESET BÁSICO
+   RESET BÁSICO - NORMALIZACIÓN DE ESTILOS
    ============================================
-   Elimina márgenes y padding por defecto
-   */
+   🎯 PROPÓSITO: Eliminar inconsistencias entre navegadores.
+   
+   🔧 QUÉ HACE:
+   • box-sizing: border-box → El padding/border se incluye en el tamaño total
+     (evita cálculos manuales de ancho: width + padding + border)
+   • margin: 0; padding: 0 → Elimina márgenes por defecto del navegador
+     (cada navegador aplica márgenes diferentes a h1, p, ul, etc.)
+   
+   💡 POR QUÉ ES IMPORTANTE:
+   Sin esto, una tarjeta podría medir 300px en Chrome y 320px en Firefox
+   por diferencias en márgenes por defecto. El reset garantiza consistencia.
+*/
 * {
   box-sizing: border-box;  /* Incluir padding/border en el tamaño total */
-  margin: 0;
-  padding: 0;
+  margin: 0;               /* Eliminar márgenes por defecto */
+  padding: 0;              /* Eliminar padding por defecto */
 }
 
 /* ============================================
-   CUERPO DE LA PÁGINA
-   ============================================ */
+   CUERPO DE LA PÁGINA - ESTILOS GLOBALES
+   ============================================
+   🎯 PROPÓSITO: Definir la base tipográfica y de color para todo el sitio.
+*/
 body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;  /* Fuente moderna y legible */
+  margin: 0;  /* Eliminar margen por defecto del navegador */
+  
+  /* 
+    ==========================================
+    FUENTE PRINCIPAL DEL SISTEMA
+    ==========================================
+    🎯 PROPÓSITO: Legibilidad y apariencia profesional.
+    
+    🔧 STACK DE FUENTES (fallback chain):
+    1. 'Segoe UI' → Fuente moderna de Windows (limpia, legible)
+    2. Arial → Fuente universal disponible en todos los sistemas
+    3. sans-serif → Cualquier fuente sin serifas como último recurso
+    
+    💡 POR QUÉ ESTE ORDEN:
+    • Segoe UI es más moderna y legible en pantallas
+    • Si no está disponible, Arial garantiza consistencia
+    • sans-serif asegura que siempre haya una fuente legible
+  */
+  font-family: 'Segoe UI', Arial, sans-serif;
+  
+  /* 
+    ==========================================
+    FONDO Y COLOR DE TEXTO GLOBALES
+    ==========================================
+    • background: #f6f7fb → Gris muy claro (no blanco puro)
+      - Reduce fatiga visual vs blanco #ffffff
+      - Crea contraste sutil con tarjetas blancas (--card)
+    
+    • color: #0f172a → Azul muy oscuro (casi negro)
+      - Mejor contraste que #000000 puro
+      - Más suave para lectura prolongada
+    
+    • line-height: 1.6 → Espaciado entre líneas del 160%
+      - Mejora legibilidad (líneas muy juntas cansan la vista)
+      - Estándar de accesibilidad WCAG para texto corporal
+  */
   background: #f6f7fb;       /* Fondo gris muy claro */
-  color: #0f172a;            /* Texto oscuro */
+  color: #0f172a;            /* Texto oscuro para contraste */
   line-height: 1.6;          /* Espaciado entre líneas para mejor lectura */
 }
 
 /* ============================================
-   CONTENEDOR PRINCIPAL
+   CONTENEDOR PRINCIPAL - LAYOUT CENTRALIZADO
    ============================================
-   Centra el contenido y limita el ancho máximo
-   */
+   🎯 PROPÓSITO: Centrar contenido y limitar ancho para legibilidad.
+   
+   🔧 CÓMO FUNCIONA:
+   • max-width: 980px → En pantallas grandes, el contenido no se estira
+     más de 980px (línea de texto muy larga es difícil de seguir)
+   
+   • margin: 0 auto → Margen superior/inferior 0, izquierdo/derecho auto
+     → "auto" distribuye el espacio restante equitativamente → CENTRADO
+   
+   • padding: 16px → Espacio interno para que el contenido no toque bordes
+     en pantallas pequeñas (móviles)
+   
+   📱 BENEFICIO RESPONSIVE:
+   • Desktop: Contenido centrado, ancho máximo 980px, márgenes laterales
+   • Móvil: padding:16px evita que el texto toque los bordes de la pantalla
+*/
 .container {
-  max-width: 980px;   /* Ancho máximo de 980px */
-  margin: 0 auto;     /* Centrar horizontalmente (auto en left/right) */
-  padding: 16px;      /* Espacio interno de 16px */
+  max-width: 980px;   /* Ancho máximo de 980px para legibilidad */
+  margin: 0 auto;     /* Centrar horizontalmente (auto = espacio equitativo) */
+  padding: 16px;      /* Espacio interno para móviles */
 }
 
 /* ============================================
-   HEADER - Encabezado Principal
-   ============================================ */
-.header {
-  border-radius: 16px;              /* Bordes redondeados de 16px */
-  padding: 18px;                    /* Espacio interno */
-  background: var(--bg);            /* Fondo azul oscuro */
-  color: #fff;                      /* Texto blanco */
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .16);  /* Sombra pronunciada */
-  border: 2px solid var(--accent);  /* Borde turquesa de 2px */
-  text-align: center;               /* Centrar texto */
-}
-
-/* ============================================
-   HEADER TOP - Autos y Título Central
+   HEADER - ENCABEZADO PRINCIPAL DEL SITIO
    ============================================
-   Usa Flexbox para alinear autos y título
-   */
+   🎯 PROPÓSITO: Crear identidad visual fuerte y consistente en todas las páginas.
+   
+   🎨 DISEÑO:
+   • border-radius: 16px → Bordes redondeados para apariencia moderna
+   • background: var(--bg) → Color de marca (azul oscuro)
+   • color: #fff → Texto blanco para contraste máximo sobre fondo oscuro
+   • box-shadow → Sombra pronunciada para efecto de "flotar" sobre el contenido
+   • border: 2px solid var(--accent) → Borde turquesa que refuerza identidad de marca
+   
+   💡 PRINCIPIO DE DISEÑO: "Jerarquía Visual"
+   El header es lo primero que ve el usuario. Su diseño distintivo:
+   • Comunica inmediatamente "esto es el sistema de revisión vehicular"
+   • Establece expectativas de profesionalismo y confianza
+*/
+.header {
+  border-radius: 16px;              /* Bordes redondeados modernos */
+  padding: 18px;                    /* Espacio interno cómodo */
+  background: var(--bg);            /* Fondo azul oscuro de marca */
+  color: #fff;                      /* Texto blanco para contraste */
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .16);  /* Sombra pronunciada */
+  border: 2px solid var(--accent);  /* Borde turquesa de marca */
+  text-align: center;               /* Centrar texto para simetría */
+}
+
+/* ============================================
+   HEADER TOP - ALINEACIÓN DE ÍCONOS Y TÍTULO
+   ============================================
+   🎯 PROPÓSITO: Alinear visualmente los íconos de autos con el título principal.
+   
+   🔧 FLEXBOX EXPLICADO:
+   • display: flex → Activa modelo de layout flexible
+   • justify-content: center → Centra elementos horizontalmente
+   • align-items: center → Centra elementos verticalmente
+   • gap: 20px → Espacio uniforme entre elementos (más limpio que margins)
+   
+   💡 POR QUÉ FLEXBOX vs FLOAT/INLINE-BLOCK:
+   • Flexbox maneja alineación vertical automáticamente
+   • gap simplifica el espaciado entre elementos
+   • Más fácil de hacer responsive con flex-direction
+*/
 .header-top {
   display: flex;           /* Activar Flexbox */
   justify-content: center; /* Centrar horizontalmente */
   align-items: center;     /* Alinear verticalmente al centro */
-  gap: 20px;               /* Espacio de 20px entre elementos */
-  margin-bottom: 10px;     /* Margen inferior */
-}
-
-/* Íconos de autos animados */
-.car-icon {
-  font-size: 32px;                    /* Tamaño grande (32px) */
-  animation: bounce 2s infinite;      /* Animación de rebote cada 2s */
+  gap: 20px;               /* Espacio uniforme de 20px entre elementos */
+  margin-bottom: 10px;     /* Margen inferior para separar del subtítulo */
 }
 
 /* ============================================
-   ANIMACIÓN DE REBOTE
+   ÍCONOS DE AUTOS - ANIMACIÓN DECORATIVA
    ============================================
-   Los autos se mueven hacia arriba y abajo
-   */
+   🎯 PROPÓSITO: Reforzar tema vehicular con elemento visual dinámico.
+   
+   🔧 ANIMACIÓN EXPLICADA:
+   • font-size: 32px → Tamaño grande para impacto visual
+   • animation: bounce 2s infinite → Aplica animación "bounce" cada 2 segundos, repetidamente
+   
+   💡 PSICOLOGÍA UX:
+   El movimiento sutil atrae la atención sin distraer. Los autos "rebotando"
+   comunican energía y servicio activo, reforzando la identidad del negocio.
+*/
+.car-icon {
+  font-size: 32px;                    /* Tamaño grande para visibilidad */
+  animation: bounce 2s infinite;      /* Animación de rebote continuo */
+}
+
+/* ============================================
+   ANIMACIÓN KEYFRAMES - EFECTO DE REBOTE
+   ============================================
+   🎯 PROPÓSITO: Definir los "fotogramas" de la animación bounce.
+   
+   🔧 CÓMO FUNCIONA:
+   • 0%, 100% → Estado inicial y final: posición normal (translateY(0))
+   • 50% → Punto medio: mover 10px hacia arriba (translateY(-10px))
+   
+   🔄 CICLO COMPLETO:
+   0% (abajo) → 50% (arriba) → 100% (abajo) = 1 ciclo de rebote
+   Como es "infinite", se repite eternamente cada 2 segundos.
+   
+   💡 PRINCIPIO DE ANIMACIÓN: "Easing implícito"
+   CSS anima suavemente entre keyframes por defecto, creando movimiento
+   natural sin necesidad de funciones de easing complejas.
+*/
 @keyframes bounce {
   0%, 100% {
-    transform: translateY(0);         /* Posición normal */
+    transform: translateY(0);         /* Posición normal (sin desplazamiento) */
   }
   50% {
-    transform: translateY(-10px);     /* Mover 10px hacia arriba */
+    transform: translateY(-10px);     /* Mover 10px hacia arriba (negativo = arriba) */
   }
 }
 
-/* Título principal llamativo */
+/* ============================================
+   TÍTULO PRINCIPAL - IDENTIDAD DE MARCA
+   ============================================
+   🎯 PROPÓSITO: Hacer el nombre del sistema memorable y destacado.
+   
+   🔧 ESTILOS CLAVE:
+   • font-size: 28px → Tamaño grande para jerarquía visual
+   • font-weight: 900 → Peso "black" (máximo grosor) para impacto
+   • color: var(--accent) → Color turquesa de marca para identidad
+   • text-shadow → Sombra de texto para legibilidad sobre cualquier fondo
+   
+   💡 ACCESIBILIDAD:
+   El text-shadow mejora contraste cuando el título se superpone
+   con imágenes o gradientes, asegurando legibilidad en todos los contextos.
+*/
 .main-title {
-  font-size: 28px;                    /* Tamaño grande */
-  font-weight: 900;                   /* Peso muy grueso (black) */
-  color: var(--accent);               /* Color turquesa */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);  /* Sombra de texto */
-  margin: 0;                          /* Sin márgenes */
+  font-size: 28px;                    /* Tamaño grande para jerarquía */
+  font-weight: 900;                   /* Peso máximo para impacto visual */
+  color: var(--accent);               /* Color turquesa de marca */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);  /* Sombra para legibilidad */
+  margin: 0;                          /* Sin márgenes para control preciso */
 }
 
-/* Títulos h1 del header */
+/* Títulos h1 dentro del header (variante) */
 .header h1 {
   font-size: 24px;
   font-weight: 800;
   margin: 6px 0;
 }
 
-/* Subtítulo h2 */
+/* Subtítulo h2 - Información secundaria */
 .header h2 {
   font-size: 16px;
-  opacity: .92;           /* 92% de opacidad (ligeramente transparente) */
+  opacity: .92;           /* 92% de opacidad: ligeramente atenuado */
   margin: 4px 0 12px;     /* Márgenes: arriba 4px, lados 0, abajo 12px */
-  font-weight: 400;       /* Peso normal */
+  font-weight: 400;       /* Peso normal para jerarquía vs título principal */
 }
 
 /* ============================================
-   MENÚ DE NAVEGACIÓN
-   ============================================ */
+   MENÚ DE NAVEGACIÓN - ESTRUCTURA Y ESTILOS
+   ============================================
+   🎯 PROPÓSITO: Crear navegación clara, accesible y visualmente atractiva.
+*/
 .nav-menu {
-  margin-top: 10px;  /* Espacio superior de 10px */
+  margin-top: 10px;  /* Espacio superior para separar del contenido del header */
 }
 
-/* Lista de navegación */
+/* Lista de navegación - Contenedor de enlaces */
 .nav-list {
-  list-style: none;           /* Sin viñetas (bullets) */
-  padding: 0;                 /* Sin padding */
-  display: flex;              /* Elementos en fila (flexbox) */
-  justify-content: center;    /* Centrar horizontalmente */
-  flex-wrap: wrap;            /* Permitir saltos de línea si no caben */
-  gap: 8px;                   /* Espacio de 8px entre botones */
+  list-style: none;           /* Eliminar viñetas (bullets) de lista */
+  padding: 0;                 /* Sin padding por defecto */
+  display: flex;              /* Activar Flexbox para alinear en fila */
+  justify-content: center;    /* Centrar enlaces horizontalmente */
+  flex-wrap: wrap;            /* Permitir saltos de línea si no caben en una fila */
+  gap: 8px;                   /* Espacio uniforme de 8px entre botones */
 }
 
-/* Elementos individuales del menú */
+/* Elementos individuales del menú (<li>) */
 .menu-item {
-  margin: 0;  /* Sin márgenes */
+  margin: 0;  /* Sin márgenes adicionales (el gap del padre controla espaciado) */
 }
 
-/* Enlaces del menú (botones) */
+/* ============================================
+   ENLACES DEL MENÚ - ESTILO DE BOTONES
+   ============================================
+   🎯 PROPÓSITO: Transformar enlaces de texto en botones interactivos.
+   
+   🔧 ESTILOS CLAVE:
+   • display: block → El enlace ocupa todo el espacio del <li> padre
+     (área clickable más grande = mejor UX, especialmente en móviles)
+   
+   • padding: 10px 16px → Espacio interno: arriba/abajo 10px, lados 16px
+     → Crea tamaño generoso para toque en pantallas táctiles
+   
+   • border-radius: 12px → Bordes redondeados para apariencia moderna
+   
+   • background: rgba(16, 207, 200, .15) → Turquesa con 15% opacidad
+     → Fondo sutil que destaca sin competir con el contenido
+   
+   • transition: all .2s ease → Animación suave de 0.2s para todos los cambios
+     → Hover, active, focus se sienten "responsivos" no "instantáneos"
+   
+   💡 PRINCIPIO DE INTERACCIÓN: "Feedback Visual"
+   Los estados hover/active dan confirmación inmediata: "el sistema
+   respondió a mi acción", aumentando confianza del usuario.
+*/
 .menu-item a {
   display: block;                    /* Ocupar todo el espacio del <li> */
-  padding: 10px 16px;                /* Espacio interno: arriba/abajo 10px, lados 16px */
-  border-radius: 12px;               /* Bordes redondeados de 12px */
-  background: rgba(16, 207, 200, .15);  /* Fondo turquesa con 15% de opacidad */
-  color: #fff;                       /* Texto blanco */
-  text-decoration: none;             /* Sin subrayado */
-  font-weight: 700;                  /* Texto grueso (bold) */
-  font-size: 14px;                   /* Tamaño de fuente */
-  transition: all .2s ease;          /* Transición suave de 0.2s */
-  border: 1px solid transparent;     /* Borde transparente (para evitar saltos) */
-}
-
-/* Efecto hover (cuando el mouse pasa por encima) */
-.menu-item a:hover {
-  background: var(--accent);         /* Fondo turquesa sólido */
-  color: #05323A;                    /* Texto oscuro */
-  transform: translateY(-2px);       /* Elevar 2px hacia arriba */
-}
-
-/* Botón activo (página actual) */
-.menu-item a.active {
-  background: var(--accent);         /* Fondo turquesa */
-  color: #05323A;                    /* Texto oscuro */
-  border-color: #fff;                /* Borde blanco */
+  padding: 10px 16px;                /* Espacio interno generoso */
+  border-radius: 12px;               /* Bordes redondeados modernos */
+  background: rgba(16, 207, 200, .15);  /* Fondo turquesa semitransparente */
+  color: #fff;                       /* Texto blanco para contraste */
+  text-decoration: none;             /* Eliminar subrayado por defecto de enlaces */
+  font-weight: 700;                  /* Texto grueso para legibilidad */
+  font-size: 14px;                   /* Tamaño legible en móviles */
+  transition: all .2s ease;          /* Transición suave para interacciones */
+  border: 1px solid transparent;     /* Borde transparente (evita "saltos" al hover) */
 }
 
 /* ============================================
-   TARJETAS (CARDS)
+   EFECTO HOVER - FEEDBACK DE INTERACCIÓN
    ============================================
-   Contenedores blancos con sombra
-   */
+   🎯 PROPÓSITO: Confirmar visualmente que el elemento es interactivo.
+   
+   🔧 CAMBIOS AL HOVER:
+   • background: var(--accent) → Fondo turquesa sólido (más visible)
+   • color: #05323A → Texto oscuro para contraste sobre fondo claro
+   • transform: translateY(-2px) → "Levanta" el botón 2px hacia arriba
+   
+   💡 PSICOLOGÍA UX:
+   El movimiento sutil (translateY) crea sensación de "botón físico"
+   que se presiona, haciendo la interfaz más tangible y satisfactoria.
+*/
+.menu-item a:hover {
+  background: var(--accent);         /* Fondo turquesa sólido al hover */
+  color: #05323A;                    /* Texto oscuro para contraste */
+  transform: translateY(-2px);       /* Efecto de elevación sutil */
+}
+
+/* ============================================
+   ESTADO ACTIVO - PÁGINA ACTUAL
+   ============================================
+   🎯 PROPÓSITO: Indicar visualmente en qué página está el usuario.
+   
+   🔧 DIFERENCIA VS HOVER:
+   • border-color: #fff → Borde blanco adicional para énfasis
+   • Se aplica con class="active" en el HTML, no con hover del mouse
+   
+   💡 ACCESIBILIDAD:
+   El estado activo ayuda a usuarios de teclado (que navegan con Tab)
+   a saber dónde están, no solo a usuarios de mouse.
+*/
+.menu-item a.active {
+  background: var(--accent);         /* Fondo turquesa para página actual */
+  color: #05323A;                    /* Texto oscuro para contraste */
+  border-color: #fff;                /* Borde blanco para énfasis adicional */
+}
+
+/* ============================================
+   TARJETAS (CARDS) - CONTENEDORES DE CONTENIDO
+   ============================================
+   🎯 PROPÓSITO: Crear contenedores visuales para agrupar información relacionada.
+   
+   🔧 DISEÑO DE TARJETA:
+   • border-radius: 14px → Bordes redondeados para apariencia moderna
+   • background: var(--card) → Fondo blanco para contraste con fondo gris del body
+   • border: 1px solid var(--border) → Borde sutil para definición visual
+   • box-shadow: var(--shadow) → Sombra para efecto de "flotar" sobre el fondo
+   • padding: 16px → Espacio interno para que el contenido no toque bordes
+   
+   💡 PRINCIPIO DE DISEÑO: "Agrupación Visual"
+   Las tarjetas ayudan al cerebro a procesar información: "estos elementos
+   van juntos" vs "estos son separados". Mejora escaneabilidad y comprensión.
+*/
 .card {
-  margin-top: 14px;                  /* Espacio superior */
+  margin-top: 14px;                  /* Espacio superior para separar de elemento anterior */
   border-radius: 14px;               /* Bordes redondeados */
   background: var(--card);           /* Fondo blanco */
-  border: 1px solid var(--border);   /* Borde gris claro */
-  box-shadow: var(--shadow);         /* Sombra */
+  border: 1px solid var(--border);   /* Borde gris sutil */
+  box-shadow: var(--shadow);         /* Sombra para profundidad */
   padding: 16px;                     /* Espacio interno */
 }
 
-/* Fieldset (grupos de formulario) */
+/* Fieldset (grupos de formulario) - Mismo estilo que tarjetas */
 fieldset {
   margin-top: 14px;
   border-radius: 14px;
@@ -203,392 +433,600 @@ fieldset {
   padding: 16px;
 }
 
-/* Leyenda de fieldset */
+/* Leyenda de fieldset - Título del grupo de formulario */
 legend {
-  font-weight: 800;           /* Texto muy grueso */
-  color: var(--bg);           /* Color azul oscuro */
-  padding: 0 10px;            /* Espacio horizontal */
-  font-size: 16px;            /* Tamaño de fuente */
+  font-weight: 800;           /* Texto muy grueso para jerarquía */
+  color: var(--bg);           /* Color azul oscuro para contraste */
+  padding: 0 10px;            /* Espacio horizontal para "flotar" sobre el borde */
+  font-size: 16px;            /* Tamaño legible */
 }
 
 /* ============================================
-   CONTENIDO CENTRADO
-   ============================================ */
+   CONTENIDO CENTRADO - PÁGINAS INFORMATIVAS
+   ============================================
+   🎯 PROPÓSITO: Centrar contenido en páginas como index.html, contactos.html.
+*/
 .centered-card {
-  max-width: 800px;     /* Ancho máximo de 800px */
-  margin: 20px auto;    /* Centrar horizontalmente */
-  text-align: center;   /* Centrar texto */
+  max-width: 800px;     /* Ancho máximo para legibilidad (líneas muy largas cansan) */
+  margin: 20px auto;    /* Centrar horizontalmente con margen vertical */
+  text-align: center;   /* Centrar texto para páginas informativas */
 }
 
 /* Títulos dentro de tarjeta centrada */
 .centered-card h1,
 .centered-card h3 {
-  text-align: center;   /* Centrar */
+  text-align: center;   /* Centrar títulos */
 }
 
-/* Lista ordenada en tarjeta centrada */
+/* Lista ordenada en tarjeta centrada - Alinear izquierda para legibilidad */
 .centered-card ol {
-  text-align: left;              /* Alinear izquierda (más legible) */
-  display: inline-block;         /* Mostrar como bloque en línea */
-  margin: 0 auto;                /* Centrar el bloque */
+  text-align: left;              /* Alinear izquierda (más legible que centrado para texto largo) */
+  display: inline-block;         /* Mostrar como bloque en línea para poder centrar el contenedor */
+  margin: 0 auto;                /* Centrar el bloque de lista */
 }
 
 /* ============================================
-   VIDEO DE YOUTUBE
-   ============================================ */
-.video-card {
-  max-width: 800px;     /* Ancho máximo */
-  margin: 20px auto;    /* Centrar */
-  text-align: center;   /* Centrar texto */
-}
-
-/* Título del video */
-.video-card h2 {
-  margin-bottom: 20px;   /* Espacio inferior */
-  text-align: center;    /* Centrar */
-}
-
-/* ============================================
-   CONTENEDOR RESPONSIVO DE VIDEO
+   VIDEO DE YOUTUBE - CONTENEDOR RESPONSIVO
    ============================================
-   Mantiene proporción 16:9 (aspect ratio)
-   */
-.video-container {
-  position: relative;
-  padding-bottom: 56.25%;  /* 16:9 = 9/16 = 0.5625 = 56.25% */
-  height: 0;
-  overflow: hidden;
-  max-width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);  /* Sombra pronunciada */
+   🎯 PROPÓSITO: Mostrar video manteniendo proporción 16:9 en cualquier pantalla.
+*/
+.video-card {
+  max-width: 800px;     /* Ancho máximo para no estirar video en desktop */
+  margin: 20px auto;    /* Centrar horizontalmente */
+  text-align: center;   /* Centrar contenido interno */
 }
 
-/* iframe del video */
-.video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
+.video-card h2 {
+  margin-bottom: 20px;   /* Espacio inferior antes del video */
+  text-align: center;    /* Centrar título */
 }
 
 /* ============================================
-   FORMULARIOS
-   ============================================ */
+   TÉCNICA ASPECT RATIO 16:9 - VIDEO RESPONSIVO
+   ============================================
+   🎯 PROPÓSITO: Mantener proporción de video sin importar ancho de pantalla.
+   
+   🔧 CÓMO FUNCIONA EL TRUCO CSS:
+   • position: relative → Establece contexto de posicionamiento para el iframe
+   • padding-bottom: 56.25% → 9/16 = 0.5625 = 56.25% (proporción 16:9)
+     → El padding-bottom se calcula sobre el ANCHO del elemento
+     → Esto crea altura proporcional al ancho automáticamente
+   
+   • height: 0 → Altura real 0, la altura viene del padding-bottom
+   • overflow: hidden → Recortar cualquier contenido que sobresalga
+   
+   • iframe con position: absolute → Ocupa 100% del contenedor relativo
+     → top:0, left:0, width:100%, height:100% → Llena el contenedor exactamente
+   
+   💡 POR QUÉ ESTE TRUCO vs aspect-ratio:
+   • padding-bottom funciona en navegadores antiguos (IE11+)
+   • aspect-ratio: 16/9 es más moderno pero no soportado en todos lados
+   • Esta técnica es "battle-tested" y confiable en producción
+   
+   📱 BENEFICIO RESPONSIVE:
+   • Desktop: Video ancho máximo 800px, proporción 16:9
+   • Móvil: Video ancho 100% del contenedor, altura se ajusta automáticamente
+*/
+.video-container {
+  position: relative;                          /* Contexto para posicionamiento absoluto */
+  padding-bottom: 56.25%;                      /* 16:9 = 9÷16 = 0.5625 = 56.25% */
+  height: 0;                                   /* Altura real 0, altura viene del padding */
+  overflow: hidden;                            /* Recortar contenido que sobresalga */
+  max-width: 100%;                             /* No exceder ancho del contenedor padre */
+  border-radius: 12px;                         /* Bordes redondeados */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);   /* Sombra para profundidad */
+}
+
+/* Iframe del video - Llena el contenedor aspect-ratio */
+.video-container iframe {
+  position: absolute;                          /* Posicionar relativo al contenedor */
+  top: 0;                                      /* Alinear al borde superior */
+  left: 0;                                     /* Alinear al borde izquierdo */
+  width: 100%;                                 /* Ancho completo del contenedor */
+  height: 100%;                                /* Altura completa del contenedor */
+  border-radius: 12px;                         /* Bordes redondeados */
+}
+
+/* ============================================
+   FORMULARIOS - ESTRUCTURA Y ESTILOS
+   ============================================
+   🎯 PROPÓSITO: Crear formularios legibles, accesibles y visualmente atractivos.
+*/
 .form-group {
-  display: flex;              /* Usar Flexbox */
-  flex-direction: column;     /* Dirección vertical (label arriba, input abajo) */
-  gap: 6px;                   /* Espacio de 6px entre label e input */
-  margin-bottom: 12px;        /* Espacio inferior entre grupos */
+  display: flex;              /* Activar Flexbox */
+  flex-direction: column;     /* Dirección vertical: label arriba, input abajo */
+  gap: 6px;                   /* Espacio uniforme de 6px entre label e input */
+  margin-bottom: 12px;        /* Espacio inferior entre grupos de formulario */
 }
 
-/* Labels de formularios */
+/* Labels de formularios - Texto descriptivo */
 .form-group label {
-  font-size: 13px;            /* Tamaño pequeño */
-  color: var(--muted);        /* Color gris azulado */
-  font-weight: 700;           /* Texto grueso */
+  font-size: 13px;            /* Tamaño pequeño pero legible */
+  color: var(--muted);        /* Color gris azulado para jerarquía (menos importante que input) */
+  font-weight: 700;           /* Texto grueso para legibilidad a tamaño pequeño */
 }
 
-/* Inputs y selects */
+/* ============================================
+   INPUTS Y SELECTS - CAMPOS DE ENTRADA
+   ============================================
+   🎯 PROPÓSITO: Crear campos de formulario consistentes y accesibles.
+   
+   🔧 SELECTORES MÚLTIPLES:
+   .form-input, input[type="text"], input[type="email"], ...
+   → Aplica mismos estilos a múltiples tipos de inputs sin repetir código
+   
+   🔧 ESTILOS CLAVE:
+   • padding: 10px 12px → Espacio interno generoso para toque en móvil
+   • border-radius: 12px → Bordes redondeados para consistencia con diseño general
+   • border: 1px solid var(--border) → Borde sutil para definición visual
+   • outline: none → Eliminar contorno azul por defecto del navegador
+     (lo reemplazamos con box-shadow personalizado para mejor control)
+   • transition: border-color .2s → Animación suave al cambiar color de borde
+   
+   💡 ACCESIBILIDAD:
+   El tamaño de fuente 14px mínimo previene zoom automático en iOS
+   (iOS hace zoom en inputs con font-size < 16px, rompiendo UX).
+*/
 .form-input,
 input[type="text"],
 input[type="email"],
 input[type="tel"],
 input[type="date"],
 select {
-  padding: 10px 12px;         /* Espacio interno */
+  padding: 10px 12px;         /* Espacio interno generoso */
   border-radius: 12px;        /* Bordes redondeados */
-  border: 1px solid var(--border);  /* Borde gris */
-  outline: none;              /* Sin contorno azul al enfocar */
-  font-size: 14px;            /* Tamaño de fuente */
-  background: #fff;           /* Fondo blanco */
-  transition: border-color .2s;  /* Transición de color de borde */
-}
-
-/* Estado focus (cuando el input está seleccionado) */
-.form-input:focus,
-input:focus,
-select:focus {
-  border-color: var(--accent);  /* Borde turquesa */
-  box-shadow: 0 0 0 3px rgba(16, 207, 200, .2);  /* Sombra turquesa */
-}
-
-/* Grupos de radio y checkbox */
-.radio-group,
-.checkbox-group {
-  display: flex;              /* Flexbox */
-  flex-direction: column;     /* Vertical */
-  gap: 8px;                   /* Espacio entre items */
-}
-
-/* Items individuales */
-.radio-item,
-.checkbox-item {
-  display: flex;              /* Flexbox */
-  align-items: center;        /* Alinear verticalmente al centro */
-  gap: 8px;                   /* Espacio */
-}
-
-/* Inputs de radio y checkbox */
-.radio-item input,
-.checkbox-item input {
-  width: auto;                /* Ancho automático (no 100%) */
-  margin: 0;                  /* Sin márgenes */
-}
-
-/* Labels de radio y checkbox */
-.radio-item label,
-.checkbox-item label {
-  font-size: 14px;            /* Tamaño */
-  color: #0f172a;             /* Color oscuro */
-  font-weight: 400;           /* Peso normal */
-  margin: 0;                  /* Sin márgenes */
-  cursor: pointer;            /* Cursor de mano (indica que es clickable) */
+  border: 1px solid var(--border);  /* Borde gris sutil */
+  outline: none;              /* Eliminar contorno azul por defecto */
+  font-size: 14px;            /* Tamaño mínimo para evitar zoom en iOS */
+  background: #fff;           /* Fondo blanco para contraste */
+  transition: border-color .2s;  /* Transición suave para cambios de estado */
 }
 
 /* ============================================
-   BOTONES
-   ============================================ */
+   ESTADO FOCUS - FEEDBACK DE SELECCIÓN
+   ============================================
+   🎯 PROPÓSITO: Indicar visualmente qué campo está activo/seleccionado.
+   
+   🔧 ESTILOS DE FOCUS:
+   • border-color: var(--accent) → Borde turquesa para destacar campo activo
+   • box-shadow: 0 0 0 3px rgba(16, 207, 200, .2) → "Glow" turquesa sutil alrededor
+   
+   💡 ACCESIBILIDAD CRÍTICA:
+   El estado focus es ESENCIAL para usuarios de teclado que navegan con Tab.
+   Sin un indicador visual claro, no saben en qué campo están escribiendo.
+   WCAG requiere que el foco sea "altamente visible".
+*/
+.form-input:focus,
+input:focus,
+select:focus {
+  border-color: var(--accent);  /* Borde turquesa al enfocar */
+  box-shadow: 0 0 0 3px rgba(16, 207, 200, .2);  /* "Glow" sutil para visibilidad */
+}
+
+/* ============================================
+   GRUPOS DE RADIO Y CHECKBOX - OPCIONES MÚLTIPLES
+   ============================================
+   🎯 PROPÓSITO: Estilizar selecciones múltiples de forma clara y accesible.
+*/
+.radio-group,
+.checkbox-group {
+  display: flex;              /* Activar Flexbox */
+  flex-direction: column;     /* Dirección vertical: una opción por línea */
+  gap: 8px;                   /* Espacio uniforme entre opciones */
+}
+
+/* Items individuales (label + input) */
+.radio-item,
+.checkbox-item {
+  display: flex;              /* Flexbox para alinear input y label horizontalmente */
+  align-items: center;        /* Alinear verticalmente al centro */
+  gap: 8px;                   /* Espacio entre el input (círculo/cuadro) y el texto */
+}
+
+/* Inputs de radio y checkbox - Tamaño automático */
+.radio-item input,
+.checkbox-item input {
+  width: auto;                /* Ancho automático (no forzar 100%) */
+  margin: 0;                  /* Sin márgenes adicionales */
+}
+
+/* Labels de radio y checkbox - Texto clickable */
+.radio-item label,
+.checkbox-item label {
+  font-size: 14px;            /* Tamaño legible */
+  color: #0f172a;             /* Color oscuro para contraste */
+  font-weight: 400;           /* Peso normal para texto descriptivo */
+  margin: 0;                  /* Sin márgenes adicionales */
+  cursor: pointer;            /* Cursor de mano: indica que es clickable */
+}
+
+/* ============================================
+   BOTONES - ESTILOS BASE Y VARIANTES
+   ============================================
+   🎯 PROPÓSITO: Crear botones consistentes, accesibles y con feedback visual.
+*/
 .btn,
 button,
 .submit-button,
 .btn-registrar {
-  padding: 10px 20px;              /* Espacio interno */
-  border-radius: 12px;             /* Bordes redondeados */
-  border: 1px solid transparent;   /* Borde transparente */
-  cursor: pointer;                 /* Cursor de mano */
-  font-weight: 800;                /* Texto muy grueso */
-  font-size: 14px;                 /* Tamaño */
-  transition: all .2s ease;        /* Transición suave */
-  white-space: nowrap;             /* Sin saltos de línea */
-  display: inline-flex;            /* Flexbox en línea */
-  align-items: center;             /* Centrar verticalmente */
-  justify-content: center;         /* Centrar horizontalmente */
-  gap: 6px;                        /* Espacio entre icono y texto */
+  padding: 10px 20px;              /* Espacio interno generoso para toque en móvil */
+  border-radius: 12px;             /* Bordes redondeados para consistencia */
+  border: 1px solid transparent;   /* Borde transparente (evita saltos al hover) */
+  cursor: pointer;                 /* Cursor de mano: indica interactividad */
+  font-weight: 800;                /* Texto muy grueso para legibilidad */
+  font-size: 14px;                 /* Tamaño mínimo para evitar zoom en iOS */
+  transition: all .2s ease;        /* Transición suave para todos los cambios */
+  white-space: nowrap;             /* Prevenir saltos de línea en texto del botón */
+  display: inline-flex;            /* Flexbox en línea para alinear ícono + texto */
+  align-items: center;             /* Centrar verticalmente ícono y texto */
+  justify-content: center;         /* Centrar horizontalmente contenido */
+  gap: 6px;                        /* Espacio entre ícono (emoji) y texto */
 }
 
-/* Botones primarios */
+/* ============================================
+   BOTONES PRIMARIOS - ACCIÓN PRINCIPAL
+   ============================================
+   🎯 PROPÓSITO: Destacar la acción más importante en cada pantalla.
+   
+   🔧 ESTILOS:
+   • background: var(--accent) → Fondo turquesa de marca
+   • color: #05323A → Texto oscuro para contraste máximo sobre turquesa
+   
+   💡 PRINCIPIO DE DISEÑO: "Jerarquía de Acciones"
+   Los botones primarios guían al usuario: "esta es la acción que quiero
+   que hagas". Debe haber máximo 1 botón primario por pantalla/formulario.
+*/
 .btn-primary,
 .submit-button,
 .btn-registrar {
-  background: var(--accent);       /* Fondo turquesa */
-  color: #05323A;                  /* Texto oscuro */
+  background: var(--accent);       /* Fondo turquesa de marca */
+  color: #05323A;                  /* Texto oscuro para contraste */
 }
 
-/* Hover en botones primarios */
+/* Hover en botones primarios - Feedback de interacción */
 .btn-primary:hover,
 .submit-button:hover,
 .btn-registrar:hover {
-  background: #0dd3cd;             /* Turquesa más claro */
-  transform: translateY(-2px);     /* Elevar */
-  box-shadow: 0 4px 12px rgba(16, 207, 200, .4);  /* Sombra turquesa */
+  background: #0dd3cd;             /* Turquesa ligeramente más claro */
+  transform: translateY(-2px);     /* Efecto de elevación sutil */
+  box-shadow: 0 4px 12px rgba(16, 207, 200, .4);  /* Sombra turquesa para profundidad */
 }
 
-/* Botones de peligro (eliminar) */
+/* ============================================
+   BOTONES DE PELIGRO - ACCIONES DESTRUCTIVAS
+   ============================================
+   🎯 PROPÓSITO: Indicar visualmente acciones que no se pueden deshacer.
+   
+   🔧 ESTILOS:
+   • background: var(--accent2) → Fondo rojo/coral para alerta visual
+   • color: #fff → Texto blanco para contraste sobre fondo rojo
+   
+   💡 PSICOLOGÍA DEL COLOR:
+   El rojo comunica "peligro", "detente", "confirma antes de continuar".
+   Usarlo consistentemente para eliminar/cancelar crea patrones mentales
+   que ayudan al usuario a tomar decisiones informadas.
+*/
 .btn-danger {
-  background: var(--accent2);      /* Fondo rojo */
-  color: #fff;                     /* Texto blanco */
+  background: var(--accent2);      /* Fondo rojo para acciones destructivas */
+  color: #fff;                     /* Texto blanco para contraste */
 }
 
 /* Hover en botones de peligro */
 .btn-danger:hover {
-  background: #ec7a76;             /* Rojo más claro */
-  transform: translateY(-2px);     /* Elevar */
+  background: #ec7a76;             /* Rojo ligeramente más claro */
+  transform: translateY(-2px);     /* Efecto de elevación consistente */
 }
 
-/* Botones secundarios */
+/* Botones secundarios - Acciones menos importantes */
 .btn-secondary {
-  background: #fff;                /* Fondo blanco */
+  background: #fff;                /* Fondo blanco para menos énfasis */
   color: #0f172a;                  /* Texto oscuro */
-  border-color: var(--border);     /* Borde gris */
+  border-color: var(--border);     /* Borde gris para definición sutil */
 }
 
-/* Hover en botones secundarios */
 .btn-secondary:hover {
-  background: #f8fafc;             /* Gris muy claro */
+  background: #f8fafc;             /* Gris muy claro al hover */
 }
 
-/* Botones pequeños */
+/* Botones pequeños - Para acciones en tablas o espacios reducidos */
 .btn-sm {
-  padding: 6px 10px;      /* Menos padding */
+  padding: 6px 10px;      /* Menos padding para tamaño compacto */
   font-size: 12px;        /* Texto más pequeño */
-  margin: 0 2px;          /* Margen horizontal */
+  margin: 0 2px;          /* Margen horizontal mínimo */
 }
 
 /* ============================================
-   TABLAS
-   ============================================ */
+   TABLAS - PRESENTACIÓN DE DATOS ESTRUCTURADOS
+   ============================================
+   🎯 PROPÓSITO: Mostrar datos tabulares de forma legible y scrolleable.
+*/
 .table-wrap {
-  overflow: auto;              /* Scroll si el contenido excede */
+  overflow: auto;              /* Scroll horizontal si la tabla excede ancho */
   border-radius: 12px;         /* Bordes redondeados */
-  border: 1px solid var(--border);  /* Borde */
+  border: 1px solid var(--border);  /* Borde sutil */
   margin-top: 12px;            /* Espacio superior */
 }
 
-/* Tablas */
+/* Tablas - Estilos base */
 table {
-  width: 100%;                 /* Ancho completo del contenedor */
-  border-collapse: collapse;   /* Sin espacio entre celdas */
-  font-size: 14px;             /* Tamaño */
-  min-width: 100%;             /* Ancho mínimo */
-}
-
-/* Encabezados de tabla */
-thead th {
-  background: var(--bg);       /* Fondo azul oscuro */
-  color: #fff;                 /* Texto blanco */
-  text-align: left;            /* Alinear izquierda */
-  padding: 12px 14px;          /* Espacio interno */
-  position: sticky;            /* Fijo al hacer scroll vertical */
-  top: 0;                      /* Posición superior */
-  z-index: 1;                  /* Por encima del contenido */
-  font-weight: 800;            /* Texto grueso */
-}
-
-/* Celdas de tabla */
-tbody td {
-  padding: 12px 14px;          /* Espacio interno */
-  border-top: 1px solid var(--border);  /* Borde superior */
-}
-
-/* Filas pares (zebra striping) */
-tbody tr:nth-child(even) {
-  background: #f8fafc;         /* Fondo gris claro */
-}
-
-/* Hover en filas */
-tbody tr:hover {
-  background: rgba(16, 207, 200, .08);  /* Fondo turquesa transparente */
+  width: 100%;                 /* Ancho completo del contenedor padre */
+  border-collapse: collapse;   /* Eliminar espacio entre celdas (bordes se fusionan) */
+  font-size: 14px;             /* Tamaño legible */
+  min-width: 100%;             /* Ancho mínimo para forzar scroll si contenido es amplio */
 }
 
 /* ============================================
-   LISTAS Y TEXTO
-   ============================================ */
-.lista-sin-puntos {
-  list-style: none;     /* Sin viñetas */
-  padding-left: 0;      /* Sin padding izquierdo */
+   ENCABEZADOS DE TABLA - FILA DE TÍTULOS
+   ============================================
+   🎯 PROPÓSITO: Destacar títulos de columna y mantenerlos visibles al scroll.
+   
+   🔧 STICKY POSITION EXPLICADO:
+   • position: sticky → El elemento se comporta como relative hasta que
+     el scroll lo lleva al top:0, entonces se "pega" (sticky) en esa posición
+   
+   • top: 0 → Posición donde se "pega" al hacer scroll vertical
+   
+   • z-index: 1 → Asegura que el header flote POR ENCIMA del contenido
+     al hacer scroll (sin esto, el contenido pasaría por encima)
+   
+   💡 BENEFICIO UX:
+   En tablas largas, el usuario siempre ve los títulos de columna
+   mientras hace scroll, evitando confusión sobre qué dato representa cada celda.
+*/
+thead th {
+  background: var(--bg);       /* Fondo azul oscuro para contraste */
+  color: #fff;                 /* Texto blanco para legibilidad */
+  text-align: left;            /* Alinear izquierda (más legible que centrado para texto) */
+  padding: 12px 14px;          /* Espacio interno generoso */
+  position: sticky;            /* Mantener visible al hacer scroll vertical */
+  top: 0;                      /* Posición donde se "pega" */
+  z-index: 1;                  /* Flotar por encima del contenido */
+  font-weight: 800;            /* Texto grueso para jerarquía */
 }
 
-/* Listas dentro de cards y fieldsets */
+/* Celdas de tabla - Filas de datos */
+tbody td {
+  padding: 12px 14px;          /* Espacio interno consistente con header */
+  border-top: 1px solid var(--border);  /* Borde superior para separar filas */
+}
+
+/* ============================================
+   ZEBRA STRIPING - FILAS PARES CON FONDO DIFERENTE
+   ============================================
+   🎯 PROPÓSITO: Mejorar legibilidad en tablas con muchas filas.
+   
+   🔧 SELECTOR :nth-child(even):
+   • Selecciona cada elemento hijo PAR (2, 4, 6, 8...)
+   • Aplica fondo gris claro para alternar con filas impares (blanco)
+   
+   💡 BENEFICIO UX:
+   El contraste sutil entre filas ayuda al ojo a seguir una fila horizontalmente
+   sin "perderse" y leer datos de la fila de arriba o abajo por error.
+*/
+tbody tr:nth-child(even) {
+  background: #f8fafc;         /* Fondo gris muy claro para filas pares */
+}
+
+/* Hover en filas - Feedback de interacción */
+tbody tr:hover {
+  background: rgba(16, 207, 200, .08);  /* Fondo turquesa muy transparente al hover */
+}
+
+/* ============================================
+   LISTAS Y TEXTO - ESTILOS DE CONTENIDO
+   ============================================
+*/
+.lista-sin-puntos {
+  list-style: none;     /* Eliminar viñetas (bullets) */
+  padding-left: 0;      /* Eliminar padding izquierdo por defecto */
+}
+
+/* Listas dentro de cards y fieldsets - Sangría para jerarquía */
 .card ol,
 .card ul,
 fieldset ol,
 fieldset ul {
-  padding-left: 24px;   /* Padding izquierdo */
+  padding-left: 24px;   /* Sangría izquierda para indicar que es lista */
   margin: 12px 0;       /* Márgenes vertical */
-  text-align: left;     /* Alinear izquierda */
+  text-align: left;     /* Alinear izquierda para legibilidad */
 }
 
-/* Items de lista */
+/* Items de lista - Espaciado entre elementos */
 .card ol li,
 .card ul li,
 fieldset ol li,
 fieldset ul li {
-  margin: 8px 0;        /* Margen vertical */
-  padding-left: 4px;    /* Padding izquierdo */
+  margin: 8px 0;        /* Margen vertical entre items */
+  padding-left: 4px;    /* Pequeño padding izquierdo */
   text-align: left;     /* Alinear izquierda */
 }
 
-/* Párrafos */
+/* Párrafos - Espaciado y color */
 p {
-  margin: 8px 0;        /* Margen vertical */
-  color: #0f172a;       /* Color oscuro */
-  text-align: left;     /* Alinear izquierda */
+  margin: 8px 0;        /* Margen vertical entre párrafos */
+  color: #0f172a;       /* Color oscuro para contraste */
+  text-align: left;     /* Alinear izquierda para legibilidad */
 }
 
-/* Títulos */
+/* Títulos - Jerarquía visual */
 h1, h2, h3 {
-  color: var(--bg);     /* Color azul oscuro */
+  color: var(--bg);     /* Color azul oscuro para consistencia */
   margin: 12px 0 8px;   /* Márgenes: arriba 12px, lados 0, abajo 8px */
   text-align: left;     /* Alinear izquierda */
 }
 
 h1 { font-size: 20px; }   /* Tamaño h1 */
-h2 { font-size: 16px; color: var(--muted); }  /* Tamaño h2 y color atenuado */
+h2 { font-size: 16px; color: var(--muted); }  /* h2 más pequeño y atenuado */
 
 /* ============================================
-   UTILIDADES (Clases de ayuda)
-   ============================================ */
+   UTILIDADES - CLASES DE AYUDA REUTILIZABLES
+   ============================================
+   🎯 PROPÓSITO: Proporcionar clases simples para ajustes comunes sin crear nuevo CSS.
+*/
 .text-center { text-align: center; }     /* Centrar texto */
-.text-muted { color: var(--muted); }     /* Texto atenuado (gris) */
-.mt-2 { margin-top: 12px; }              /* Margen superior */
+.text-muted { color: var(--muted); }     /* Texto atenuado (gris) para información secundaria */
+.mt-2 { margin-top: 12px; }              /* Margen superior (mt = margin-top, 2 = escala) */
 .mb-2 { margin-bottom: 12px; }           /* Margen inferior */
 
-/* Badges (etiquetas) */
+/* Badges (etiquetas) - Para destacar valores como placas de vehículo */
 .badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;              /* Forma de píldora (muy redondeado) */
-  background: rgba(16, 207, 200, .18);  /* Fondo turquesa transparente */
-  color: #05323A;                    /* Texto oscuro */
-  border: 1px solid rgba(16, 207, 200, .45);  /* Borde turquesa */
-  font-weight: 800;                  /* Texto grueso */
-  font-size: 12px;                   /* Tamaño pequeño */
+  display: inline-block;                          /* Comportamiento de bloque en línea */
+  padding: 4px 10px;                              /* Espacio interno compacto */
+  border-radius: 999px;                           /* Forma de píldora (muy redondeado) */
+  background: rgba(16, 207, 200, .18);            /* Fondo turquesa semitransparente */
+  color: #05323A;                                 /* Texto oscuro para contraste */
+  border: 1px solid rgba(16, 207, 200, .45);      /* Borde turquesa para definición */
+  font-weight: 800;                               /* Texto grueso para legibilidad a tamaño pequeño */
+  font-size: 12px;                                /* Tamaño pequeño para etiquetas discretas */
 }
 
 /* ============================================
-   ESTILOS PARA SELECT DE HORAS
-   ============================================ */
-/* Opciones ocupadas (deshabilitadas) */
-select option.hora-ocupada {
-  background-color: #fee2e2 !important;  /* Fondo rojo claro */
-  color: #991b1b !important;             /* Texto rojo oscuro */
-  font-weight: bold;                     /* Texto grueso */
-}
-
-/* Select deshabilitado */
-select:disabled {
-  background-color: #f3f4f6;   /* Fondo gris */
-  cursor: not-allowed;         /* Cursor de "prohibido" */
-  opacity: 0.7;                /* 70% de opacidad (transparente) */
-}
-
-/* ============================================
-   DISEÑO RESPONSIVE - Media Queries
+   ESTILOS PARA SELECT DE HORAS - DISPONIBILIDAD
    ============================================
-   Adaptaciones para pantallas pequeñas (móviles)
-   */
+   🎯 PROPÓSITO: Indicar visualmente horas ocupadas vs disponibles en formulario de citas.
+*/
+/* Opciones ocupadas (deshabilitadas) - Estilo visual de "no disponible" */
+select option.hora-ocupada {
+  background-color: #fee2e2 !important;  /* Fondo rojo claro para alerta visual */
+  color: #991b1b !important;             /* Texto rojo oscuro para contraste */
+  font-weight: bold;                     /* Texto grueso para énfasis */
+}
+
+/* Select deshabilitado - Estado visual de "no interactuable" */
+select:disabled {
+  background-color: #f3f4f6;   /* Fondo gris para indicar inactividad */
+  cursor: not-allowed;         /* Cursor de "prohibido" (🚫) para feedback inmediato */
+  opacity: 0.7;                /* 70% de opacidad para efecto visual de deshabilitado */
+}
+
+/* ============================================
+   DISEÑO RESPONSIVE - MEDIA QUERIES PARA MÓVILES
+   ============================================
+   🎯 PROPÓSITO: Adaptar diseño para pantallas pequeñas (< 768px = tablets/móviles).
+   
+   🔧 BREAKPOINT 768px:
+   • Es el estándar para "tablet en portrait" / "móvil grande"
+   • Por debajo: asumir navegación táctil, pantallas estrechas
+   • Por encima: asumir mouse/keyboard, pantallas anchas
+   
+   💡 ENFOQUE MOBILE-FIRST:
+   Los estilos base son para móvil. @media (min-width: ...) agregaría
+   enhancements para desktop. Aquí usamos (max-width: ...) para
+   ajustar estilos base cuando la pantalla es pequeña.
+*/
 @media (max-width: 768px) {
-  /* Header en móviles */
+  
+  /* ============================================
+     HEADER EN MÓVILES - APILADO VERTICAL
+     ============================================
+     🎯 PROPÓSITO: Adaptar header horizontal a pantalla estrecha.
+     
+     🔧 CAMBIOS:
+     • flex-direction: column → Apilar elementos verticalmente
+       (autos arriba y abajo del título, en lugar de lados)
+     • gap: 10px → Menos espacio vertical al estar apilados
+     • font-size reducidos → Ajustar tamaños para pantallas pequeñas
+  */
   .header-top {
-    flex-direction: column;   /* Apilar verticalmente (autos arriba y abajo del título) */
-    gap: 10px;                /* Menos espacio */
+    flex-direction: column;   /* Apilar verticalmente en móviles */
+    gap: 10px;                /* Menos espacio al estar apilados */
   }
   
   .car-icon {
-    font-size: 24px;          /* Iconos más pequeños */
+    font-size: 24px;          /* Íconos más pequeños para no dominar pantalla pequeña */
   }
   
   .main-title {
-    font-size: 22px;          /* Título más pequeño */
+    font-size: 22px;          /* Título más pequeño para caber en ancho reducido */
   }
   
-  /* Tarjetas en móviles */
+  /* ============================================
+     TARJETAS EN MÓVILES - ANCHO COMPLETO
+     ============================================
+     🎯 PROPÓSITO: Maximizar espacio usable en pantalla estrecha.
+     
+     🔧 CAMBIOS:
+     • max-width: 100% → Ocupar todo el ancho disponible
+     • margin: 10px → Menos margen para aprovechar cada pixel
+  */
   .centered-card,
   .video-card {
-    max-width: 100%;          /* Ancho completo */
-    margin: 10px;             /* Menos margen */
+    max-width: 100%;          /* Ancho completo en móviles */
+    margin: 10px;             /* Margen reducido */
   }
   
-  /* Menú en móviles */
+  /* ============================================
+     MENÚ EN MÓVILES - NAVEGACIÓN APILADA
+     ============================================
+     🎯 PROPÓSITO: Hacer navegación táctil-friendly en pantalla estrecha.
+     
+     🔧 CAMBIOS:
+     • flex-direction: column → Apilar enlaces verticalmente
+     • align-items: center → Centrar botones horizontalmente
+     • width: 100% en enlaces → Área clickable más grande para dedos
+     • text-align: center → Centrar texto para simetría visual
+  */
   .nav-list {
-    flex-direction: column;   /* Apilar verticalmente */
-    align-items: center;      /* Centrar */
+    flex-direction: column;   /* Apilar enlaces verticalmente */
+    align-items: center;      /* Centrar botones */
   }
   
   .menu-item a {
-    width: 100%;              /* Ancho completo */
+    width: 100%;              /* Ancho completo para área clickable grande */
     text-align: center;       /* Centrar texto */
   }
   
-  /* Tablas en móviles */
+  /* ============================================
+     TABLAS EN MÓVILES - TEXTO COMPACTO
+     ============================================
+     🎯 PROPÓSITO: Mejorar legibilidad de tablas en ancho reducido.
+     
+     🔧 CAMBIOS:
+     • font-size: 13px → Texto ligeramente más pequeño para caber más columnas
+     • padding: 10px → Menos padding para ahorrar espacio horizontal
+  */
   table {
-    font-size: 13px;          /* Texto más pequeño */
+    font-size: 13px;          /* Texto más pequeño para tablas en móvil */
   }
   
   thead th,
   tbody td {
-    padding: 10px;            /* Menos padding */
+    padding: 10px;            /* Menos padding para ahorrar espacio */
+  }
+  
+  /* ============================================
+   BOTÓN DE LOGIN EN EL MENÚ - ESTILOS MÓVILES
+   ============================================
+   */
+  .btn-login-nav {
+      background: var(--color-principal);
+      color: #05323A;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      display: inline-block;
+      text-decoration: none;
+  }
+
+  .btn-login-nav:hover {
+      background: transparent;
+      color: var(--color-principal);
+      border-color: var(--color-principal);
+      transform: translateY(-2px);
+  }
+
+  /* Responsive para móviles */
+  @media (max-width: 768px) {
+      .nav-list {
+          flex-direction: column;
+          align-items: center;
+      }
+      
+      .btn-login-nav {
+          width: 100%;
+          text-align: center;
+      }
   }
 }

@@ -1,0 +1,560 @@
+<!--
+  ==========================================
+  PANEL DE ADMINISTRADOR - DASHBOARD PRINCIPAL
+  Archivo: dashboard-admin.html
+  ==========================================
+  
+  🎯 PROPÓSITO DE ESTA PÁGINA:
+  Esta es la interfaz exclusiva para el ADMINISTRADOR del sistema.
+  Desde aquí puede supervisar y gestionar toda la operación:
+  - Ver estadísticas clave del negocio en tiempo real
+  - Consultar TODAS las citas de TODOS los clientes
+  - Eliminar citas cuando sea necesario
+  - Acceder a funciones de gestión avanzada
+  
+  🔐 SEGURIDAD IMPORTANTE:
+  Esta página NO verifica permisos por sí misma. La validación
+  de que el usuario es administrador se hace en app-auth.js
+  al cargar la página. Si alguien sin rol 'admin' intenta
+  acceder, es redirigido automáticamente a su dashboard de cliente.
+  
+  🔧 FUNCIONALIDADES PRINCIPALES:
+  1. 📊 Tarjetas de estadísticas (KPIs) con datos en tiempo real
+  2. 📋 Tabla completa de citas con formato amigable
+  3. 👁️ Botón para ver detalle de cualquier cita
+  4. 🗑️ Botón para eliminar citas (con confirmación)
+  5. 🚪 Botón de cierre de sesión accesible
+  
+  🔗 CONEXIONES CON OTROS ARCHIVOS:
+  - estilosProyecto.css → Estilos base del sistema
+  - SweetAlert2 (CDN) → Alertas y confirmaciones profesionales
+  - app-auth.js → Verifica sesión y rol de administrador
+  - app-dashboard-admin.js → Lógica para cargar estadísticas y citas
+  - supabase.js (importado) → Conexión con base de datos en la nube
+  
+  📊 FLUJO DE DATOS:
+  1. Admin entra a dashboard-admin.html
+  2. app-auth.js verifica: ¿está logueado? ¿es admin?
+  3. Si pasa validación, app-dashboard-admin.js se ejecuta
+  4. JS consulta Supabase: estadísticas + todas las citas
+  5. Datos se renderizan en tarjetas y tabla dinámicamente
+  6. Admin interactúa: ve detalles, elimina citas, cierra sesión
+-->
+
+<!DOCTYPE html>
+<!-- 
+  ==========================================
+  DECLARACIÓN HTML5 CON IDIOMA ESPAÑOL
+  ==========================================
+  - `<!DOCTYPE html>` → Estándar HTML5 moderno (case-insensitive)
+  - `lang="es"` → Idioma español para:
+    • SEO: Posicionamiento en búsquedas en español
+    • Accesibilidad: Lectores de pantalla con pronunciación correcta
+    • Navegador: Corrector ortográfico en español activado
+-->
+<html lang="es">
+<head>
+    <!-- 
+      ==========================================
+      CODIFICACIÓN UTF-8 (PRIMERA META ETIQUETA)
+      ==========================================
+      - `charset="UTF-8"` → Soporta caracteres especiales:
+        • Tildes y ñ: á, é, í, ó, ú, ñ
+        • Símbolos: ₡ (colón), 👑, 📊, 🗑️
+        • Emojis para refuerzo visual en interfaz
+      
+      ⚠️ IMPORTANTE: Debe ir PRIMERO para interpretación correcta
+      de todo el documento desde el primer byte.
+    -->
+    <meta charset="UTF-8">
+    
+    <!-- 
+      ==========================================
+      VIEWPORT PARA DISEÑO RESPONSIVE
+      ==========================================
+      - `width=device-width` → Ancho de página = ancho de pantalla
+      - `initial-scale=1.0` → Zoom inicial al 100%
+      
+      📱 BENEFICIO: Sin esto, en móviles la página se vería
+      como en desktop (muy pequeña). Con esto, se adapta
+      automáticamente a cualquier dispositivo.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 
+      ==========================================
+      TÍTULO DE LA PÁGINA (SEO + PESTAÑA)
+      ==========================================
+      - Se muestra en la pestaña del navegador
+      - Aparece en resultados de búsqueda
+      - Identifica claramente el propósito: panel exclusivo para admin
+    -->
+    <title>Panel Admin - Revisión Vehicular</title>
+    
+    <!-- 
+      ==========================================
+      HOJA DE ESTILOS BASE DEL PROYECTO
+      ==========================================
+      - `href="estilosProyecto.css"` → Archivo CSS principal con:
+        • Variables de colores de marca (--color-principal, --fondo-oscuro)
+        • Estilos para tarjetas (.card), botones (.boton), tablas
+        • Diseño responsive con @media queries
+        • Clases utilitarias para espaciado y tipografía
+    -->
+    <link rel="stylesheet" href="estilosProyecto.css">
+    
+    <!-- 
+      ==========================================
+      LIBRERÍA EXTERNA: SweetAlert2 (CDN)
+      ==========================================
+      - Carga desde jsdelivr (CDN público y rápido)
+      - Versión @11 → Versión estable y probada
+      
+      🎨 ¿POR QUÉ SWEETALERT2?
+      Reemplaza alert() nativo por modales profesionales:
+      • Animaciones suaves para mejor experiencia
+      • Íconos visuales (✅❌⚠️) para feedback inmediato
+      • Confirmaciones con botones personalizados
+      • Soporte para HTML dentro del contenido
+      
+      🔗 SE USA EN: 
+      - app-auth.js → Mensajes de login/logout
+      - app-dashboard-admin.js → Confirmación de eliminación
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- 
+      ==========================================
+      ESTILOS ESPECÍFICOS PARA ESTE DASHBOARD
+      ==========================================
+      - `<style>` interno para estilos únicos de esta página
+      - Se podrían mover a estilosProyecto.css, pero se dejan
+        aquí para modularidad: cambios en admin no afectan otras páginas
+      
+      🎨 COMPONENTES DEFINIDOS:
+      1. .dashboard-header → Encabezado oscuro con información de usuario
+      2. .stats-grid → Grid responsive para tarjetas de estadísticas
+      3. .stat-card → Tarjeta individual con número grande y etiqueta
+      4. .stat-number → Estilo para números destacados (36px, negrita)
+      5. .stat-label → Estilo para etiquetas descriptivas (color atenuado)
+      
+      💡 GRID CSS: `grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))`
+      • auto-fit → Crea columnas automáticas según espacio disponible
+      • minmax(200px, 1fr) → Cada columna: mínimo 200px, máximo 1 fracción
+      • Resultado: En desktop → 3-4 columnas; en móvil → 1 columna (responsive automático)
+    -->
+    <style>
+        /* ==========================================
+           ENCABEZADO DEL DASHBOARD (FONDO OSCURO)
+           ==========================================
+           - Flexbox para alinear título y botón de logout
+           - Fondo oscuro (--fondo-oscuro) para diferenciar del contenido
+           - Texto blanco para contraste y legibilidad
+           - Bordes redondeados para consistencia visual con tarjetas
+        */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;  /* Título a la izquierda, botón a la derecha */
+            align-items: center;              /* Centrado vertical */
+            margin-bottom: 30px;               /* Espacio debajo del header */
+            padding: 20px;                     /* Espaciado interno */
+            background: var(--fondo-oscuro);   /* Variable CSS de color oscuro */
+            color: white;                      /* Texto blanco para contraste */
+            border-radius: 12px;               /* Bordes redondeados */
+        }
+        
+        /* ==========================================
+           GRID DE ESTADÍSTICAS (RESPONSIVE)
+           ==========================================
+           - CSS Grid para layout de tarjetas de KPIs
+           - auto-fit + minmax → Responsive automático sin media queries
+           - gap: 20px → Espaciado uniforme entre tarjetas
+        */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;  /* Espacio antes de la tabla de citas */
+        }
+        
+        /* ==========================================
+           TARJETA INDIVIDUAL DE ESTADÍSTICA
+           ==========================================
+           - Fondo blanco para contraste con el grid
+           - Sombra sutil (var(--sombra)) para efecto de profundidad
+           - Centrado de texto para números grandes
+           - Bordes redondeados para consistencia visual
+        */
+        .stat-card {
+            padding: 20px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: var(--sombra);  /* Variable CSS definida en estilosProyecto.css */
+            text-align: center;
+        }
+        
+        /* ==========================================
+           NÚMERO DESTACADO (KPI PRINCIPAL)
+           ==========================================
+           - 36px → Tamaño grande para impacto visual inmediato
+           - font-weight: 800 → Negrita extra para énfasis
+           - color: var(--color-principal) → Color de marca (#10CFC8)
+           • El ojo del usuario va primero al número, luego a la etiqueta
+        */
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--color-principal);
+        }
+        
+        /* ==========================================
+           ETIQUETA DESCRIPTIVA DE LA ESTADÍSTICA
+           ==========================================
+           - Color atenuado para no competir visualmente con el número
+           - margin-top: 5px → Pequeño espacio respecto al número
+           - Texto explicativo: ¿qué representa este número?
+        */
+        .stat-label {
+            color: var(--texto-atenuado);  /* Gris suave definido en CSS base */
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 
+      ==========================================
+      CONTENEDOR PRINCIPAL (LAYOUT CENTRALIZADO)
+      ==========================================
+      - `class="container"` → Clase CSS que:
+        • Centra el contenido horizontalmente
+        • Establece ancho máximo para legibilidad en pantallas grandes
+        • Agrega padding lateral en móviles para evitar bordes pegados
+      
+      📐 BENEFICIO UX: En desktop, el contenido no se estira
+      de extremo a extremo (difícil de leer). En móvil, ocupa
+      el 100% disponible con márgenes cómodos.
+    -->
+    <div class="container">
+        
+        <!-- 
+          ==========================================
+          HEADER GLOBAL: CONSISTENTE EN TODAS LAS PÁGINAS
+          ==========================================
+          Este header se REPITE idéntico en todas las páginas del sistema
+          para mantener consistencia visual y navegación predecible.
+          
+          🎨 DISEÑO: Flexbox (en CSS base) para alinear elementos
+          horizontalmente en desktop y verticalmente en móviles.
+        -->
+        <div class="header">
+            <!-- Parte superior con íconos decorativos y título principal -->
+            <div class="header-top">
+                <span class="car-icon">🚗</span>
+                <h1 class="main-title">Revisión Técnica Vehicular</h1>
+                <span class="car-icon">🚗</span>
+            </div>
+            <!-- Nota: En esta página no hay menú de navegación visible
+                 porque el admin tiene un flujo de trabajo diferente:
+                 gestiona desde el dashboard, no navega entre páginas públicas -->
+        </div>
+
+        <!-- 
+          ==========================================
+          ENCABEZADO ESPECÍFICO DEL DASHBOARD ADMIN
+          ==========================================
+          - `class="dashboard-header"` → Estilos definidos en <style> arriba
+          - Fondo oscuro para diferenciar visualmente esta sección del resto
+          - Contiene: título del panel + botón de cierre de sesión
+          
+          🎯 PROPÓSITO UX: 
+          • Título claro: "Panel de Administrador" → Confirma rol y permisos
+          • Subtítulo: "Gestión completa" → Expectativa de funcionalidades
+          • Botón "Salir" siempre visible → Acceso rápido a logout sin buscar en menú
+        -->
+        <div class="dashboard-header">
+            <!-- Sección izquierda: Título y descripción -->
+            <div>
+                <h1>👑 Panel de Administrador</h1>
+                <p>Gestión completa del sistema</p>
+            </div>
+            
+            <!-- Sección derecha: Botón de cierre de sesión -->
+            <!-- 
+              ==========================================
+              BOTÓN DE CERRAR SESIÓN (LOGOUT)
+              ==========================================
+              - `onclick="cerrarSesion()"` → Llama a función global definida en app-auth.js
+              - `class="boton boton-peligro"` → Estilos CSS para botón de acción destructiva
+                • Color rojo/naranja para indicar acción que termina sesión
+                • Hover effects para feedback visual
+                
+              🔗 CONEXIÓN CON JAVASCRIPT (app-auth.js):
+              export async function cerrarSesion() {
+                  await supabase.auth.signOut();  // Cierra sesión en Supabase
+                  window.location.href = 'login.html';  // Redirige al login
+              }
+              window.cerrarSesion = cerrarSesion;  // Expone función globalmente para HTML
+              
+              ⚠️ IMPORTANTE: La función debe estar disponible globalmente
+              porque el atributo onclick no puede llamar a funciones dentro de módulos ES6.
+            -->
+            <button onclick="cerrarSesion()" class="boton boton-peligro">
+                🚪 Salir
+            </button>
+        </div>
+
+        <!-- 
+          ==========================================
+          SECCIÓN DE ESTADÍSTICAS (KPIs EN TIEMPO REAL)
+          ==========================================
+          - `class="stats-grid"` → Grid CSS responsive definido en <style>
+          - Contiene 3 tarjetas con indicadores clave del negocio
+          
+          📊 ¿POR QUÉ ESTADÍSTICAS PRIMERO?
+          Principio de diseño: "Información más importante arriba"
+          El admin ve inmediatamente el estado general antes de detalles.
+          
+          🔄 ACTUALIZACIÓN DINÁMICA:
+          Los números (0 inicialmente) se actualizan con JavaScript
+          después de consultar a Supabase. Ver app-dashboard-admin.js → cargarEstadisticas()
+        -->
+        <div class="stats-grid">
+            
+            <!-- Tarjeta 1: Total de citas registradas en el sistema -->
+            <div class="stat-card">
+                <!-- 
+                  ==========================================
+                  NÚMERO DINÁMICO: TOTAL DE CITAS
+                  ==========================================
+                  - `id="totalCitas"` → Identificador único para que JavaScript
+                    pueda actualizar este elemento con el valor real
+                  - Valor inicial "0" → Placeholder mientras cargan los datos
+                  
+                  🔗 CONEXIÓN CON JAVASCRIPT:
+                  const elem = document.getElementById('totalCitas');
+                  elem.textContent = totalCitas || 0;  // Actualiza con dato real
+                -->
+                <div class="stat-number" id="totalCitas">0</div>
+                <!-- Etiqueta descriptiva con emoji para refuerzo visual -->
+                <div class="stat-label">📅 Total de Citas</div>
+            </div>
+            
+            <!-- Tarjeta 2: Total de clientes registrados -->
+            <div class="stat-card">
+                <div class="stat-number" id="totalClientes">0</div>
+                <div class="stat-label">👥 Total de Clientes</div>
+            </div>
+            
+            <!-- Tarjeta 3: Citas programadas para hoy -->
+            <div class="stat-card">
+                <div class="stat-number" id="citasHoy">0</div>
+                <div class="stat-label">📆 Citas Hoy</div>
+            </div>
+            
+            <!-- 💡 NOTA: Se podrían agregar más tarjetas:
+                 • Total facturado del mes
+                 • Citas pendientes vs completadas
+                 • Vehículos por tipo (gráfico)
+            -->
+        </div>
+
+        <!-- 
+          ==========================================
+          SECCIÓN PRINCIPAL: TABLA DE TODAS LAS CITAS
+          ==========================================
+          - `class="card"` → Estilo de tarjeta del sistema (fondo blanco, sombra, bordes redondeados)
+          - Contiene: título descriptivo + contenedor de tabla responsive + tabla HTML
+          
+          📋 PROPÓSITO: Mostrar listado completo de citas para:
+          • Supervisión general de la operación
+          • Búsqueda visual de citas específicas
+          • Acciones de gestión: ver detalle, eliminar
+        -->
+        <div class="card">
+            <!-- Título de la sección con emoji para identificación rápida -->
+            <h2>📋 Todas las Citas Agendadas</h2>
+            
+            <!-- 
+              ==========================================
+              CONTENEDOR DE TABLA RESPONSIVE
+              ==========================================
+              - `class="contenedor-tabla"` → Clase CSS que permite scroll horizontal
+                si la tabla es más ancha que la pantalla (especialmente en móviles)
+              
+              📱 PROBLEMA QUE RESUELVE:
+              Tablas con muchas columnas (9 en este caso) se salen de pantalla
+              en dispositivos pequeños. Este contenedor permite deslizar
+              horizontalmente sin romper el diseño general de la página.
+            -->
+            <div class="contenedor-tabla">
+                
+                <!-- 
+                  ==========================================
+                  TABLA HTML ESTÁNDAR CON IDENTIFICADOR ÚNICO
+                  ==========================================
+                  - `id="tablaCitasAdmin"` → Identificador para referencia (no usado directamente en JS)
+                  - Estructura semántica: <thead> (encabezados), <tbody> (datos dinámicos)
+                  
+                  🎨 ESTILO: Definido en estilosProyecto.css:
+                  • Bordes sutiles entre celdas
+                  • Hover effect en filas para mejor legibilidad
+                  • Tipografía legible con espaciado adecuado
+                -->
+                <table id="tablaCitasAdmin">
+                    
+                    <!-- 
+                      ==========================================
+                      ENCABEZADOS DE COLUMNA (<thead>)
+                      ==========================================
+                      Define los títulos de cada columna.
+                      Se estilan con CSS para destacar visualmente (fondo gris, negrita).
+                      
+                      📋 ORDEN LÓGICO DE COLUMNAS:
+                      1. ID → Identificador único (referencia técnica)
+                      2. Fecha → Información temporal principal
+                      3. Hora → Complemento de fecha para programación
+                      4. Cliente → Quién reservó (información de contacto principal)
+                      5. Email → Contacto alternativo
+                      6. Teléfono → Contacto inmediato
+                      7. Vehículo → Qué se va a revisar (marca + modelo)
+                      8. Placa → Identificador único del vehículo (destacado con badge)
+                      9. Acciones → Botones de gestión (ver/eliminar)
+                    -->
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Cliente</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Vehículo</th>
+                            <th>Placa</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    
+                    <!-- 
+                      ==========================================
+                      CUERPO DE LA TABLA (<tbody>) - DINÁMICO
+                      ==========================================
+                      - `id="tbodyCitasAdmin"` → Identificador único para que JavaScript
+                        pueda encontrar este elemento e insertar filas dinámicamente
+                      
+                      🔧 FUNCIONAMIENTO CON JAVASCRIPT (app-dashboard-admin.js):
+                      1. Al cargar la página, cargarTodasLasCitas() consulta a Supabase
+                      2. Por cada cita recibida, crea un elemento <tr> con <td>
+                      3. Usa appendChild() para agregar la fila a este tbody
+                      4. Actualiza estadísticas en las tarjetas superiores
+                      
+                      📝 EJEMPLO DE FILA GENERADA DINÁMICAMENTE:
+                      <tr>
+                        <td><strong>#15</strong></td>
+                        <td>25/4/2026</td>
+                        <td>10:00</td>
+                        <td>Juan Pérez</td>
+                        <td>juan@email.com</td>
+                        <td>8888-8888</td>
+                        <td>Toyota Corolla</td>
+                        <td><span class="badge">ABC123</span></td>
+                        <td>
+                          <button onclick="verDetalleCita(15)" class="boton boton-secundario boton-pequeno">👁️</button>
+                          <button onclick="eliminarCitaAdmin(15)" class="boton boton-peligro boton-pequeno">🗑️</button>
+                        </td>
+                      </tr>
+                      
+                      🎯 ESTADO INICIAL:
+                      Mientras cargan los datos, muestra "Cargando..." centrado
+                      para que el admin sepa que el sistema está trabajando.
+                    -->
+                    <tbody id="tbodyCitasAdmin">
+                        <!-- Fila de carga inicial (se reemplaza con datos reales vía JS) -->
+                        <tr><td colspan="9" style="text-align: center;">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Fin del contenedor de tabla responsive -->
+        </div>
+        <!-- Fin de la tarjeta principal de citas -->
+        
+    </div>
+    <!-- Fin del contenedor principal -->
+
+    <!-- 
+      ==========================================
+      SCRIPTS AL FINAL DEL <body> (BUENA PRÁCTICA)
+      ==========================================
+      Colocar scripts al final permite que:
+      1. El HTML se renderice primero → Mejor percepción de velocidad
+      2. Los elementos del DOM existan cuando JS intente acceder a ellos
+      3. El usuario vea estructura básica mientras cargan los scripts
+      
+      ⚡ ORDEN DE CARGA IMPORTANTE:
+      1. supabase.js → Configuración de conexión (dependencia base)
+      2. app-auth.js → Verifica sesión y rol (depende de supabase.js)
+      3. app-dashboard-admin.js → Carga estadísticas y citas (depende de las dos anteriores)
+      
+      Este orden garantiza que cada módulo tenga disponibles sus dependencias.
+    -->
+    
+    <!-- 
+      ==========================================
+      MÓDULO 1: CONFIGURACIÓN DE SUPABASE
+      ==========================================
+      - `type="module"` → Módulo ES6 moderno que permite import/export
+      - `src="supabase.js"` → Archivo que:
+        • Importa cliente de @supabase/supabase-js
+        • Inicializa con URL y clave pública desde variables de entorno
+        • Exporta instancia 'supabase' para usar en otros módulos
+      
+      🔗 CONEXIÓN: Este archivo es la BASE para todos los demás.
+      Sin él, app-auth.js y app-dashboard-admin.js no podrían conectar a la BD.
+    -->
+    <script type="module" src="supabase.js"></script>
+    
+    <!-- 
+      ==========================================
+      MÓDULO 2: SISTEMA DE AUTENTICACIÓN
+      ==========================================
+      - `src="app-auth.js"` → Archivo con lógica de:
+        1. Verificar sesión activa al cargar página
+        2. Redirigir si no hay sesión o si rol no es 'administrador'
+        3. Exponer función global cerrarSesion() para el botón del header
+      
+      🔐 SEGURIDAD EN CAPAS:
+      • Frontend: Redirige si no es admin (experiencia de usuario)
+      • Backend (RLS): Políticas de Supabase bloquean acceso a datos
+        incluso si alguien manipula el frontend para saltarse la redirección
+      
+      🎯 FUNCIONALIDAD CLAVE PARA ESTA PÁGINA:
+      Sin esta validación, cualquier usuario podría acceder al panel admin
+      simplemente escribiendo la URL. app-auth.js previene eso.
+    -->
+    <script type="module" src="app-auth.js"></script>
+    
+    <!-- 
+      ==========================================
+      MÓDULO 3: LÓGICA DEL DASHBOARD ADMIN
+      ==========================================
+      - `src="app-dashboard-admin.js"` → Archivo principal de esta página con:
+        1. cargarEstadisticas() → Consulta contadores y actualiza tarjetas
+        2. cargarTodasLasCitas() → Consulta todas las citas y genera tabla
+        3. verDetalleCita(id) → Muestra modal con info completa de una cita
+        4. eliminarCitaAdmin(id) → Elimina cita con confirmación y refresco
+      
+      🔄 FLUJO DE EJECUCIÓN:
+      1. DOMContentLoaded → Ejecuta cargarEstadisticas() y cargarTodasLasCitas()
+      2. Consultas a Supabase → Retornan promesas con datos
+      3. Manipulación del DOM → Actualiza números y genera filas de tabla
+      4. Eventos de botones → Funciones globales para interacción del usuario
+      
+      💡 DISEÑO DE FUNCIONES GLOBALES:
+      window.verDetalleCita = async (id) => { ... }
+      • Necesario porque onclick en HTML no puede llamar a funciones dentro de módulos
+      • Alternativa moderna: agregar event listeners con JS en lugar de onclick inline
+    -->
+    <script type="module" src="app-dashboard-admin.js"></script>
+    
+</body>
+</html>
